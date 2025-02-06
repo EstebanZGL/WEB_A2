@@ -1,0 +1,141 @@
+/*--------------------- 
+    Base de la page
+---------------------*/
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: whitesmoke;
+}
+
+h1 {
+  color: orange;
+  font-size: 32px;
+  margin-left: 1%;
+  margin-right: 1%;
+  text-align: center;
+}
+
+header {
+  background-color: white;
+  padding: 1%;
+  text-align: center;
+}
+
+/*------------------------- 
+    Barre de Navigation
+-------------------------*/
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  background-color: black;
+  color: #FFA500;
+  white-space: nowrap; /* Évite les retours à la ligne */
+  padding: 10px;
+}
+
+#liengauche, #liendroite {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espace uniforme entre les liens */
+}
+
+.lien-nav {
+  text-decoration: none;
+  color: white;
+  position: relative;
+}
+
+
+
+.lien-nav:hover {
+  color: orange;
+}
+
+.lien-nav.actif {
+  color: orange;
+  font-weight: bold;
+}
+
+#liendroite .lien-nav:last-child {
+  background-color: white;
+  padding: 1%;
+  border-radius: 2%;
+  color: black;
+}
+
+/*--------------------- 
+    Contenu Principal
+---------------------*/
+main {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+form label, form legend {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/*------------ 
+    Boutons 
+------------*/
+button {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #FFA500;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #FF8C00;
+}
+
+/*------------------ 
+    Pied de page
+------------------*/
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #000307;
+  color: white;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+/*------------ 
+    Menu Burger
+------------*/
+
+#menu-burger {
+  display: none; /* Masqué par défaut */
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  #menu-burger {
+      display: block; /* Afficher le menu burger en mode mobile */
+  }
+  nav.hidden {
+      display: none; /* Masquer le menu */
+  }
+}
