@@ -71,8 +71,8 @@ nav {
 ---------------------*/
 main {
   max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
+  margin: 50px auto;
+  padding: 30px;
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -109,12 +109,25 @@ button:hover {
   background-color: #FF8C00;
 }
 
+#scrollTop {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+
 /*------------------ 
     Pied de page
 ------------------*/
 footer {
   text-align: center;
-  padding: 10px;
+  padding: 2px;
   background-color: #000307;
   color: white;
   position: fixed;
@@ -126,16 +139,38 @@ footer {
     Menu Burger
 ------------*/
 
+
+/* Cacher le bouton burger par défaut */
 #menu-burger {
-  display: none; /* Masqué par défaut */
+  display: none;
+  font-size: 30px;
   cursor: pointer;
+  position: absolute;
+  top: 25px;
+  left: 20px;
 }
 
+/* Afficher le bouton burger uniquement en mode mobile */
 @media (max-width: 768px) {
   #menu-burger {
-      display: block; /* Afficher le menu burger en mode mobile */
+      display: block;
   }
-  nav.hidden {
-      display: none; /* Masquer le menu */
+
+  /* Cacher la navigation par défaut en mobile */
+  nav {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      background-color: black;
+      position: absolute;
+      top: 65px;
+      left: 0;
+      width: 100%;
+      transition: max-height 0.3s ease-in-out;
+  }
+
+  /* Afficher le menu lorsqu'il est activé */
+  nav.show {
+      display: flex;
   }
 }
