@@ -1,16 +1,16 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Bouton de remontée en haut de la page
-    let scrollTopBtn = document.createElement("button");
-    scrollTopBtn.id = "scrollTop";
-    scrollTopBtn.innerHTML = "&#8679;";
-    document.body.appendChild(scrollTopBtn);
-    scrollTopBtn.style.display = "none";
+    let DéroulementBtn = document.createElement("button");
+    DéroulementBtn.id = "Déroulement";
+    DéroulementBtn.innerHTML = "&#8679;";
+    document.body.appendChild(DéroulementBtn);
+    DéroulementBtn.style.display = "none";
 
     window.addEventListener("scroll", function() {
-        scrollTopBtn.style.display = window.scrollY > 200 ? "block" : "none";
+        DéroulementBtn.style.display = window.scrollY > 200 ? "block" : "none";
     });
 
-    scrollTopBtn.addEventListener("click", function() {
+    DéroulementBtn.addEventListener("click", function() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
