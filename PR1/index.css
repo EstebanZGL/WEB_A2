@@ -1,0 +1,112 @@
+/* Reset de base */
+* 
+{
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+  }
+  
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: whitesmoke;
+
+  }
+  h1 {
+    color: orange;
+    font-size: 32px;
+    margin-left: 1%;
+    margin-right: 1%;    
+  }
+
+  h2 {
+    margin: 2% 0%;
+    text-align: center;
+    color: black;
+    font-size: 30px;
+    margin-left: 1%;
+    margin-right: 1%;    
+  }
+
+  h3 {
+    margin: 0% 0%;
+    color: black;
+    font-size: 23px;
+    margin-bottom: 0%;
+    margin-top: 1%;
+    margin-left: 1%;
+    margin-right: 1%;
+  }
+
+  h4 {
+    
+    margin: 1% 0%;
+    color: orange;
+    font-size: 20px;
+    margin-left: 1%;
+    margin-right: 1%;
+  }
+  h5 {
+    
+    margin-top: 1.5%;
+    margin-bottom: 0.5;
+    color: orange;
+    font-size: 15px;
+    margin-left: 1%;
+    margin-right: 1%;
+  }
+  h6 {
+    margin: 0% 0%;
+    color: black;
+    font-size: 10px;
+    margin-left: 1%;
+    margin-right: 1%;
+  }
+
+
+  header {
+    background-color: white;
+    color: white;
+    padding: 1%;
+    text-align: center;
+  }
+  
+  
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    background-color: black;
+    
+
+  }
+  
+  #liengauche, #liendroite {
+    display: flex;
+    align-items: center;
+    background-color: black;
+    margin: 0.8%;
+    vertical-align: middle;
+  }
+  
+  #liengauche a, #liendroite a {
+    text-decoration: none;
+    color: white;
+    background-color: black;
+    margin: 0.4%;
+
+  }
+  
+  #liendroite a:last-child {
+    background-color: white;
+    padding: 1%;
+    border-radius: 2%;
+    color: black;
+  }
+  #selection {
+    color: orange;
+  }
+  
+  
