@@ -1,0 +1,51 @@
+.application-container {
+    background: #3a3a3a; /* Couleur de fond du conteneur */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    width: 600px; /* Largeur du conteneur */
+    margin: 20px auto; /* Centrer le conteneur */
+    color: white; /* Couleur du texte */
+}
+
+h2, h3, h4 {
+    color: #FFC107; /* Couleur des titres */
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea,
+select {
+    width: 100%; /* Largeur des champs */
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+
+input[type="file"] {
+    margin-top: 10px;
+}
+
+button {
+    background-color: #007BFF; /* Couleur du bouton */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button.reset {
+    background-color: #DC3545; /* Rouge pour réinitialiser */
+}
+
+button.submit {
+    background-color: #4CAF50; /* Vert pour postuler */
+}

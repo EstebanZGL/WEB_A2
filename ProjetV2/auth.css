@@ -1,0 +1,65 @@
+main {
+    font-family: 'Arial', sans-serif;
+    background-color: #444; /* Couleur de fond sombre */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background: #3a3a3a; /* Couleur de fond du conteneur */
+    padding: 40px; /* Augmente le padding */
+    border-radius: 15px; /* Coins très arrondis */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Ombre plus prononcée */
+    width: 400px; /* Largeur du conteneur */
+}
+
+h2 {
+    margin-bottom: 30px;
+    text-align: center; /* Centre le titre */
+    color: #ffffff; /* Couleur du texte */
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ffffff; /* Couleur du texte */
+}
+
+input {
+    width: 100%; /* Prend toute la largeur du conteneur */
+    padding: 12px;
+    margin-bottom: 20px; /* Espacement entre les champs */
+    border: 1px solid #555; /* Bordure plus sombre */
+    border-radius: 10px; /* Coins arrondis */
+    background-color: #4a4a4a; /* Fond des champs de saisie */
+    color: #ffffff; /* Couleur du texte */
+}
+
+input::placeholder {
+    color: #bbb; /* Couleur des placeholders */
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #5cb85c; /* Couleur du bouton */
+    color: white;
+    border: none;
+    border-radius: 10px; /* Coins arrondis */
+    cursor: pointer;
+    margin-top: 10px; /* Espacement au-dessus du bouton */
+    transition: background-color 0.3s; /* Transition pour l'effet hover */
+}
+
+button:hover {
+    background-color: #4cae4c; /* Couleur au survol */
+}
+
+#message {
+    margin-top: 10px;
+    color: red;
+    text-align: center; /* Centre le message */
+}
