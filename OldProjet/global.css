@@ -1,0 +1,116 @@
+/* ===========================
+   STYLES GÉNÉRAUX
+=========================== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #333;
+    color: white;
+}
+
+/* ===========================
+   HEADER (COMMUN À TOUTES LES PAGES)
+=========================== */
+header {
+    background-color: #222;
+}
+
+/* ------------- ALIGNEMENT LOGO & BOUTONS ------------- */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    
+}
+
+/* ------------- LOGO ------------- */
+.logo {
+    font-family: 'Orbitron', sans-serif; 
+    font-size: 40px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: white;
+    padding: 10px 20px;
+    border: 3px solid #a74db3; /* Cadre violet */
+    position: relative;
+}
+
+.logo::after {
+    content: "";
+    display: block;
+    width: 96%;
+    height: 2px;
+    background-color: #00BFFF; 
+    position: absolute;
+    bottom: 5px;
+    left: 2%;
+}
+
+/* ------------- BOUTONS DE CONNEXION ------------- */
+.auth-buttons .btn {
+    background-color: #555;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.auth-buttons .btn:hover {
+    background-color: #777;
+}
+
+/* ===========================
+   NAVIGATION (COMMUNE À TOUTES LES PAGES)
+=========================== */
+nav {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* ------------- STYLE DE LA NAVIGATION ------------- */
+.nav-links {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Espacement entre les liens */
+    padding: 0;
+}
+
+.nav-links li {
+    background-color: #d3d3d3;
+    border-radius: 10px;
+    padding: 15px 30px;
+    box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.6);
+    transform: skewX(-10deg);
+    border: 2px solid #ffffff;
+}
+
+/* ------------- LIEN ACTIF (COULEUR ROSE CLAIRE) ------------- */
+.nav-links li.active {
+    background-color: #ffb6c1; /* Rose clair pour la page active */
+}
+
+/* Style des liens */
+.nav-links li a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* ===========================
+   PAGE OFFRES
+=========================== */
+.offres-section {
+    flex-direction: column;
+    padding: 20px;
+    background-color: #444;
+    color: white;
+    border-radius: 10px;
+    margin: 20px;
+}
+/* ===========================
+   FIN PAGE OFFRES
+=========================== */
