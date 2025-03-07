@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Televersement securise</title>
+    <script>
+        function redirectToPagination() {
+            window.location.href = 'pagination.php';
+        }
+    </script>
+</head>
+<body>
+    <!-- Formulaire de téléversement de fichier PDF -->
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="application/pdf" required>
+        <button type="submit">Televerser</button>
+    </form>
+</body>
+</html>
