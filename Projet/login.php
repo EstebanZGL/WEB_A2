@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute(['email' => $email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
         // Vérification du mot de passe hashé
         if ($user && password_verify($password, $user['mdp'])) { 
             $_SESSION['user_id'] = $user['id'];
@@ -33,8 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: index.html"); // Redirige vers la page d'accueil
             exit();
         } else {
-            echo "<script>alert('Email ou mot de passe incorrect'); window.location.href='index.html';</script>";
+            echo "<script>alert('Email ou mot de passe incorrect'); window.location.href='login.html';</script>";
+            exit();
         }
+
     } else {
         echo "<script>alert('Veuillez remplir tous les champs'); window.location.href='index.html';</script>";
     }
