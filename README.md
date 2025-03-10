@@ -1,5 +1,5 @@
 # WEB_A2
 
-###Projet étudiant
+### Projet étudiant
 
-#Création d'un site web pour recherche de stages
+# Création d'un site web pour recherche de stages
