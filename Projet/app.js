@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const loginButton = document.getElementById("login-button");
             const logoutButton = document.getElementById("logout-button");
             const welcomeMessage = document.getElementById("welcome-message");
+            const pageGestion = document.getElementById("page-gestion");
             const pageAdmin= document.getElementById("page-admin");
 
             if (data.logged_in) {
@@ -21,10 +22,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     case 1:
                         utilisateurMessage = "Pilote";
                         welcomeMessage.classList.add('pilote');
+                        pageGestion.style.display = "inline-block";
                         break;
                     case 2:
                         utilisateurMessage = "Admin";
                         welcomeMessage.classList.add('admin');
+                        pageGestion.style.display = "inline-block";
                         pageAdmin.style.display = "inline-block";
                         break;
                     default:
@@ -38,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 loginButton.style.display = "inline-block";
                 logoutButton.style.display = "none";
                 welcomeMessage.style.display = "none"; // Cache le message de bienvenue
+                pageGestion.style.display = "none";
                 pageAdmin.style.display = "none"; // Cache la page administrateur
             }
         })
