@@ -42,8 +42,10 @@ h1 {
 .logo img {
     width: 50%;
     height: 50%;
-    margin-bottom: 10%; /* Ajustez la valeur selon l'espacement souhaité */
+    margin-bottom: 10%; 
 }
+
+
 
 .form-group {
     text-align: left;
@@ -105,20 +107,6 @@ label {
   
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .or-continue {
     margin-top: 20px;
 }
@@ -164,3 +152,31 @@ label {
     text-decoration: none;
     margin: 0 5px;
 }
+
+.back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width:20%;
+    padding: 5px;
+    margin-right: 50px;
+    margin-top: 10px; 
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.back:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.back-text {
+    display: flex;
+    align-items: center;
+    margin-top:2px;
+}
+
+

@@ -13,12 +13,23 @@
         <header class="navbar">
             <div class="container">
                 <img src="logo.png" alt="D" width="150" height="170">
+
                 <nav class="navbar-nav">
                     <a href="index.html" class="nav-link">Accueil</a>
-                    <a href="jobs.html" class="nav-link active">Emplois</a>
+                    <a href="job-detail.html" class="nav-link active">Emplois</a>
+                    <a href="admin.html" class="nav-link" id="page-admin" style="display:none;">Page Administrateur</a>
                 </nav>
-                <a href="login.html" class="button button-outline button-glow">Connexion</a>
+
+                <div id="user-status">
+                    <a href="login.html" id="login-button" class="button button-outline button-glow">Connexion</a>
+                    <a href="logout.php" id="logout-button" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
+                </div>
+            
+                <script src="app.js"></script>
+                
+                
             </div>
+            <span id="welcome-message" class="welcome-message"></span>
         </header>
 
         <main>
@@ -135,13 +146,7 @@
                 <div class="footer-grid">
                     <div class="footer-brand">
                         <a href="index.html" class="footer-logo">
-                            <div class="logo-circle logo-circle-small">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon">
-                                    <rect width="20" height="14" x="2" y="7" rx="2" ry="2"></rect>
-                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                                </svg>
-                            </div>
-                            <span class="brand-text-sm"><span class="brand-neon">Neon</span>Jobs</span>
+                            <img src="logo.png" alt="D" width="150" height="170">
                         </a>
                         <p class="footer-tagline">Votre passerelle vers des opportunités de carrière.</p>
                     </div>

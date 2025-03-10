@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 // Connexion à la base de données
 $host = 'localhost'; 
 $dbname = 'lebonplan';
@@ -30,8 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && password_verify($password, $user['mdp'])) { 
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
+            $_SESSION['utilisateur'] = $user['utilisateur'];
+            $_SESSION['logged_in'] =true;
 
+            
+            echo "<script>document.getElementById('modal').style.display = 'flex';</script>";
+                      
             header("Location: index.html"); // Redirige vers la page d'accueil
+
             exit();
         } else {
             echo "<script>alert('Email ou mot de passe incorrect'); window.location.href='login.html';</script>";
