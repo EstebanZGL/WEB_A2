@@ -3,10 +3,10 @@ session_start();
 
 
 // Connexion à la base de données
-$host = 'localhost'; 
-$dbname = 'lebonplan';
-$username = 'root'; 
-$password = ''; 
+$host = '20.107.81.71'; // hôte de la base de données
+$dbname = 'LeBonPlan'; // nom de la base de données
+$username = 'G3_Distant'; // votre nom d'utilisateur MySQL
+$password = '?LeCrewDuCesi6942'; // votre mot de passe MySQL
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
