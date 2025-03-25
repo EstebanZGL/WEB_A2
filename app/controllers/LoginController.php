@@ -15,7 +15,7 @@ class LoginController {
     public function index() {
         // Si l'utilisateur est déjà connecté, le rediriger vers la page d'accueil
         if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-            header("Location: /cesi-lebonplan/home");
+            header("Location: home");
             exit;
         }
         
@@ -40,21 +40,21 @@ class LoginController {
                     $_SESSION['logged_in'] = true;
 
                     // Redirection vers la page d'accueil
-                    header("Location: /cesi-lebonplan/home");
+                    header("Location: home");
                     exit;
                 } else {
                     // Redirection en cas d'erreur
                     $_SESSION['error'] = "Email ou mot de passe incorrect";
-                    header("Location: /cesi-lebonplan/login");
+                    header("Location: login");
                     exit;
                 }
             } else {
                 $_SESSION['error'] = "Veuillez remplir tous les champs";
-                header("Location: /cesi-lebonplan/login");
+                header("Location: login");
                 exit;
             }
         } else {
-            header("Location: /cesi-lebonplan/login");
+            header("Location: login");
             exit;
         }
     }

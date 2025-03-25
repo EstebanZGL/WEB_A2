@@ -18,7 +18,7 @@ class GestionController {
         // Vérifier si l'utilisateur est connecté et a les droits de gestion
         if (!isset($_SESSION['logged_in']) || $_SESSION['utilisateur'] < 1) {
             // Utiliser un chemin absolu pour la redirection
-            header("Location: /cesi-lebonplan/login");
+            header("Location: login");
             exit;
         }
         
@@ -63,11 +63,11 @@ class GestionController {
             if ($result) {
                 // Rediriger vers la page de gestion avec un message de succès
                 // Utiliser un chemin absolu
-                header("Location: /cesi-lebonplan/gestion?success=1");
+                header("Location: gestion?success=1");
             } else {
                 // Rediriger vers la page de gestion avec un message d'erreur
                 // Utiliser un chemin absolu
-                header("Location: /cesi-lebonplan/gestion?error=1");
+                header("Location: gestion?error=1");
             }
             exit;
         } else {
@@ -100,11 +100,11 @@ class GestionController {
             if ($result) {
                 // Rediriger vers la page de gestion avec un message de succès
                 // Utiliser un chemin absolu
-                header("Location: /cesi-lebonplan/gestion?success=2");
+                header("Location: gestion?success=2");
             } else {
                 // Rediriger vers la page de gestion avec un message d'erreur
                 // Utiliser un chemin absolu
-                header("Location: /cesi-lebonplan/gestion?error=2");
+                header("Location: gestion?error=2");
             }
             exit;
         } else {
@@ -114,7 +114,7 @@ class GestionController {
             if (!$offre) {
                 // Rediriger vers la page de gestion si l'offre n'existe pas
                 // Utiliser un chemin absolu
-                header("Location: /cesi-lebonplan/gestion?error=3");
+                header("Location: gestion?error=3");
                 exit;
             }
             
@@ -135,11 +135,11 @@ class GestionController {
         if ($result) {
             // Rediriger vers la page de gestion avec un message de succès
             // Utiliser un chemin absolu
-            header("Location: /cesi-lebonplan/gestion?success=3");
+            header("Location: gestion?success=3");
         } else {
             // Rediriger vers la page de gestion avec un message d'erreur
             // Utiliser un chemin absolu
-            header("Location: /cesi-lebonplan/gestion?error=4");
+            header("Location: gestion?error=4");
         }
         exit;
     }
