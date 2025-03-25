@@ -17,10 +17,8 @@ if (strpos($uri, '?') !== false) {
 }
 
 // Pour le débogage - décommenter pour voir l'URI traitée
-echo "URI traitée: '" . $uri . "'<br>";
-
-exit;
+// echo "URI traitée: '" . $uri . "'<br>";
 
 // Appel du routeur avec l'URI traitée
-//route($uri);
+route($uri);
 ?>
