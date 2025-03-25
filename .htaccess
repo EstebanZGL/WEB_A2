@@ -1,0 +1,21 @@
+<IfModule mod_rewrite.c>
+    # Activer le moteur de réécriture
+    RewriteEngine On
+    
+    # Définir la base des URL réécrites
+    RewriteBase /WEB_A2/
+    
+    # Ne pas appliquer les règles aux fichiers et dossiers existants
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Règle simple pour tout rediriger vers index.php
+    RewriteRule ^(.*)$ index.php [L,QSA]
+</IfModule>
+
+# Désactiver la mise en cache pour le débogage
+<IfModule mod_headers.c>
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+</IfModule>
