@@ -1,5 +1,8 @@
 <?php
-session_start();
+// Démarrer la session seulement si elle n'est pas déjà active
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'app/models/UserModel.php';
 
 class LoginController {
@@ -10,14 +13,20 @@ class LoginController {
     }
 
     public function index() {
+        // Si l'utilisateur est déjà connecté, le rediriger vers la page d'accueil
+        if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            header("Location: /WEB_A2/home");
+            exit;
+        }
+        
         // Afficher le formulaire de connexion
         require 'app/views/login/login.php';
     }
 
     public function authenticate() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim($_POST['email']);
-            $password = trim($_POST['password']);
+            $email = trim($_POST['email'] ?? '');
+            $password = trim($_POST['password'] ?? '');
 
             if (!empty($email) && !empty($password)) {
                 // Récupérer l'utilisateur avec l'email fourni
@@ -30,23 +39,23 @@ class LoginController {
                     $_SESSION['utilisateur'] = $user['utilisateur'];
                     $_SESSION['logged_in'] = true;
 
-                    // Redirection vers la page d'accueil avec chemin relatif
-                    header("Location: home");
-                    exit();
+                    // Redirection vers la page d'accueil
+                    header("Location: /WEB_A2/home");
+                    exit;
                 } else {
-                    // Redirection en cas d'erreur avec chemin relatif
+                    // Redirection en cas d'erreur
                     $_SESSION['error'] = "Email ou mot de passe incorrect";
-                    header("Location: login");
-                    exit();
+                    header("Location: /WEB_A2/login");
+                    exit;
                 }
             } else {
                 $_SESSION['error'] = "Veuillez remplir tous les champs";
-                header("Location: login");
-                exit();
+                header("Location: /WEB_A2/login");
+                exit;
             }
         } else {
-            header("Location: login");
-            exit();
+            header("Location: /WEB_A2/login");
+            exit;
         }
     }
 }

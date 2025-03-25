@@ -5,22 +5,33 @@ class GestionController {
     private $offreModel;
     
     public function __construct() {
-        $this->offreModel = new OffreModel();
-        
         // Vérifier si la session est déjà démarrée
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
         
+        // Ne pas initialiser le modèle ou vérifier les autorisations dans le constructeur
+    }
+    
+    // Méthode privée pour vérifier les autorisations
+    private function checkGestionAuth() {
         // Vérifier si l'utilisateur est connecté et a les droits de gestion
         if (!isset($_SESSION['logged_in']) || $_SESSION['utilisateur'] < 1) {
-            // Utiliser un chemin relatif simple pour la redirection
-            header("Location: login");
+            // Utiliser un chemin absolu pour la redirection
+            header("Location: /WEB_A2/login");
             exit;
+        }
+        
+        // Initialiser le modèle seulement quand on en a besoin
+        if (!isset($this->offreModel)) {
+            $this->offreModel = new OffreModel();
         }
     }
     
     public function index() {
+        // Vérifier les autorisations avant d'accéder à cette méthode
+        $this->checkGestionAuth();
+        
         // Récupérer toutes les offres pour les afficher dans la page de gestion
         $offres = $this->offreModel->getAllOffres();
         
@@ -29,6 +40,9 @@ class GestionController {
     }
     
     public function add() {
+        // Vérifier les autorisations avant d'accéder à cette méthode
+        $this->checkGestionAuth();
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Récupérer les données du formulaire
             $offreData = [
@@ -48,12 +62,12 @@ class GestionController {
             
             if ($result) {
                 // Rediriger vers la page de gestion avec un message de succès
-                // Utiliser un chemin relatif simple
-                header("Location: gestion?success=1");
+                // Utiliser un chemin absolu
+                header("Location: /WEB_A2/gestion?success=1");
             } else {
                 // Rediriger vers la page de gestion avec un message d'erreur
-                // Utiliser un chemin relatif simple
-                header("Location: gestion?error=1");
+                // Utiliser un chemin absolu
+                header("Location: /WEB_A2/gestion?error=1");
             }
             exit;
         } else {
@@ -63,6 +77,9 @@ class GestionController {
     }
     
     public function edit() {
+        // Vérifier les autorisations avant d'accéder à cette méthode
+        $this->checkGestionAuth();
+        
         $id = $_GET['id'] ?? 0;
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -82,12 +99,12 @@ class GestionController {
             
             if ($result) {
                 // Rediriger vers la page de gestion avec un message de succès
-                // Utiliser un chemin relatif simple
-                header("Location: gestion?success=2");
+                // Utiliser un chemin absolu
+                header("Location: /WEB_A2/gestion?success=2");
             } else {
                 // Rediriger vers la page de gestion avec un message d'erreur
-                // Utiliser un chemin relatif simple
-                header("Location: gestion?error=2");
+                // Utiliser un chemin absolu
+                header("Location: /WEB_A2/gestion?error=2");
             }
             exit;
         } else {
@@ -96,8 +113,8 @@ class GestionController {
             
             if (!$offre) {
                 // Rediriger vers la page de gestion si l'offre n'existe pas
-                // Utiliser un chemin relatif simple
-                header("Location: gestion?error=3");
+                // Utiliser un chemin absolu
+                header("Location: /WEB_A2/gestion?error=3");
                 exit;
             }
             
@@ -107,6 +124,9 @@ class GestionController {
     }
     
     public function delete() {
+        // Vérifier les autorisations avant d'accéder à cette méthode
+        $this->checkGestionAuth();
+        
         $id = $_GET['id'] ?? 0;
         
         // Supprimer l'offre de la base de données
@@ -114,12 +134,12 @@ class GestionController {
         
         if ($result) {
             // Rediriger vers la page de gestion avec un message de succès
-            // Utiliser un chemin relatif simple
-            header("Location: gestion?success=3");
+            // Utiliser un chemin absolu
+            header("Location: /WEB_A2/gestion?success=3");
         } else {
             // Rediriger vers la page de gestion avec un message d'erreur
-            // Utiliser un chemin relatif simple
-            header("Location: gestion?error=4");
+            // Utiliser un chemin absolu
+            header("Location: /WEB_A2/gestion?error=4");
         }
         exit;
     }

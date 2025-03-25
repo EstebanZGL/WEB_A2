@@ -15,11 +15,11 @@ class UserController {
             if ($user && password_verify($password, $user['password'])) {
                 session_start();
                 $_SESSION['user'] = $user;
-                header('Location: /home');
+                header('Location: /WEB_A2/home');
                 exit;
             } else {
                 $error = 'Email ou mot de passe incorrect.';
-            }
+            } 
         }
 
         require 'app/views/user/login.php';
@@ -28,7 +28,7 @@ class UserController {
     public function logout() {
         session_start();
         session_destroy();
-        header('Location: /login');
+        header('Location: /WEB_A2/login');
         exit;
     }
 }

@@ -1,13 +1,14 @@
 <?php
-// Point d'entrée de l'application/// Chargement des fichiers nécessaires
+
+// Charger les fichiers nécessaires
 require_once 'config/database.php';
 require_once 'routes/web.php';
 
 // Démarrage de l'application
 $uri = trim($_SERVER['REQUEST_URI'], '/');
 
-/// Supprimer le préfixe "Project_MVC" de l'URI
-$basePath = 'Project_MVC';
+// Supprimer le préfixe "WEB_A2" de l'URI
+$basePath = 'WEB_A2';
 if (strpos($uri, $basePath) === 0) {
     $uri = substr($uri, strlen($basePath));
     $uri = trim($uri, '/');
@@ -18,8 +19,6 @@ if (strpos($uri, '?') !== false) {
     $uri = substr($uri, 0, strpos($uri, '?'));
 }
 
-// Décommenter pour déboguer si nécessaire
-// echo "URI finale: " . $uri . "<br>";
+// Appel du routeur avec l'URI traitée
 route($uri);
-
 ?>

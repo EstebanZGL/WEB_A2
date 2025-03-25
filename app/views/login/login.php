@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="stylesheet" href="public/css/login.css">
+    <link rel="stylesheet" href="/WEB_A2/public/css/login.css">
     <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
 </head>
 
@@ -14,7 +14,7 @@
         <p>Entrez vos identifiants pour accéder à votre compte</p>
     </div>
     <div class="container">
-        <a href="home" class="back">
+        <a href="/WEB_A2/home" class="back">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                 <path fill="white" d="M15.414 7l-5.707 5.707a1 1 0 0 0 0 1.414l5.707 5.707A1 1 0 0 0 16 18.414L10.707 13 16 7.586A1 1 0 0 0 15.414 7z"/>
             </svg>
@@ -22,10 +22,18 @@
         </a>
         
         <div class="logo">
-            <img src="public/images/logo.png" alt="Connexion" width="300" height="300">
+            <img src="/WEB_A2/public/images/logo.png" alt="Connexion" width="300" height="300">
         </div>
+        
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="error-message">
+                <?php echo $_SESSION['error']; ?>
+                <?php unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
+        
         <!-- Formulaire qui envoie les données à login/authenticate -->
-        <form action="login/authenticate" method="post">
+        <form action="/WEB_A2/login/authenticate" method="post">
             <div class="form-group">
                 <label for="email">Adresse e-mail</label>
                 <div class="input-container">
