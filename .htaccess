@@ -3,7 +3,7 @@
     RewriteEngine On
     
     # Définir la base des URL réécrites
-    RewriteBase /WEB_A2/
+    RewriteBase /cesi-lebonplan/
     
     # Ne pas appliquer les règles aux fichiers et dossiers existants
     RewriteCond %{REQUEST_FILENAME} !-f
