@@ -8,7 +8,7 @@ require_once 'routes/web.php';
 $uri = trim($_SERVER['REQUEST_URI'], '/');
 
 // Supprimer le préfixe "cesi-lebonplan" de l'URI
-$basePath = 'cesi-lebonplan';
+$basePath = 'cesi-lebonplan.westeurope.cloudapp.azure.com/cesi-lebonplan';
 if (strpos($uri, $basePath) === 0) {
     $uri = substr($uri, strlen($basePath));
     $uri = trim($uri, '/');
