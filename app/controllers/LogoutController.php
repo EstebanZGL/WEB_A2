@@ -10,7 +10,7 @@ class LogoutController {
         session_destroy();
 
         // Rediriger vers la page de connexion avec un chemin absolu
-        header("Location: /WEB_A2/home");
+        header("Location: /cesi-lebonplan/home");
         exit();
     }
 }

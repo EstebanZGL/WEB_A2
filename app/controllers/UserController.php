@@ -15,7 +15,7 @@ class UserController {
             if ($user && password_verify($password, $user['password'])) {
                 session_start();
                 $_SESSION['user'] = $user;
-                header('Location: /WEB_A2/home');
+                header('Location: /cesi-lebonplan/home');
                 exit;
             } else {
                 $error = 'Email ou mot de passe incorrect.';
@@ -28,7 +28,7 @@ class UserController {
     public function logout() {
         session_start();
         session_destroy();
-        header('Location: /WEB_A2/login');
+        header('Location: /cesi-lebonplan/login');
         exit;
     }
 }

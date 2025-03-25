@@ -21,7 +21,7 @@ class AdminController {
         // Vérifier si l'utilisateur est connecté et a les droits d'administrateur
         if (!isset($_SESSION['logged_in']) || $_SESSION['utilisateur'] != 2) {
             // Utiliser un chemin absolu pour la redirection
-            header("Location: /WEB_A2/login");
+            header("Location: /cesi-lebonplan/login");
             exit;
         }
         

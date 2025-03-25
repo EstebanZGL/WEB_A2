@@ -5,28 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LeBonPlan | Trouvez Votre Carrière de Rêve</title>
     <meta name="description" content="Recherchez et postulez à des milliers d'offres d'emploi dans la technologie, le design, le marketing et plus encore." />
-    <link rel="stylesheet" href="/WEB_A2/public/css/style.css" />
+    <link rel="stylesheet" href="/cesi-lebonplan/public/css/style.css" />
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
 </head>
 <body>
     <div id="app">
         <header class="navbar">
             <div class="container">
-                <img src="/WEB_A2/public/images/logo.png" alt="D" width="150" height="170">
+                <img src="/cesi-lebonplan/public/images/logo.png" alt="D" width="150" height="170">
 
                 <nav class="navbar-nav">
-                    <a href="/WEB_A2/home" class="nav-link active">Accueil</a>
-                    <a href="/WEB_A2/offres" class="nav-link">Emplois</a>
-                    <a href="/WEB_A2/gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
-                    <a href="/WEB_A2/admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
+                    <a href="/cesi-lebonplan/home" class="nav-link active">Accueil</a>
+                    <a href="/cesi-lebonplan/offres" class="nav-link">Emplois</a>
+                    <a href="/cesi-lebonplan/gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
+                    <a href="/cesi-lebonplan/admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
                 </nav>
 
                 <div id="user-status">
-                    <a href="/WEB_A2/login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
-                    <a href="/WEB_A2/logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
+                    <a href="/cesi-lebonplan/login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
+                    <a href="/cesi-lebonplan/logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
                 </div>
             
-                <script src="/WEB_A2/public/js/app.js"></script>
+                <script src="/cesi-lebonplan/public/js/app.js"></script>
                 
             </div>
             <span id="welcome-message" class="welcome-message"></span>
@@ -45,10 +45,10 @@
                     </form>
                     <div class="popular-searches">
                         <span>Recherches populaires:</span>
-                        <a href="/WEB_A2/jobs?q=developer" class="popular-link">Développeur</a>
-                        <a href="/WEB_A2/jobs?q=designer" class="popular-link">Designer</a>
-                        <a href="/WEB_A2/jobs?q=marketing" class="popular-link">Marketing</a>
-                        <a href="/WEB_A2/jobs?q=remote" class="popular-link">Télétravail</a>
+                        <a href="/cesi-lebonplan/jobs?q=developer" class="popular-link">Développeur</a>
+                        <a href="/cesi-lebonplan/jobs?q=designer" class="popular-link">Designer</a>
+                        <a href="/cesi-lebonplan/jobs?q=marketing" class="popular-link">Marketing</a>
+                        <a href="/cesi-lebonplan/jobs?q=remote" class="popular-link">Télétravail</a>
                     </div>
                 </div>
             </section>
@@ -66,10 +66,10 @@
                 <div class="container">
                     <h2 class="section-title section-title-center">Parcourir par <span class="accent-text-pink">Catégorie</span></h2>
                     <div class="categories-grid">
-                        <a href="/WEB_A2/jobs?q=technology" class="category-card">Technologie</a>
-                        <a href="/WEB_A2/jobs?q=design" class="category-card">Design</a>
-                        <a href="/WEB_A2/jobs?q=marketing" class="category-card">Marketing</a>
-                        <a href="/WEB_A2/jobs?q=finance" class="category-card">Finance</a>
+                        <a href="/cesi-lebonplan/jobs?q=technology" class="category-card">Technologie</a>
+                        <a href="/cesi-lebonplan/jobs?q=design" class="category-card">Design</a>
+                        <a href="/cesi-lebonplan/jobs?q=marketing" class="category-card">Marketing</a>
+                        <a href="/cesi-lebonplan/jobs?q=finance" class="category-card">Finance</a>
                     </div>
                 </div>
             </section>
@@ -79,7 +79,7 @@
                     <div class="cta-card">
                         <h2 class="cta-title">Prêt à faire le prochain pas dans votre carrière ?</h2>
                         <p class="cta-text">Rejoignez des milliers de chercheurs d'emploi qui ont trouvé leur emploi de rêve grâce à notre plateforme.</p>
-                        <a href="/WEB_A2/jobs" class="button button-primary button-glow">Trouver des Emplois Maintenant</a>
+                        <a href="/cesi-lebonplan/jobs" class="button button-primary button-glow">Trouver des Emplois Maintenant</a>
                     </div>
                 </div>
             </section>
@@ -89,15 +89,15 @@
             <div class="container">
                 <div class="footer-grid">
                     <div class="footer-brand">
-                        <a href="/WEB_A2/home" class="footer-logo">
-                            <img src="/WEB_A2/public/images/logo.png" alt="D" width="150" height="170">
+                        <a href="/cesi-lebonplan/home" class="footer-logo">
+                            <img src="/cesi-lebonplan/public/images/logo.png" alt="D" width="150" height="170">
                         </a>
                         <p class="footer-tagline">Votre passerelle vers des opportunités de carrière.</p>
                     </div>
                     <div class="footer-links">
                         <h3 class="footer-heading">Pour les Chercheurs d'Emploi</h3>
                         <ul>
-                            <li><a href="/WEB_A2/jobs" class="footer-link">Parcourir les Emplois</a></li>
+                            <li><a href="/cesi-lebonplan/jobs" class="footer-link">Parcourir les Emplois</a></li>
                             <li><a href="#" class="footer-link">Ressources de Carrière</a></li>
                         </ul>
                     </div>
