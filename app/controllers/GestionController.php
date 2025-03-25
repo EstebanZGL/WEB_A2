@@ -1,0 +1,127 @@
+<?php
+require_once 'app/models/OffreModel.php';
+
+class GestionController {
+    private $offreModel;
+    
+    public function __construct() {
+        $this->offreModel = new OffreModel();
+        
+        // Vérifier si la session est déjà démarrée
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Vérifier si l'utilisateur est connecté et a les droits de gestion
+        if (!isset($_SESSION['logged_in']) || $_SESSION['utilisateur'] < 1) {
+            // Utiliser un chemin relatif simple pour la redirection
+            header("Location: login");
+            exit;
+        }
+    }
+    
+    public function index() {
+        // Récupérer toutes les offres pour les afficher dans la page de gestion
+        $offres = $this->offreModel->getAllOffres();
+        
+        // Charger la vue de la page Gestion
+        require 'app/views/gestion/gestion.php';
+    }
+    
+    public function add() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Récupérer les données du formulaire
+            $offreData = [
+                'entreprise' => $_POST['entreprise'] ?? '',
+                'titre' => $_POST['titre'] ?? '',
+                'description' => $_POST['description'] ?? '',
+                'competences' => $_POST['competences'] ?? '',
+                'remuneration' => $_POST['remuneration'] ?? 0,
+                'date_offre' => date('Y-m-d'),
+                'nb_postulants' => 0
+            ];
+            
+            // Valider les données (à implémenter selon vos besoins)
+            
+            // Ajouter l'offre dans la base de données
+            $result = $this->offreModel->createOffre($offreData);
+            
+            if ($result) {
+                // Rediriger vers la page de gestion avec un message de succès
+                // Utiliser un chemin relatif simple
+                header("Location: gestion?success=1");
+            } else {
+                // Rediriger vers la page de gestion avec un message d'erreur
+                // Utiliser un chemin relatif simple
+                header("Location: gestion?error=1");
+            }
+            exit;
+        } else {
+            // Afficher le formulaire d'ajout d'offre
+            require 'app/views/gestion/add_offre.php';
+        }
+    }
+    
+    public function edit() {
+        $id = $_GET['id'] ?? 0;
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Récupérer les données du formulaire
+            $offreData = [
+                'entreprise' => $_POST['entreprise'] ?? '',
+                'titre' => $_POST['titre'] ?? '',
+                'description' => $_POST['description'] ?? '',
+                'competences' => $_POST['competences'] ?? '',
+                'remuneration' => $_POST['remuneration'] ?? 0,
+                'date_offre' => $_POST['date_offre'] ?? date('Y-m-d'),
+                'nb_postulants' => $_POST['nb_postulants'] ?? 0
+            ];
+            
+            // Mettre à jour l'offre dans la base de données
+            $result = $this->offreModel->updateOffre($id, $offreData);
+            
+            if ($result) {
+                // Rediriger vers la page de gestion avec un message de succès
+                // Utiliser un chemin relatif simple
+                header("Location: gestion?success=2");
+            } else {
+                // Rediriger vers la page de gestion avec un message d'erreur
+                // Utiliser un chemin relatif simple
+                header("Location: gestion?error=2");
+            }
+            exit;
+        } else {
+            // Récupérer l'offre à modifier
+            $offre = $this->offreModel->getOffreById($id);
+            
+            if (!$offre) {
+                // Rediriger vers la page de gestion si l'offre n'existe pas
+                // Utiliser un chemin relatif simple
+                header("Location: gestion?error=3");
+                exit;
+            }
+            
+            // Afficher le formulaire de modification avec les données de l'offre
+            require 'app/views/gestion/edit_offre.php';
+        }
+    }
+    
+    public function delete() {
+        $id = $_GET['id'] ?? 0;
+        
+        // Supprimer l'offre de la base de données
+        $result = $this->offreModel->deleteOffre($id);
+        
+        if ($result) {
+            // Rediriger vers la page de gestion avec un message de succès
+            // Utiliser un chemin relatif simple
+            header("Location: gestion?success=3");
+        } else {
+            // Rediriger vers la page de gestion avec un message d'erreur
+            // Utiliser un chemin relatif simple
+            header("Location: gestion?error=4");
+        }
+        exit;
+    }
+}
+?>

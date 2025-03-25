@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /Project_MVC/
+    
+    # Si le fichier ou dossier demandé n'existe pas physiquement
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Redirige toutes les requêtes vers index.php
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
