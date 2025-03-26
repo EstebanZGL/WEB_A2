@@ -6,13 +6,45 @@
     <title>LeBonPlan | Gestion</title>
     <meta name="description" content="Recherchez et postulez à des milliers d'offres d'emploi dans la technologie, le design, le marketing et plus encore." />
     <link rel="stylesheet" href="public/css/style.css" />
+    <link rel="stylesheet" href="public/css/responsive-complete.css">
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
 </head>
 <body>
     <div id="app">
+        <!-- Menu Mobile Overlay -->
+        <div class="mobile-menu-overlay"></div>
+        
+        <!-- Menu Mobile -->
+        <div class="mobile-menu">
+            <div class="mobile-menu-header">
+                <img src="public/images/logo.png" alt="D" width="100" height="113">
+                <button class="mobile-menu-close">&times;</button>
+            </div>
+            <nav class="mobile-nav">
+                <a href="home" class="mobile-nav-link">Accueil</a>
+                <a href="offres" class="mobile-nav-link">Emplois</a>
+                <a href="gestion" class="mobile-nav-link active" id="mobile-page-gestion">Gestion</a>
+                <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <div class="mobile-menu-buttons">
+                    <a href="login" id="mobile-login-Bouton" class="button button-primary button-glow">Connexion</a>
+                    <a href="logout" id="mobile-logout-Bouton" class="button button-primary button-glow" style="display:none;">Déconnexion</a>
+                </div>
+            </div>
+        </div>
+        
         <header class="navbar">
             <div class="container">
                 <img src="public/images/logo.png" alt="D" width="150" height="170">
+                
+                <!-- Bouton Menu Mobile -->
+                <button class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
                 <nav class="navbar-nav">
                     <a href="home" class="nav-link">Accueil</a>
@@ -20,14 +52,12 @@
                     <a href="gestion" class="nav-link active" id="page-gestion">Gestion</a>
                     <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
                 </nav>
-
                 <div id="user-status">
                     <a href="login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
                     <a href="logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
                 </div>
             
                 <script src="public/js/app.js"></script>
-                
             </div>
             <span id="welcome-message" class="welcome-message"></span>
         </header>
@@ -115,5 +145,46 @@
             </div>
         </footer>
     </div>
+    <script src="public/js/mobile-menu.js"></script>
+    <script>
+        // Synchroniser les états de connexion entre le menu mobile et le menu normal
+        document.addEventListener('DOMContentLoaded', function() {
+            // Synchroniser les liens de gestion et admin
+            const pageGestion = document.getElementById('page-gestion');
+            const mobilePageGestion = document.getElementById('mobile-page-gestion');
+            const pageAdmin = document.getElementById('page-admin');
+            const mobilePageAdmin = document.getElementById('mobile-page-admin');
+            
+            if (pageGestion && mobilePageGestion) {
+                if (pageGestion.style.display !== 'none') {
+                    mobilePageGestion.style.display = 'block';
+                }
+            }
+            
+            if (pageAdmin && mobilePageAdmin) {
+                if (pageAdmin.style.display !== 'none') {
+                    mobilePageAdmin.style.display = 'block';
+                }
+            }
+            
+            // Synchroniser les boutons de connexion/déconnexion
+            const loginBtn = document.getElementById('login-Bouton');
+            const mobileLoginBtn = document.getElementById('mobile-login-Bouton');
+            const logoutBtn = document.getElementById('logout-Bouton');
+            const mobileLogoutBtn = document.getElementById('mobile-logout-Bouton');
+            
+            if (loginBtn && mobileLoginBtn) {
+                if (loginBtn.style.display === 'none') {
+                    mobileLoginBtn.style.display = 'none';
+                }
+            }
+            
+            if (logoutBtn && mobileLogoutBtn) {
+                if (logoutBtn.style.display !== 'none') {
+                    mobileLogoutBtn.style.display = 'block';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

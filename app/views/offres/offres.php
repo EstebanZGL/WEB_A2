@@ -6,14 +6,45 @@
     <title>Recherche d'emplois | LeBonPlan</title>
     <meta name="description" content="Parcourez des milliers d'offres d'emploi dans la technologie, le design, le marketing et plus encore." />
     <link rel="stylesheet" href="public/css/style.css" />
+    <link rel="stylesheet" href="public/css/responsive-complete.css">
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
 </head>
 <body>
     <div id="app">
+        <!-- Menu Mobile Overlay -->
+        <div class="mobile-menu-overlay"></div>
+        
+        <!-- Menu Mobile -->
+        <div class="mobile-menu">
+            <div class="mobile-menu-header">
+                <img src="public/images/logo.png" alt="D" width="100" height="113">
+                <button class="mobile-menu-close">&times;</button>
+            </div>
+            <nav class="mobile-nav">
+                <a href="home" class="mobile-nav-link">Accueil</a>
+                <a href="offres" class="mobile-nav-link active">Emplois</a>
+                <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
+                <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <div class="mobile-menu-buttons">
+                    <a href="login" id="mobile-login-Bouton" class="button button-primary button-glow">Connexion</a>
+                    <a href="logout" id="mobile-logout-Bouton" class="button button-primary button-glow" style="display:none;">Déconnexion</a>
+                </div>
+            </div>
+        </div>
+        
         <header class="navbar">
             <div class="container">
                 <img src="public/images/logo.png" alt="D" width="150" height="170">
 
+                <!-- Bouton Menu Mobile -->
+                <button class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
                 <nav class="navbar-nav">
                     <a href="home" class="nav-link">Accueil</a>
                     <a href="offres" class="nav-link active">Emplois</a>
@@ -208,7 +239,6 @@
                     document.getElementById('jobs-list').innerHTML = '<div class="error">Une erreur est survenue lors du chargement des offres.</div>';
                 });
         }
-
         // Charger les offres au chargement de la page
         loadJobs();
 
@@ -293,5 +323,3 @@
         });
     });
     </script>
-</body>
-</html>
