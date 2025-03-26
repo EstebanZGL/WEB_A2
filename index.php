@@ -18,10 +18,8 @@ if (strpos($uri, '?') !== false) {
     $uri = substr($uri, 0, strpos($uri, '?'));
 }
 
-$uri="home";
-
 echo "URI traitée: " . $uri . "<br>";
 
 // Appel du routeur avec l'URI traitée
-route($uri);
+//route($uri);
 ?>
