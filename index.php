@@ -21,5 +21,5 @@ if (strpos($uri, '?') !== false) {
 echo "URI traitée: " . $uri . "<br>";
 
 // Appel du routeur avec l'URI traitée
-//route($uri);
+route($uri);
 ?>
