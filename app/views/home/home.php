@@ -23,7 +23,7 @@
             <nav class="mobile-nav">
                 <a href="home" class="mobile-nav-link active">Accueil</a>
                 <a href="offres" class="mobile-nav-link">Emplois</a>
-                <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
+                <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:block;">Gestion</a>
                 <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
             </nav>
             <div class="mobile-menu-footer">
