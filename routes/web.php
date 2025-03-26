@@ -17,6 +17,10 @@ function route($uri) {
     $gestionController = new GestionController();
     $logoutController = new LogoutController();
 
+    if (strpos($uri, 'cesi-lebonplan/') === 0) {
+        $uri = substr($uri, strlen('cesi-lebonplan/'));
+    }
+
     // Pour le débogage - décommenter si nécessaire
     echo "URI reçue par le routeur: '" . $uri . "'<br>";
 
