@@ -1,0 +1,516 @@
+/* responsive-complete.css - Tous les styles responsifs fusionnés en un seul fichier */
+
+/*--------------------------------------------------------------
+# 1. Mobile Menu (Burger)
+--------------------------------------------------------------*/
+.mobile-menu-toggle {
+  display: none;
+  position: absolute;
+  right: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 24px;
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  position: absolute;
+  height: 3px;
+  width: 100%;
+  background: var(--foreground);
+  border-radius: 3px;
+  opacity: 1;
+  left: 0;
+  transform: rotate(0deg);
+  transition: var(--transition-fast);
+}
+
+.mobile-menu-toggle span:nth-child(1) {
+  top: 0px;
+}
+
+.mobile-menu-toggle span:nth-child(2),
+.mobile-menu-toggle span:nth-child(3) {
+  top: 10px;
+}
+
+.mobile-menu-toggle span:nth-child(4) {
+  top: 20px;
+}
+
+.mobile-menu-toggle.open span:nth-child(1) {
+  top: 10px;
+  width: 0%;
+  left: 50%;
+}
+
+.mobile-menu-toggle.open span:nth-child(2) {
+  transform: rotate(45deg);
+}
+
+.mobile-menu-toggle.open span:nth-child(3) {
+  transform: rotate(-45deg);
+}
+
+.mobile-menu-toggle.open span:nth-child(4) {
+  top: 10px;
+  width: 0%;
+  left: 50%;
+}
+
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 90;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.mobile-menu-overlay.open {
+  opacity: 1;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 280px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--background), var(--background-darker));
+  z-index: 95;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  overflow-y: auto;
+  transition: right var(--transition-normal);
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--white-10);
+}
+
+.mobile-menu-close {
+  background: none;
+  border: none;
+  color: var(--foreground);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.mobile-nav-link {
+  display: block;
+  padding: var(--spacing-md);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--foreground);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  background-color: var(--white-10);
+  color: var(--primary);
+}
+
+.mobile-menu-footer {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--white-10);
+}
+
+.mobile-menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+/*--------------------------------------------------------------
+# 2. Base Responsive Layout
+--------------------------------------------------------------*/
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+/*--------------------------------------------------------------
+# 3. Responsive Typography
+--------------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 1.875rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-lg);
+  letter-spacing: -0.025em;
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: var(--foreground-muted);
+}
+
+.section-title {
+  font-size: 1.875rem;
+  margin-bottom: var(--spacing-md);
+}
+
+/*--------------------------------------------------------------
+# 4. Media Queries - Small Mobile (max-width: 480px)
+--------------------------------------------------------------*/
+@media (max-width: 480px) {
+  /* Typography */
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+  
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .hero-badge {
+    font-size: 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 1.375rem;
+  }
+  
+  /* Layout */
+  .search-form {
+    flex-direction: column;
+  }
+  
+  .button-glow {
+    width: 100%;
+    margin-top: var(--spacing-sm);
+  }
+  
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .job-detail-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .job-detail-actions {
+    flex-direction: column;
+  }
+  
+  .job-detail-actions .button {
+    width: 100%;
+  }
+}
+
+/*--------------------------------------------------------------
+# 5. Media Queries - Mobile/Tablet (max-width: 767px)
+--------------------------------------------------------------*/
+@media (max-width: 767px) {
+  /* Mobile Menu */
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .mobile-menu,
+  .mobile-menu-overlay {
+    display: block;
+  }
+  
+  .navbar-nav {
+    display: none;
+  }
+  
+  #user-status {
+    display: none;
+  }
+  
+  #welcome-message {
+    display: none;
+  }
+  
+  /* Typography */
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.625rem;
+  }
+  
+  h3 {
+    font-size: 1.375rem;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+  }
+  
+  /* Layout */
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+  
+  .hero {
+    padding: var(--spacing-xl) 0;
+  }
+  
+  .section {
+    padding: var(--spacing-xl) 0;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .jobs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+  
+  .jobs-layout {
+    flex-direction: column;
+  }
+  
+  .jobs-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .job-card {
+    flex-direction: column;
+  }
+  
+  .job-logo {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .job-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .job-meta {
+    flex-direction: column;
+  }
+  
+  .job-meta-item:not(:last-child):after {
+    display: none;
+  }
+  
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .search-form {
+    flex-direction: column;
+  }
+}
+
+/*--------------------------------------------------------------
+# 6. Media Queries - Small Desktop (min-width: 640px)
+--------------------------------------------------------------*/
+@media (min-width: 640px) {
+  .search-form {
+    flex-direction: row;
+  }
+  
+  .button-glow {
+    min-width: 120px;
+  }
+}
+
+/*--------------------------------------------------------------
+# 7. Media Queries - Desktop (min-width: 768px)
+--------------------------------------------------------------*/
+@media (min-width: 768px) {
+  /* Navigation */
+  .navbar-nav {
+    display: flex;
+    gap: var(--spacing-xl);
+  }
+  
+  /* Typography */
+  .hero-title {
+    font-size: 3.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  /* Layout */
+  .section-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .jobs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .categories-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .job-title-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .job-title {
+    margin-bottom: 0;
+  }
+  
+  .job-meta {
+    flex-direction: row;
+  }
+  
+  .job-meta-item:not(:last-child):after {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--foreground-muted);
+    opacity: 0.4;
+    margin-left: var(--spacing-sm);
+  }
+  
+  .jobs-layout {
+    flex-direction: row;
+  }
+  
+  .jobs-sidebar {
+    width: 260px;
+  }
+  
+  .footer-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .container {
+    padding: 0 var(--spacing-lg);
+  }
+  
+  .search-form {
+    flex-direction: row;
+  }
+  
+  /* Hide mobile menu elements on larger screens */
+  .mobile-menu-toggle {
+    display: none;
+  }
+  
+  .mobile-menu,
+  .mobile-menu-overlay {
+    display: none;
+  }
+}
+
+/*--------------------------------------------------------------
+# 8. Media Queries - Large Desktop (min-width: 1024px)
+--------------------------------------------------------------*/
+@media (min-width: 1024px) {
+  .hero-title {
+    font-size: 4rem;
+  }
+  
+  .container {
+    padding: 0 var(--spacing-lg);
+  }
+}
