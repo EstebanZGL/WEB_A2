@@ -4,7 +4,7 @@
 # 1. Mobile Menu (Burger)
 --------------------------------------------------------------*/
 .mobile-menu-toggle {
-  display: none;
+  display: block; /* Changé de 'none' à 'block' pour qu'il soit visible par défaut */
   position: absolute;
   right: var(--spacing-md);
   top: 50%;
@@ -318,15 +318,7 @@ h3 {
 # 6. Media Queries - Mobile/Tablet (max-width: 767px)
 --------------------------------------------------------------*/
 @media (max-width: 767px) {
-  /* Mobile Menu */
-  .mobile-menu-toggle {
-    display: block;
-  }
-  
-  .mobile-menu,
-  .mobile-menu-overlay {
-    display: block;
-  }
+  /* Mobile Menu - Ne pas redéfinir display: block ici car c'est déjà défini au début */
   
   .navbar-nav {
     display: none;
@@ -541,12 +533,12 @@ h3 {
   
   /* Hide mobile menu elements on larger screens */
   .mobile-menu-toggle {
-    display: none;
+    display: none !important; /* Utilisation de !important pour s'assurer que cette règle est prioritaire */
   }
   
   .mobile-menu,
   .mobile-menu-overlay {
-    display: none;
+    display: none !important; /* Utilisation de !important pour s'assurer que cette règle est prioritaire */
   }
 }
 
