@@ -24,7 +24,7 @@ if (!empty($scriptDir) && strpos($uri, ltrim($scriptDir, '/')) === 0) {
     $uri = substr($uri, strlen(ltrim($scriptDir, '/')));
 }
 
-echo "URI après traitement du chemin: " . $uri . "<br>";
+
 
 // Traitement de l'URI pour gérer les paramètres GET
 if (strpos($uri, '?') !== false) {
@@ -34,7 +34,6 @@ if (strpos($uri, '?') !== false) {
 // Supprimer les slashes au début et à la fin
 $uri = trim($uri, '/');
 
-echo "URI finale: " . $uri . "<br>";
 
 // Appel du routeur avec l'URI traitée
 route($uri);
