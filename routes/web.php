@@ -18,7 +18,7 @@ function route($uri) {
     $logoutController = new LogoutController();
 
     // Pour le débogage - décommenter si nécessaire
-    echo "URI reçue par le routeur: '" . $uri . "'<br>";
+    // echo "URI reçue par le routeur: '" . $uri . "'<br>";
 
     // Gestion des différentes routes
     switch ($uri) {
@@ -89,11 +89,9 @@ function route($uri) {
 
         default:
             // Page non trouvée
-            echo "URI traitée: '" . $uri . "'<br>";
-            /*
             http_response_code(404);
             echo "Page non trouvée pour l'URI: '" . $uri . "'";
-            */
+            echo "URI traitée: '" . $uri . "'<br>";
             break;
     }
 }
