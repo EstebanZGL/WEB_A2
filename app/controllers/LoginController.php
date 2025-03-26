@@ -15,7 +15,7 @@ class LoginController {
     public function index() {
         // Si l'utilisateur est déjà connecté, le rediriger vers la page d'accueil
         if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-            header("Location: home");
+            header("Location: /home");
             exit;
         }
         
@@ -39,22 +39,22 @@ class LoginController {
                     $_SESSION['utilisateur'] = $user['utilisateur'];
                     $_SESSION['logged_in'] = true;
 
-                    // Redirection vers la page d'accueil
-                    header("Location: home");
+                    // Redirection vers la page d'accueil avec chemin absolu
+                    header("Location: /home");
                     exit;
                 } else {
-                    // Redirection en cas d'erreur
+                    // Redirection en cas d'erreur avec chemin absolu
                     $_SESSION['error'] = "Email ou mot de passe incorrect";
-                    header("Location: login");
+                    header("Location: /login");
                     exit;
                 }
             } else {
                 $_SESSION['error'] = "Veuillez remplir tous les champs";
-                header("Location: login");
+                header("Location: /login");
                 exit;
             }
         } else {
-            header("Location: login");
+            header("Location: /login");
             exit;
         }
     }
