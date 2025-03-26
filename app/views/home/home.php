@@ -23,7 +23,7 @@
             <nav class="mobile-nav">
                 <a href="home" class="mobile-nav-link active">Accueil</a>
                 <a href="offres" class="mobile-nav-link">Emplois</a>
-                <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:block;">Gestion</a>
+                <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
                 <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
             </nav>
             <div class="mobile-menu-footer">
@@ -149,41 +149,58 @@
     <script>
         // Synchroniser les états de connexion entre le menu mobile et le menu normal
         document.addEventListener('DOMContentLoaded', function() {
-            // Synchroniser les liens de gestion et admin
-            const pageGestion = document.getElementById('page-gestion');
-            const mobilePageGestion = document.getElementById('mobile-page-gestion');
-            const pageAdmin = document.getElementById('page-admin');
-            const mobilePageAdmin = document.getElementById('mobile-page-admin');
+            // Attendre que app.js ait terminé de charger les données de session
+            setTimeout(function() {
+                // Synchroniser les liens de gestion et admin
+                const pageGestion = document.getElementById('page-gestion');
+                const mobilePageGestion = document.getElementById('mobile-page-gestion');
+                const pageAdmin = document.getElementById('page-admin');
+                const mobilePageAdmin = document.getElementById('mobile-page-admin');
             
-            if (pageGestion && mobilePageGestion) {
-                if (pageGestion.style.display !== 'none') {
-                    mobilePageGestion.style.display = 'block';
+                // Vérifier si les éléments existent avant de manipuler leur style
+                if (pageGestion && mobilePageGestion) {
+                    // Vérifier si le style est défini comme "inline-block" (ce que app.js utilise)
+                    if (pageGestion.style.display === 'inline-block') {
+                        mobilePageGestion.style.display = 'block';
+                    }
                 }
-            }
             
-            if (pageAdmin && mobilePageAdmin) {
-                if (pageAdmin.style.display !== 'none') {
-                    mobilePageAdmin.style.display = 'block';
+                if (pageAdmin && mobilePageAdmin) {
+                    // Vérifier si le style est défini comme "inline-block" (ce que app.js utilise)
+                    if (pageAdmin.style.display === 'inline-block') {
+                        mobilePageAdmin.style.display = 'block';
+                    }
                 }
-            }
             
-            // Synchroniser les boutons de connexion/déconnexion
-            const loginBtn = document.getElementById('login-Bouton');
-            const mobileLoginBtn = document.getElementById('mobile-login-Bouton');
-            const logoutBtn = document.getElementById('logout-Bouton');
-            const mobileLogoutBtn = document.getElementById('mobile-logout-Bouton');
+                // Synchroniser les boutons de connexion/déconnexion
+                const loginBtn = document.getElementById('login-Bouton');
+                const mobileLoginBtn = document.getElementById('mobile-login-Bouton');
+                const logoutBtn = document.getElementById('logout-Bouton');
+                const mobileLogoutBtn = document.getElementById('mobile-logout-Bouton');
             
-            if (loginBtn && mobileLoginBtn) {
-                if (loginBtn.style.display === 'none') {
-                    mobileLoginBtn.style.display = 'none';
+                if (loginBtn && mobileLoginBtn) {
+                    mobileLoginBtn.style.display = loginBtn.style.display;
                 }
-            }
-            
-            if (logoutBtn && mobileLogoutBtn) {
-                if (logoutBtn.style.display !== 'none') {
-                    mobileLogoutBtn.style.display = 'block';
+                if (logoutBtn && mobileLogoutBtn) {
+                    // Si le bouton de déconnexion est visible, l'afficher aussi dans le menu mobile
+                    if (logoutBtn.style.display === 'inline-block') {
+                        mobileLogoutBtn.style.display = 'block';
+                    }
                 }
-            }
+                
+                // Vérifier également le message de bienvenue pour déterminer le type d'utilisateur
+                const welcomeMessage = document.getElementById('welcome-message');
+                if (welcomeMessage) {
+                    if (welcomeMessage.classList.contains('admin')) {
+                        // Si c'est un admin, s'assurer que les liens de gestion et admin sont visibles
+                        if (mobilePageGestion) mobilePageGestion.style.display = 'block';
+                        if (mobilePageAdmin) mobilePageAdmin.style.display = 'block';
+                    } else if (welcomeMessage.classList.contains('pilote')) {
+                        // Si c'est un pilote, s'assurer que le lien de gestion est visible
+                        if (mobilePageGestion) mobilePageGestion.style.display = 'block';
+                    }
+                }
+            }, 300); // Augmenter le délai pour s'assurer que app.js a terminé
         });
     </script>
 </body>
