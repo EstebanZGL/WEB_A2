@@ -141,7 +141,6 @@
             </div>
         </footer>
     </div>
-
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Fonction pour charger les offres d'emploi

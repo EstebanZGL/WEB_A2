@@ -23,7 +23,7 @@
             <nav class="mobile-nav">
                 <a href="home" class="mobile-nav-link">Accueil</a>
                 <a href="offres" class="mobile-nav-link">Emplois</a>
-                <a href="gestion" class="mobile-nav-link">Gestion</a>
+                <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion">Gestion</a>
                 <a href="admin" class="mobile-nav-link active" id="mobile-page-admin">Administrateur</a>
             </nav>
             <div class="mobile-menu-footer">
@@ -49,7 +49,7 @@
                 <nav class="navbar-nav">
                     <a href="home" class="nav-link">Accueil</a>
                     <a href="offres" class="nav-link">Emplois</a>
-                    <a href="gestion" class="nav-link">Gestion</a>
+                    <a href="gestion" class="nav-link" id="page-gestion">Gestion</a>
                     <a href="admin" class="nav-link active" id="page-admin">Administrateur</a>
                 </nav>
                 <div id="user-status">
@@ -149,41 +149,37 @@
     <script>
         // Synchroniser les états de connexion entre le menu mobile et le menu normal
         document.addEventListener('DOMContentLoaded', function() {
-            // Synchroniser les liens de gestion et admin
-            const pageGestion = document.getElementById('page-gestion');
-            const mobilePageGestion = document.getElementById('mobile-page-gestion');
-            const pageAdmin = document.getElementById('page-admin');
-            const mobilePageAdmin = document.getElementById('mobile-page-admin');
+            // Vérifier si l'utilisateur est connecté et mettre à jour le menu mobile
+            function updateMobileMenuVisibility() {
+                // Synchroniser les liens de gestion et admin
+                const pageGestion = document.getElementById('page-gestion');
+                const mobilePageGestion = document.getElementById('mobile-page-gestion');
+                const pageAdmin = document.getElementById('page-admin');
+                const mobilePageAdmin = document.getElementById('mobile-page-admin');
             
-            if (pageGestion && mobilePageGestion) {
-                if (pageGestion.style.display !== 'none') {
-                    mobilePageGestion.style.display = 'block';
+                // Vérifier si les éléments existent avant de manipuler leur style
+                if (pageGestion && mobilePageGestion) {
+                    mobilePageGestion.style.display = pageGestion.style.display;
+                }
+                if (pageAdmin && mobilePageAdmin) {
+                    mobilePageAdmin.style.display = pageAdmin.style.display;
+                }
+                // Synchroniser les boutons de connexion/déconnexion
+                const loginBtn = document.getElementById('login-Bouton');
+                const mobileLoginBtn = document.getElementById('mobile-login-Bouton');
+                const logoutBtn = document.getElementById('logout-Bouton');
+                const mobileLogoutBtn = document.getElementById('mobile-logout-Bouton');
+            
+                if (loginBtn && mobileLoginBtn) {
+                    mobileLoginBtn.style.display = loginBtn.style.display;
+                }
+                if (logoutBtn && mobileLogoutBtn) {
+                    mobileLogoutBtn.style.display = logoutBtn.style.display;
                 }
             }
             
-            if (pageAdmin && mobilePageAdmin) {
-                if (pageAdmin.style.display !== 'none') {
-                    mobilePageAdmin.style.display = 'block';
-                }
-            }
-            
-            // Synchroniser les boutons de connexion/déconnexion
-            const loginBtn = document.getElementById('login-Bouton');
-            const mobileLoginBtn = document.getElementById('mobile-login-Bouton');
-            const logoutBtn = document.getElementById('logout-Bouton');
-            const mobileLogoutBtn = document.getElementById('mobile-logout-Bouton');
-            
-            if (loginBtn && mobileLoginBtn) {
-                if (loginBtn.style.display === 'none') {
-                    mobileLoginBtn.style.display = 'none';
-                }
-            }
-            
-            if (logoutBtn && mobileLogoutBtn) {
-                if (logoutBtn.style.display !== 'none') {
-                    mobileLogoutBtn.style.display = 'block';
-                }
-            }
+            // Exécuter après un court délai pour s'assurer que app.js a terminé
+            setTimeout(updateMobileMenuVisibility, 100);
         });
     </script>
 </body>
