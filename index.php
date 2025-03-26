@@ -11,14 +11,29 @@ require_once 'routes/web.php';
 $uri = $_SERVER['REQUEST_URI'];
 echo "URI brute: " . $uri . "<br>";
 
-// Supprimer le slash initial
+// Supprimer le slash initial et tout ce qui précède le chemin réel
 $uri = ltrim($uri, '/');
-echo "URI après ltrim: " . $uri . "<br>";
+
+// Si nous sommes sur le domaine principal, l'URI est déjà correcte
+// Si nous sommes dans un sous-répertoire, nous devons extraire le chemin relatif
+$scriptName = $_SERVER['SCRIPT_NAME'];
+$scriptDir = dirname($scriptName);
+$scriptDir = ($scriptDir == '/') ? '' : $scriptDir;
+
+if (!empty($scriptDir) && strpos($uri, ltrim($scriptDir, '/')) === 0) {
+    $uri = substr($uri, strlen(ltrim($scriptDir, '/')));
+}
+
+echo "URI après traitement du chemin: " . $uri . "<br>";
 
 // Traitement de l'URI pour gérer les paramètres GET
 if (strpos($uri, '?') !== false) {
     $uri = substr($uri, 0, strpos($uri, '?'));
 }
+
+// Supprimer les slashes au début et à la fin
+$uri = trim($uri, '/');
+
 echo "URI finale: " . $uri . "<br>";
 
 // Appel du routeur avec l'URI traitée

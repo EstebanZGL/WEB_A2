@@ -92,16 +92,10 @@ function route($uri) {
             break;
 
         default:
-            $homeController->index();
-            break;
-            // Page non trouvée
-            
-            /*
-            http_response_code(404);
-            echo "Page non trouvée pour l'URI: '" . $uri . "'";
-            echo "URI traitée: '" . $uri . "'<br>";
-            break;
-            */
+        http_response_code(404);
+        echo "Page non trouvée pour l'URI: '" . $uri . "'";
+        echo "URI traitée: '" . $uri . "'<br>";
+        break;
     }
 }
 
