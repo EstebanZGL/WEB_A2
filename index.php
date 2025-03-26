@@ -9,7 +9,7 @@ require_once 'routes/web.php';
 
 // Démarrage de l'application
 $uri = $_SERVER['REQUEST_URI'];
-echo "URI brute: " . $uri . "<br>";
+//echo "URI brute: " . $uri . "<br>";
 
 // Supprimer le slash initial et tout ce qui précède le chemin réel
 $uri = ltrim($uri, '/');
