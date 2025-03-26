@@ -74,10 +74,12 @@
   z-index: 90;
   opacity: 0;
   transition: opacity var(--transition-normal);
+  pointer-events: none; /* Désactive les interactions avec l'overlay quand non visible */
 }
 
 .mobile-menu-overlay.open {
   opacity: 1;
+  pointer-events: auto; /* Réactive les interactions quand visible */
 }
 
 .mobile-menu {
@@ -151,16 +153,21 @@
   margin-top: var(--spacing-md);
 }
 
+/* Masquer le bouton d'inscription dans le menu mobile */
+.mobile-menu-buttons .button-outline {
+    display: none;
+  }
+  
 /*--------------------------------------------------------------
 # 2. Base Responsive Layout
 --------------------------------------------------------------*/
-.container {
+  .container {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--spacing-md);
-}
-
+  }
+  
 /*--------------------------------------------------------------
 # 3. Responsive Typography
 --------------------------------------------------------------*/
@@ -168,11 +175,11 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--spacing-md);
   font-weight: 600;
   line-height: 1.2;
-}
-
+  }
+  
 h1 {
   font-size: 2.25rem;
-}
+  }
 
 h2 {
   font-size: 1.875rem;
@@ -201,7 +208,48 @@ h3 {
 }
 
 /*--------------------------------------------------------------
-# 4. Media Queries - Small Mobile (max-width: 480px)
+# 4. Corrections pour la page login
+--------------------------------------------------------------*/
+/* Corrections pour la page de connexion */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container {
+  width: 90%;
+  max-width: 400px;
+  margin: 40px auto;
+}
+
+.input-container input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+@media (max-width: 480px) {
+  .back {
+    top: 10px;
+    left: 10px;
+  }
+  
+  .login-container {
+    padding: 20px;
+  }
+}
+
+/*--------------------------------------------------------------
+# 5. Media Queries - Small Mobile (max-width: 480px)
 --------------------------------------------------------------*/
 @media (max-width: 480px) {
   /* Typography */
@@ -267,7 +315,7 @@ h3 {
 }
 
 /*--------------------------------------------------------------
-# 5. Media Queries - Mobile/Tablet (max-width: 767px)
+# 6. Media Queries - Mobile/Tablet (max-width: 767px)
 --------------------------------------------------------------*/
 @media (max-width: 767px) {
   /* Mobile Menu */
@@ -391,7 +439,7 @@ h3 {
 }
 
 /*--------------------------------------------------------------
-# 6. Media Queries - Small Desktop (min-width: 640px)
+# 7. Media Queries - Small Desktop (min-width: 640px)
 --------------------------------------------------------------*/
 @media (min-width: 640px) {
   .search-form {
@@ -404,7 +452,7 @@ h3 {
 }
 
 /*--------------------------------------------------------------
-# 7. Media Queries - Desktop (min-width: 768px)
+# 8. Media Queries - Desktop (min-width: 768px)
 --------------------------------------------------------------*/
 @media (min-width: 768px) {
   /* Navigation */
@@ -503,7 +551,7 @@ h3 {
 }
 
 /*--------------------------------------------------------------
-# 8. Media Queries - Large Desktop (min-width: 1024px)
+# 9. Media Queries - Large Desktop (min-width: 1024px)
 --------------------------------------------------------------*/
 @media (min-width: 1024px) {
   .hero-title {

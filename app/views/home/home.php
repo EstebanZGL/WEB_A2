@@ -7,7 +7,6 @@
     <meta name="description" content="Recherchez et postulez à des milliers d'offres d'emploi dans la technologie, le design, le marketing et plus encore." />
     <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
-    <script src="public/js/mobile-menu.js"></script>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>    
 </head>
 <body>
@@ -117,5 +116,6 @@
             </div>
         </footer>
     </div>
+    <script src="public/js/mobile-menu.js"></script>
 </body>
 </html>
