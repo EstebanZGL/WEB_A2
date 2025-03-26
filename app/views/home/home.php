@@ -7,6 +7,7 @@
     <meta name="description" content="Recherchez et postulez à des milliers d'offres d'emploi dans la technologie, le design, le marketing et plus encore." />
     <link rel="stylesheet" href="public/css/style.css" />
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script src="public/js/mobile-menu.js"></script>
 </head>
 <body>
     <div id="app">
