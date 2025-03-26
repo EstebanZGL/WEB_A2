@@ -141,6 +141,9 @@
             </div>
         </footer>
     </div>
+
+    <!-- Important: Charger mobile-menu.js avant les autres scripts -->
+    <script src="public/js/mobile-menu.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Fonction pour charger les offres d'emploi
@@ -315,10 +318,3 @@
                 const targetElement = document.getElementById(targetId);
                 
                 if (targetElement) {
-                    targetElement.classList.toggle('show');
-                    this.classList.toggle('active');
-                }
-            });
-        });
-    });
-    </script>
