@@ -1,13 +1,12 @@
-<?php
 class OffreModel {
     private $db;
 
     public function __construct() {
-        $this->db = new Database();
+        $this->db = getDbConnection();
     }
 
     public function getAllOffres() {
-        $this->db->query("
+        $sql = "
             SELECT os.*, e.nom as entreprise, 
             GROUP_CONCAT(c.nom SEPARATOR ', ') as competences,
             (SELECT COUNT(*) FROM candidature WHERE offre_id = os.id) as nb_postulants
@@ -18,9 +17,12 @@ class OffreModel {
             WHERE os.statut = 'ACTIVE'
             GROUP BY os.id
             ORDER BY os.date_publication DESC
-        ");
-
-        return $this->db->resultSet();
+        ";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function searchOffres($params = []) {
@@ -75,16 +77,21 @@ class OffreModel {
 
         $sql .= " GROUP BY os.id ORDER BY os.date_publication DESC";
 
-        $this->db->query($sql);
-
+        $stmt = $this->db->prepare($sql);
+        
+        // Bind parameters
+        $paramIndex = 1;
         foreach ($parameters as $param) {
-            $this->db->bind('?', $param);
+            $stmt->bindValue($paramIndex++, $param);
         }
-
-        return $this->db->resultSet();
+        
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
+
     public function getOffreById($id) {
-        $this->db->query("
+        $sql = "
             SELECT os.*, e.nom as entreprise, e.description as entreprise_description, 
             GROUP_CONCAT(c.nom SEPARATOR ', ') as competences,
             (SELECT COUNT(*) FROM candidature WHERE offre_id = os.id) as nb_postulants
@@ -92,12 +99,14 @@ class OffreModel {
             JOIN entreprise e ON os.entreprise_id = e.id
             LEFT JOIN offre_competence oc ON os.id = oc.offre_id
             LEFT JOIN competence c ON oc.competence_id = c.id
-            WHERE os.id = :id
+            WHERE os.id = ?
             GROUP BY os.id
-        ");
+        ";
         
-        $this->db->bind(':id', $id);
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
         
-        return $this->db->single();
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
 }

@@ -1,123 +1,114 @@
 <?php
-
-// Inclusion des contrôleurs nécessaires
-require_once 'app/controllers/HomeController.php';
-require_once 'app/controllers/LoginController.php';
-require_once 'app/controllers/OffresController.php';
-require_once 'app/controllers/AdminController.php';
-require_once 'app/controllers/GestionController.php';
-require_once 'app/controllers/LogoutController.php';
-require_once 'app/controllers/WishlistController.php';
-
-function route($uri) {
-    // Initialisation des contrôleurs
-    $homeController = new HomeController();
-    $loginController = new LoginController();
-    $offresController = new OffresController();
-    $adminController = new AdminController();
-    $gestionController = new GestionController();
-    $logoutController = new LogoutController();
-    $wishlistController = new WishlistController();
-
-    if (strpos($uri, 'cesi-lebonplan/') === 0) {
-        $uri = substr($uri, strlen('cesi-lebonplan/'));
+function route() {
+    $uri = $_SERVER['REQUEST_URI'];
+    
+    // Supprimer les paramètres de requête
+    $uri = explode('?', $uri)[0];
+    
+    // Supprimer les barres obliques de début et de fin
+    $uri = trim($uri, '/');
+    
+    // Si l'URI est vide, rediriger vers la page d'accueil
+    if (empty($uri)) {
+        $uri = 'home';
+    }
+    
+    // Routes pour les offres
+    if ($uri === 'offres') {
+        require_once 'app/controllers/OffresController.php';
+        $controller = new OffresController();
+        $controller->index();
+        return;
+    }
+    
+    if ($uri === 'offres/search') {
+        require_once 'app/controllers/OffresController.php';
+        $controller = new OffresController();
+        $controller->search();
+        return;
+    }
+    
+    if (preg_match('/^offres\/details\/(\d+)$/', $uri, $matches)) {
+        require_once 'app/controllers/OffresController.php';
+        $controller = new OffresController();
+        $controller->details($matches[1]);
+        return;
+    }
+    
+    // Routes pour la wishlist
+    if ($uri === 'wishlist') {
+        require_once 'app/controllers/WishlistController.php';
+        $controller = new WishlistController();
+        $controller->index();
+        return;
+    }
+    
+    if ($uri === 'wishlist/add') {
+        require_once 'app/controllers/WishlistController.php';
+        $controller = new WishlistController();
+        $controller->add();
+        return;
+    }
+    
+    if ($uri === 'wishlist/remove') {
+        require_once 'app/controllers/WishlistController.php';
+        $controller = new WishlistController();
+        $controller->remove();
+        return;
+    }
+    
+    // Autres routes existantes...
+    
+    // Route par défaut pour la page d'accueil
+    if ($uri === 'home') {
+        require_once 'app/controllers/HomeController.php';
+        $controller = new HomeController();
+        $controller->index();
+        return;
+    }
+    
+    // Route pour la page de connexion
+    if ($uri === 'login') {
+        require_once 'app/controllers/LoginController.php';
+        $controller = new LoginController();
+        $controller->index();
+        return;
+    }
+    
+    // Route pour l'authentification
+    if ($uri === 'login/authenticate') {
+        require_once 'app/controllers/LoginController.php';
+        $controller = new LoginController();
+        $controller->authenticate();
+        return;
+    }
+    
+    // Route pour la déconnexion
+    if ($uri === 'logout') {
+        require_once 'app/controllers/LogoutController.php';
+        $controller = new LogoutController();
+        $controller->logout();
+        return;
+    }
+    
+    // Route pour la page de gestion
+    if ($uri === 'gestion') {
+        require_once 'app/controllers/GestionController.php';
+        $controller = new GestionController();
+        $controller->index();
+        return;
+    }
+    
+    // Route pour la page d'administration
+    if ($uri === 'admin') {
+        require_once 'app/controllers/AdminController.php';
+        $controller = new AdminController();
+        $controller->index();
+        return;
     }
 
-    // Pour le débogage - décommenter si nécessaire
-    //echo "URI reçue par le routeur: '" . $uri . "'<br>";
-
-    // Gestion des différentes routes
-    switch ($uri) {
-        case '':
-            // Afficher la page d'accueil
-            $homeController->index();
-            break;
-
-        case 'home':
-            // Afficher la page d'accueil
-            $homeController->index();
-            break;
-
-        case 'login':
-            // Afficher la page de connexion
-            $loginController->index();
-            break;
-
-        case 'login/authenticate':
-            // Traiter la connexion
-            $loginController->authenticate();
-            break;
-
-        case 'offres':
-            // Afficher la page des offres
-            $offresController->index();
-            break;
-
-        case 'offres/search':
-            // Traiter la recherche et les filtres pour les offres
-            $offresController->search();
-            break;
-
-        case 'gestion':
-            // Afficher la page de gestion
-            $gestionController->index();
-            break;
-
-        case 'gestion/add':
-            // Ajouter une nouvelle offre ou tâche dans la section gestion
-            $gestionController->add();
-            break;
-
-        case 'gestion/edit':
-            // Modifier une offre ou tâche existante
-            $gestionController->edit();
-            break;
-
-        case 'gestion/delete':
-            // Supprimer une offre ou tâche
-            $gestionController->delete();
-            break;
-
-        case 'admin':
-            // Afficher la page administrateur
-            $adminController->index();
-            break;
-
-        case 'admin/manage':
-            // Gérer les tâches administratives (exemple)
-            $adminController->manage();
-            break;
-
-        case 'logout':
-            // Utiliser le contrôleur de déconnexion
-            $logoutController->logout();
-            break;
-
-        case 'wishlist':
-            // Afficher la wishlist de l'utilisateur
-            $wishlistController->index();
-            break;
-            
-        case 'wishlist/add':
-            // Ajouter un élément à la wishlist
-            $wishlistController->add();
-            break;
-            
-        case 'wishlist/remove':
-            // Supprimer un élément de la wishlist
-            $wishlistController->remove();
-            break;
-
-        default:
-        http_response_code(404);
-        echo "Page non trouvée pour l'URI: '" . $uri . "'";
-        echo "URI traitée: '" . $uri . "'<br>";
-        break;
-    }
+    // Si aucune route ne correspond, afficher une page 404
+    header('HTTP/1.0 404 Not Found');
+    echo '404 - Page non trouvée';
 }
-
-// Ne pas appeler la fonction route ici car elle est déjà appelée dans index.php
-// La ligne ci-dessous a été supprimée:
-// route($uri);
-
 ?>
