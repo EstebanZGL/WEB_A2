@@ -7,6 +7,8 @@
     <meta name="description" content="Parcourez des milliers d'offres d'emploi dans la technologie, le design, le marketing et plus encore." />
     <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
+    <!-- Ajout du fichier CSS pour la wishlist -->
+    <link rel="stylesheet" href="public/css/wishlist.css">
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
 </head>
 <body>
@@ -25,6 +27,7 @@
                 <a href="offres" class="mobile-nav-link active">Emplois</a>
                 <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
                 <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -50,14 +53,13 @@
                     <a href="offres" class="nav-link active">Emplois</a>
                     <a href="gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
                     <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
+                    <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
                 </nav>
 
                 <div id="user-status">
                     <a href="login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
                     <a href="logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
                 </div>
-            
-                <script src="public/js/app.js"></script>
             </div>
             <span id="welcome-message" class="welcome-message"></span>
         </header>
@@ -97,6 +99,24 @@
                                 <label class="filter-option"><input type="checkbox" data-filter="salary" value="0-50000" class="filter-checkbox" /> 0€ - 50 000€</label>
                                 <label class="filter-option"><input type="checkbox" data-filter="salary" value="50000-100000" class="filter-checkbox" /> 50 000€ - 100 000€</label>
                                 <label class="filter-option"><input type="checkbox" data-filter="salary" value="100000+" class="filter-checkbox" /> 100 000€ +</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Section Wishlist pour les étudiants (sera affichée/masquée via JavaScript) -->
+                        <div class="filter-group" id="wishlist-section" style="display: none;">
+                            <div class="filter-heading">
+                                <h3>Ma Wishlist</h3>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </div>
+                            <div class="filter-options">
+                                <a href="wishlist" class="wishlist-nav-link">
+                                    <svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                    Voir ma wishlist
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -146,6 +166,20 @@
     <script src="public/js/mobile-menu.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Vérifier si l'utilisateur est un étudiant pour afficher la section wishlist
+        fetch("app/views/login/session.php")
+            .then(response => response.json())
+            .then(data => {
+                if (data.logged_in && parseInt(data.utilisateur) === 0) {
+                    // L'utilisateur est un étudiant, afficher la section wishlist
+                    const wishlistSection = document.getElementById('wishlist-section');
+                    if (wishlistSection) {
+                        wishlistSection.style.display = 'block';
+                    }
+                }
+            })
+            .catch(error => console.error("Erreur lors de la vérification de la session:", error));
+            
         // Fonction pour charger les offres d'emploi
         function loadJobs(searchParams = {}) {
             // Construire l'URL avec les paramètres de recherche
@@ -212,109 +246,19 @@
                                 `<span class="job-skill">${skill.trim()}</span>`
                             ).join('');
                             
-                            jobCard.innerHTML = `
-                                <div class="job-header">
-                                    <h3 class="job-title">${job.titre}</h3>
-                                    <span class="job-company">${job.entreprise}</span>
-                                </div>
-                                <div class="job-body">
-                                    <p class="job-description">${job.description}</p>
-                                    <div class="job-skills">${skills}</div>
-                                </div>
-                                <div class="job-footer">
-                                    <div class="job-meta">
-                                        <span class="job-salary">${salary}/an</span>
-                                        <span class="job-date">Publié le ${formattedDate}</span>
-                                        <span class="job-applicants">${job.nb_postulants} postulant(s)</span>
-                                    </div>
-                                    <a href="#" class="button button-sm button-outline">Postuler</a>
-                                </div>
-                            `;
-                            
-                            jobsList.appendChild(jobCard);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement des offres:', error);
-                    document.getElementById('jobs-count').textContent = 'Erreur de chargement';
-                    document.getElementById('jobs-list').innerHTML = '<div class="error">Une erreur est survenue lors du chargement des offres.</div>';
-                });
-        }
-        // Charger les offres au chargement de la page
-        loadJobs();
-
-        // Gérer la soumission du formulaire de recherche
-        document.getElementById('search-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const searchParams = {
-                jobTitle: document.getElementById('job-search').value,
-                location: document.getElementById('location-search').value
-            };
-            
-            loadJobs(searchParams);
-        });
-
-        // Gérer les filtres
-        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const filters = {};
-                
-                // Récupérer les valeurs des filtres cochés
-                document.querySelectorAll('.filter-checkbox:checked').forEach(checked => {
-                    const filterType = checked.dataset.filter;
-                    if (!filters[filterType]) {
-                        filters[filterType] = [];
-                    }
-                    filters[filterType].push(checked.value);
-                });
-                
-                // Récupérer les valeurs de recherche
-                const searchParams = {
-                    jobTitle: document.getElementById('job-search').value,
-                    location: document.getElementById('location-search').value,
-                    filters: filters
-                };
-                
-                loadJobs(searchParams);
-            });
-        });
-
-        // Gérer le bouton "Tout effacer"
-        document.getElementById('clear-filters').addEventListener('click', function() {
-            // Décocher tous les filtres
-            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            
-            // Vider les champs de recherche
-            document.getElementById('job-search').value = '';
-            document.getElementById('location-search').value = '';
-            
-            // Recharger les offres sans filtres
-            loadJobs();
-        });
-
-        // Gérer le bouton "Effacer les filtres" dans le message "Aucun emploi trouvé"
-        document.getElementById('reset-filters').addEventListener('click', function() {
-            // Décocher tous les filtres
-            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            
-            // Vider les champs de recherche
-            document.getElementById('job-search').value = '';
-            document.getElementById('location-search').value = '';
-            
-            // Recharger les offres sans filtres
-            loadJobs();
-        });
-
-        // Gérer l'affichage/masquage des filtres
-        document.querySelectorAll('.filter-heading').forEach(heading => {
-            heading.addEventListener('click', function() {
-                const targetId = this.dataset.toggle;
-                const targetElement = document.getElementById(targetId);
-                
-                if (targetElement) {
+                            // Vérifier si l'utilisateur est un étudiant pour afficher le bouton wishlist
+                            fetch("app/views/login/session.php")
+                                .then(response => response.json())
+                                .then(sessionData => {
+                                    const isStudent = sessionData.logged_in && parseInt(sessionData.utilisateur) === 0;
+                                    
+                                    // Préparer les boutons d'action
+                                    let actionButtons = `<a href="#" class="button button-sm button-outline">Postuler</a>`;
+                                    
+                                    // Ajouter le bouton wishlist si l'utilisateur est un étudiant
+                                    if (isStudent) {
+                                        actionButtons += `
+                                            <form action="wishlist/add" method="POST" style="display: inline-block; margin-left: 10px;">
+                                                <input type="hidden" name="item_id" value="${job.id}">
+                                                <button type="submit" class="wishlist-button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width

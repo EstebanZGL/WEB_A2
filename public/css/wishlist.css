@@ -1,39 +1,267 @@
-/* Styles pour la wishlist */
+/* Styles pour la wishlist - intégrés au thème principal */
+:root {
+    /* Utilisation des mêmes variables que dans style.css */
+    --background: #181c2a;
+    --background-darker: #121723;
+    --foreground: #f1f5f9;
+    --foreground-muted: #94a3b8;
+    
+    --primary: #0ea5e9;  /* Neon blue */
+    --primary-hover: rgba(14, 165, 233, 0.9);
+    --primary-glow: rgba(14, 165, 233, 0.3);
+    
+    --accent: #ec4899;   /* Neon pink */
+    --accent-hover: rgba(236, 72, 153, 0.9);
+    --accent-glow: rgba(236, 72, 153, 0.3);
+    
+    --secondary: #334155;
+    --secondary-hover: #475569;
+    
+    --white-10: rgba(255, 255, 255, 0.1);
+    --white-20: rgba(255, 255, 255, 0.2);
+}
+
+.wishlist-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.wishlist-title {
+    font-size: 2.25rem;
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--foreground);
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.wishlist-title:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.wishlist-empty {
+    text-align: center;
+    padding: 50px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--white-10);
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.wishlist-empty p {
+    color: var(--foreground-muted);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.wishlist-items {
+    display: grid;
+    gap: 20px;
+}
+
+.wishlist-item {
+    display: grid;
+    grid-template-columns: 200px 1fr auto;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--white-10);
+    border-radius: 8px;
+    transition: var(--transition-normal, 0.3s ease-in-out);
+}
+
+.wishlist-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset, 
+                0 0 15px var(--primary-glow);
+    border-color: var(--white-20);
+}
+
+.item-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-details h3 {
+    margin: 0;
+    color: var(--foreground);
+    font-size: 1.3rem;
+}
+
+.item-price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--primary);
+    text-shadow: 0 0 5px var(--primary-glow);
+}
+
+.item-description {
+    color: var(--foreground-muted);
+    line-height: 1.5;
+}
+
+.item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Boutons stylisés selon le thème du site */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.btn-info {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: var(--secondary-hover);
+}
+
+.btn-danger {
+    background-color: var(--accent);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: var(--accent-hover);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* Bouton d'ajout à la wishlist dans la liste des offres */
 .wishlist-button {
-    background-color: #4a5568;
+    background-color: var(--secondary);
     color: white;
     border: none;
     padding: 8px 16px;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .wishlist-button:hover {
-    background-color: #2d3748;
+    background-color: var(--secondary-hover);
+    box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
 }
 
-.job-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
+.wishlist-button svg {
+    width: 16px;
+    height: 16px;
 }
 
-/* Style pour les messages de statut */
+/* Styles pour les messages de statut */
 .status-message {
     padding: 10px 15px;
     margin-bottom: 20px;
-    border-radius: 4px;
+    border-radius: 8px;
+    text-align: center;
 }
 
 .status-success {
-    background-color: #c6f6d5;
-    color: #2f855a;
-    border: 1px solid #9ae6b4;
+    background-color: rgba(14, 165, 233, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(14, 165, 233, 0.3);
 }
 
 .status-error {
-    background-color: #fed7d7;
-    color: #c53030;
-    border: 1px solid #feb2b2;
+    background-color: rgba(236, 72, 153, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+/* Lien wishlist dans la navigation */
+.wishlist-nav-link {
+    position: relative;
+    color: var(--foreground);
+    padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 1rem);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+
+.wishlist-nav-link:hover {
+    color: var(--primary);
+}
+
+.wishlist-nav-link:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary);
+    transition: 0.3s ease-in-out;
+}
+
+.wishlist-nav-link:hover:after {
+    width: 100%;
+}
+
+.wishlist-icon {
+    margin-right: 5px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .wishlist-item {
+        grid-template-columns: 1fr;
+    }
+    
+    .item-image img {
+        height: 150px;
+    }
+    
+    .item-actions {
+        flex-direction: row;
+        justify-content: space-between;
+    }
 }
