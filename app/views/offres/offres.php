@@ -7,6 +7,8 @@
     <meta name="description" content="Parcourez des milliers d'offres d'emploi dans la technologie, le design, le marketing et plus encore." />
     <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
+    <!-- Ajout du fichier CSS pour la wishlist -->
+    <link rel="stylesheet" href="public/css/wishlist.css">
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
 </head>
 <body>
@@ -25,6 +27,8 @@
                 <a href="offres" class="mobile-nav-link active">Emplois</a>
                 <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
                 <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
+                <a href="wishlist" class="mobile-nav-link" id="mobile-wishlist-link" style="display:none;">Ma Wishlist</a>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -50,6 +54,12 @@
                     <a href="offres" class="nav-link active">Emplois</a>
                     <a href="gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
                     <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
+                    <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
+                    <a href="wishlist" class="nav-link wishlist-icon-link" id="wishlist-link" style="display:none;" title="Ma Wishlist">
+                        <svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </a>
                 </nav>
 
                 <div id="user-status">
@@ -57,7 +67,8 @@
                     <a href="logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
                 </div>
             
-                <script src="public/js/app.js"></script>
+                <!-- Déplacé à la fin du body pour s'assurer que le DOM est chargé -->
+                <!-- <script src="public/js/app.js"></script> -->
             </div>
             <span id="welcome-message" class="welcome-message"></span>
         </header>
@@ -97,6 +108,18 @@
                                 <label class="filter-option"><input type="checkbox" data-filter="salary" value="0-50000" class="filter-checkbox" /> 0€ - 50 000€</label>
                                 <label class="filter-option"><input type="checkbox" data-filter="salary" value="50000-100000" class="filter-checkbox" /> 50 000€ - 100 000€</label>
                                 <label class="filter-option"><input type="checkbox" data-filter="salary" value="100000+" class="filter-checkbox" /> 100 000€ +</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Section Wishlist pour les étudiants (sera affichée/masquée via JavaScript) -->
+                        <div class="filter-group" id="wishlist-section" style="display: none;">
+                            <div class="filter-heading">
+                                <h3>Ma Wishlist</h3>
+                            </div>
+                            <div class="filter-options">
+                                <a href="wishlist" class="wishlist-nav-link">
+                                    Voir ma wishlist
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -146,6 +169,32 @@
     <script src="public/js/mobile-menu.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Vérifier si l'utilisateur est un étudiant pour afficher la section wishlist
+        fetch("app/views/login/session.php")
+            .then(response => response.json())
+            .then(data => {
+                console.log("Session data:", data); // Débogage
+                if (data.logged_in && parseInt(data.utilisateur) === 0) {
+                    // L'utilisateur est un étudiant, afficher la section wishlist et les liens
+                    const wishlistSection = document.getElementById('wishlist-section');
+                    const wishlistLink = document.getElementById('wishlist-link');
+                    const mobileWishlistLink = document.getElementById('mobile-wishlist-link');
+                    
+                    if (wishlistSection) {
+                        wishlistSection.style.display = 'block';
+                    }
+                    
+                    if (wishlistLink) {
+                        wishlistLink.style.display = 'inline-flex';
+                    }
+                    
+                    if (mobileWishlistLink) {
+                        mobileWishlistLink.style.display = 'block';
+                    }
+                }
+            })
+            .catch(error => console.error("Erreur lors de la vérification de la session:", error));
+            
         // Fonction pour charger les offres d'emploi
         function loadJobs(searchParams = {}) {
             // Construire l'URL avec les paramètres de recherche
@@ -187,52 +236,113 @@
                         noJobsFound.classList.add('hide');
                         jobsList.classList.remove('hide');
 
-                        // Afficher les offres
-                        data.forEach(job => {
-                            const jobCard = document.createElement('div');
-                            jobCard.className = 'job-card';
-                            
-                            // Formater la date
-                            const date = new Date(job.date_offre);
-                            const formattedDate = date.toLocaleDateString('fr-FR', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric'
+                        // Vérifier d'abord si l'utilisateur est un étudiant
+                        fetch("app/views/login/session.php")
+                            .then(response => response.json())
+                            .then(sessionData => {
+                                console.log("Session data pour offres:", sessionData); // Débogage
+                                const isStudent = sessionData.logged_in && parseInt(sessionData.utilisateur) === 0;
+                                
+                                // Afficher les offres
+                                data.forEach(job => {
+                                    const jobCard = document.createElement('div');
+                                    jobCard.className = 'job-card';
+                                    
+                                    // Formater la date
+                                    const date = new Date(job.date_offre);
+                                    const formattedDate = date.toLocaleDateString('fr-FR', {
+                                        day: 'numeric',
+                                        month: 'long',
+                                        year: 'numeric'
+                                    });
+                                    
+                                    // Formater la rémunération
+                                    const salary = new Intl.NumberFormat('fr-FR', {
+                                        style: 'currency',
+                                        currency: 'EUR',
+                                        maximumFractionDigits: 0
+                                    }).format(job.remuneration);
+                                    
+                                    // Créer les compétences sous forme de badges
+                                    const skills = job.competences.split(',').map(skill => 
+                                        `<span class="job-skill">${skill.trim()}</span>`
+                                    ).join('');
+                                    
+                                    // Préparer les boutons d'action
+                                    let actionButtons = `<a href="#" class="button button-sm button-outline">Postuler</a>`;
+                                    
+                                    // Ajouter le bouton wishlist si l'utilisateur est un étudiant
+                                    if (isStudent) {
+                                        actionButtons += `
+                                            <button type="button" class="wishlist-button" data-job-id="${job.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                                </svg>
+                                                Ajouter à ma wishlist
+                                            </button>
+                                        `;
+                                    }
+                                    
+                                    jobCard.innerHTML = `
+                                        <div class="job-header">
+                                            <h3 class="job-title">${job.titre}</h3>
+                                            <span class="job-company">${job.entreprise}</span>
+                                        </div>
+                                        <div class="job-body">
+                                            <p class="job-description">${job.description}</p>
+                                            <div class="job-skills">${skills}</div>
+                                        </div>
+                                        <div class="job-footer">
+                                            <div class="job-meta">
+                                                <span class="job-salary">${salary}/an</span>
+                                                <span class="job-date">Publié le ${formattedDate}</span>
+                                                <span class="job-applicants">${job.nb_postulants} postulant(s)</span>
+                                            </div>
+                                            <div class="job-actions">
+                                                ${actionButtons}
+                                            </div>
+                                        </div>
+                                    `;
+                                    
+                                    jobsList.appendChild(jobCard);
+                                });
+                                
+                                // Ajouter les écouteurs d'événements pour les boutons wishlist
+                                if (isStudent) {
+                                    document.querySelectorAll('.wishlist-button').forEach(button => {
+                                        button.addEventListener('click', function() {
+                                            const jobId = this.getAttribute('data-job-id');
+                                            console.log("Ajout à la wishlist:", jobId);
+                                            
+                                            // Envoyer une requête pour ajouter l'offre à la wishlist
+                                            fetch('wishlist/add', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                                },
+                                                body: `item_id=${jobId}`
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    alert('Offre ajoutée à votre wishlist !');
+                                                } else {
+                                                    alert('Erreur: ' + data.message);
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Erreur lors de l\'ajout à la wishlist:', error);
+                                                alert('Une erreur est survenue lors de l\'ajout à la wishlist.');
+                                            });
+                                        });
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Erreur lors de la vérification de la session:", error);
+                                // En cas d'erreur, afficher les offres sans le bouton wishlist
+                                displayJobsWithoutWishlist(data);
                             });
-                            
-                            // Formater la rémunération
-                            const salary = new Intl.NumberFormat('fr-FR', {
-                                style: 'currency',
-                                currency: 'EUR',
-                                maximumFractionDigits: 0
-                            }).format(job.remuneration);
-                            
-                            // Créer les compétences sous forme de badges
-                            const skills = job.competences.split(',').map(skill => 
-                                `<span class="job-skill">${skill.trim()}</span>`
-                            ).join('');
-                            
-                            jobCard.innerHTML = `
-                                <div class="job-header">
-                                    <h3 class="job-title">${job.titre}</h3>
-                                    <span class="job-company">${job.entreprise}</span>
-                                </div>
-                                <div class="job-body">
-                                    <p class="job-description">${job.description}</p>
-                                    <div class="job-skills">${skills}</div>
-                                </div>
-                                <div class="job-footer">
-                                    <div class="job-meta">
-                                        <span class="job-salary">${salary}/an</span>
-                                        <span class="job-date">Publié le ${formattedDate}</span>
-                                        <span class="job-applicants">${job.nb_postulants} postulant(s)</span>
-                                    </div>
-                                    <a href="#" class="button button-sm button-outline">Postuler</a>
-                                </div>
-                            `;
-                            
-                            jobsList.appendChild(jobCard);
-                        });
                     }
                 })
                 .catch(error => {
@@ -241,6 +351,58 @@
                     document.getElementById('jobs-list').innerHTML = '<div class="error">Une erreur est survenue lors du chargement des offres.</div>';
                 });
         }
+
+        // Fonction pour afficher les offres sans le bouton wishlist
+        function displayJobsWithoutWishlist(jobs) {
+            const jobsList = document.getElementById('jobs-list');
+            
+            jobs.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.className = 'job-card';
+                
+                // Formater la date
+                const date = new Date(job.date_offre);
+                const formattedDate = date.toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                
+                // Formater la rémunération
+                const salary = new Intl.NumberFormat('fr-FR', {
+                    style: 'currency',
+                    currency: 'EUR',
+                    maximumFractionDigits: 0
+                }).format(job.remuneration);
+                
+                // Créer les compétences sous forme de badges
+                const skills = job.competences.split(',').map(skill => 
+                    `<span class="job-skill">${skill.trim()}</span>`
+                ).join('');
+                
+                jobCard.innerHTML = `
+                    <div class="job-header">
+                        <h3 class="job-title">${job.titre}</h3>
+                        <span class="job-company">${job.entreprise}</span>
+                    </div>
+                    <div class="job-body">
+                        <p class="job-description">${job.description}</p>
+                        <div class="job-skills">${skills}</div>
+                    </div>
+                    <div class="job-footer">
+                        <div class="job-meta">
+                            <span class="job-salary">${salary}/an</span>
+                            <span class="job-date">Publié le ${formattedDate}</span>
+                            <span class="job-applicants">${job.nb_postulants} postulant(s)</span>
+                        </div>
+                        <a href="#" class="button button-sm button-outline">Postuler</a>
+                    </div>
+                `;
+                
+                jobsList.appendChild(jobCard);
+            });
+        }
+        
         // Charger les offres au chargement de la page
         loadJobs();
 
@@ -318,3 +480,18 @@
                 const targetElement = document.getElementById(targetId);
                 
                 if (targetElement) {
+                    targetElement.classList.toggle('hide');
+                    this.classList.toggle('collapsed');
+                }
+            });
+        });
+        
+        // Mettre à jour l'année dans le copyright
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    });
+    </script>
+    
+    <!-- Charger le script app.js à la fin du body -->
+    <script src="public/js/app.js"></script>
+</body>
+</html>
