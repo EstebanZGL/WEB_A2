@@ -70,8 +70,56 @@
         </header>
 
         <main>
-            <!-- Contenu de la page d'accueil -->
-            <!-- ... (le reste du contenu reste inchangé) ... -->
+            <section class="hero">
+                <div class="hero-overlay"></div>
+                <div class="container">
+                    <h1 class="hero-title">Découvrez Votre Prochaine <span class="gradient-text">Opportunité</span></h1>
+                    <p class="hero-subtitle">Recherchez et postulez à des milliers d'emplois dans la technologie, le design, le marketing et plus encore.</p>
+                    <form class="search-form" id="search-form">
+                        <input type="text" placeholder="Titre du poste, mot-clé ou entreprise" id="job-search" class="search-input" />
+                        <input type="text" placeholder="Lieu" id="location-search" class="search-input" />
+                        <button type="submit" class="button button-primary button-glow">Rechercher</button>
+                    </form>
+                    <div class="popular-searches">
+                        <span>Recherches populaires:</span>
+                        <a href="jobs?q=developer" class="popular-link">Développeur</a>
+                        <a href="jobs?q=designer" class="popular-link">Designer</a>
+                        <a href="jobs?q=marketing" class="popular-link">Marketing</a>
+                        <a href="jobs?q=remote" class="popular-link">Télétravail</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="container">
+                    <h2 class="section-title">Offres <span class="accent-text">Mises en Avant</span></h2>
+                    <div class="jobs-grid" id="featured-jobs">
+                        <!-- Jobs will be loaded here via JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <section class="section section-dark">
+                <div class="container">
+                    <h2 class="section-title section-title-center">Parcourir par <span class="accent-text-pink">Catégorie</span></h2>
+                    <div class="categories-grid">
+                        <a href="jobs?q=technology" class="category-card">Technologie</a>
+                        <a href="jobs?q=design" class="category-card">Design</a>
+                        <a href="jobs?q=marketing" class="category-card">Marketing</a>
+                        <a href="jobs?q=finance" class="category-card">Finance</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="container">
+                    <div class="cta-card">
+                        <h2 class="cta-title">Prêt à faire le prochain pas dans votre carrière ?</h2>
+                        <p class="cta-text">Rejoignez des milliers de chercheurs d'emploi qui ont trouvé leur emploi de rêve grâce à notre plateforme.</p>
+                        <a href="jobs" class="button button-primary button-glow">Trouver des Emplois Maintenant</a>
+                    </div>
+                </div>
+            </section>
         </main>
 
         <footer class="footer">

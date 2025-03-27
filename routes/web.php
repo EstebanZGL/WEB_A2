@@ -1,4 +1,5 @@
 <?php
+
 function route() {
     $uri = $_SERVER['REQUEST_URI'];
     
@@ -111,4 +112,3 @@ function route() {
     header('HTTP/1.0 404 Not Found');
     echo '404 - Page non trouvée';
 }
-?>
