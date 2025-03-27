@@ -7,6 +7,7 @@ require_once 'app/controllers/OffresController.php';
 require_once 'app/controllers/AdminController.php';
 require_once 'app/controllers/GestionController.php';
 require_once 'app/controllers/LogoutController.php';
+require_once 'app/controllers/WishlistController.php';
 
 function route($uri) {
     // Initialisation des contrôleurs
@@ -16,6 +17,7 @@ function route($uri) {
     $adminController = new AdminController();
     $gestionController = new GestionController();
     $logoutController = new LogoutController();
+    $wishlistController = new WishlistController();
 
     if (strpos($uri, 'cesi-lebonplan/') === 0) {
         $uri = substr($uri, strlen('cesi-lebonplan/'));
@@ -89,6 +91,21 @@ function route($uri) {
         case 'logout':
             // Utiliser le contrôleur de déconnexion
             $logoutController->logout();
+            break;
+
+        case 'wishlist':
+            // Afficher la wishlist de l'utilisateur
+            $wishlistController->index();
+            break;
+            
+        case 'wishlist/add':
+            // Ajouter un élément à la wishlist
+            $wishlistController->add();
+            break;
+            
+        case 'wishlist/remove':
+            // Supprimer un élément de la wishlist
+            $wishlistController->remove();
             break;
 
         default:
