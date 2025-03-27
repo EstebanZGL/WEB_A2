@@ -1,13 +1,22 @@
 /* Styles pour la wishlist */
 
 /* Icône wishlist dans la navigation */
-.wishlist-icon {
-    margin-right: 6px;
-}
-
-#wishlist-link {
+.wishlist-icon-link {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 8px;
+}
+
+.wishlist-icon {
+    color: var(--foreground-muted);
+    transition: var(--transition-fast);
+}
+
+.wishlist-icon-link:hover .wishlist-icon {
+    color: white;
+    transform: scale(1.1);
 }
 
 /* Bouton wishlist */
@@ -49,10 +58,6 @@
 
 .wishlist-nav-link:hover {
     color: white;
-}
-
-.wishlist-nav-link svg {
-    color: var(--primary);
 }
 
 /* Page wishlist */
