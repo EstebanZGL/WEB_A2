@@ -4,19 +4,25 @@ class WishlistController {
     private $wishlistModel;
     
     public function __construct() {
+        // Démarrer la session si ce n'est pas déjà fait
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
         require_once 'app/models/WishlistModel.php';
         $this->wishlistModel = new WishlistModel();
     }
     
     public function index() {
         // Vérifier si l'utilisateur est connecté
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             header('Location: login');
             exit;
         }
         
-        // Vérifier si l'utilisateur est un étudiant
-        if ($_SESSION['user_type'] != 0) {
+        // Vérifier si l'utilisateur est un étudiant (type 0)
+        // CORRECTION : utiliser la variable de session 'utilisateur' au lieu de vérifier 'user_type'
+        if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur'] != 0) {
             header('Location: home');
             exit;
         }
@@ -36,13 +42,14 @@ class WishlistController {
         }
         
         // Vérifier si l'utilisateur est connecté
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
             return;
         }
         
         // Vérifier si l'utilisateur est un étudiant
-        if ($_SESSION['user_type'] != 0) {
+        // CORRECTION : utiliser la variable de session 'utilisateur' au lieu de vérifier 'user_type'
+        if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur'] != 0) {
             echo json_encode(['success' => false, 'message' => 'Seuls les étudiants peuvent utiliser cette fonctionnalité']);
             return;
         }
@@ -81,7 +88,7 @@ class WishlistController {
         }
         
         // Vérifier si l'utilisateur est connecté
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             $_SESSION['status_message'] = 'Utilisateur non connecté';
             $_SESSION['status_type'] = 'status-error';
             header('Location: /login');
@@ -89,7 +96,8 @@ class WishlistController {
         }
         
         // Vérifier si l'utilisateur est un étudiant
-        if ($_SESSION['user_type'] != 0) {
+        // CORRECTION : utiliser la variable de session 'utilisateur' au lieu de vérifier 'user_type'
+        if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur'] != 0) {
             $_SESSION['status_message'] = 'Accès non autorisé';
             $_SESSION['status_type'] = 'status-error';
             header('Location: /home');

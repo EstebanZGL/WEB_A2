@@ -1,13 +1,18 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-
-$response = ['logged_in' => false];
-
-if (isset($_SESSION['user_id'])) { // Vérifie si un ID utilisateur est stocké
-    $response['logged_in'] = true;
-    $response['utilisateur'] = $_SESSION['utilisateur']; //Type d'utilisateur
+// Démarrer la session si ce n'est pas déjà fait
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 }
 
+// Préparer les données de session pour le JavaScript
+$response = [
+    'logged_in' => isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true,
+    'utilisateur' => isset($_SESSION['utilisateur']) ? $_SESSION['utilisateur'] : null,
+    'user_id' => isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null,
+    'email' => isset($_SESSION['email']) ? $_SESSION['email'] : null
+];
+
+// Envoyer la réponse au format JSON
+header('Content-Type: application/json');
 echo json_encode($response);
 ?>
