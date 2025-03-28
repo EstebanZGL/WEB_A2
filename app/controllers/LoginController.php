@@ -39,10 +39,16 @@ class LoginController {
                     $_SESSION['utilisateur'] = $user['utilisateur'];
                     $_SESSION['logged_in'] = true;
 
+                    // Ajouter un log pour le débogage
+                    error_log("Connexion réussie pour {$email} - Type utilisateur: {$user['utilisateur']}");
+
                     // Redirection vers la page d'accueil avec chemin absolu
                     header("Location: /home");
                     exit;
                 } else {
+                    // Ajouter un log pour le débogage
+                    error_log("Échec de connexion pour {$email} - Mot de passe incorrect ou utilisateur non trouvé");
+                    
                     // Redirection en cas d'erreur avec chemin absolu
                     $_SESSION['error'] = "Email ou mot de passe incorrect";
                     header("Location: /login");
@@ -59,4 +65,3 @@ class LoginController {
         }
     }
 }
-?>

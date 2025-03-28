@@ -66,9 +66,6 @@
                     <a href="login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
                     <a href="logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
                 </div>
-            
-                <!-- Déplacé à la fin du body pour s'assurer que le DOM est chargé -->
-                <!-- <script src="public/js/app.js"></script> -->
             </div>
             <span id="welcome-message" class="welcome-message"></span>
         </header>
@@ -199,203 +196,144 @@
         function loadJobs(searchParams = {}) {
             // Construire l'URL avec les paramètres de recherche
             let url = 'offres/search';
+            
             if (Object.keys(searchParams).length > 0) {
-                const queryParams = new URLSearchParams();
-                for (const key in searchParams) {
-                    if (searchParams[key]) {
-                        queryParams.append(key, searchParams[key]);
+                const queryParams = [];
+                
+                if (searchParams.jobTitle) {
+                    queryParams.push(`jobTitle=${encodeURIComponent(searchParams.jobTitle)}`);
+                }
+                
+                if (searchParams.location) {
+                    queryParams.push(`location=${encodeURIComponent(searchParams.location)}`);
+                }
+                
+                if (searchParams.filters) {
+                    for (const [filterType, values] of Object.entries(searchParams.filters)) {
+                        if (Array.isArray(values) && values.length > 0) {
+                            values.forEach(value => {
+                                queryParams.push(`filters[${filterType}][]=${encodeURIComponent(value)}`);
+                            });
+                        }
                     }
                 }
-                url += '?' + queryParams.toString();
+                
+                if (queryParams.length > 0) {
+                    url += '?' + queryParams.join('&');
+                }
             }
-
-            // Afficher un message de chargement
-            document.getElementById('jobs-count').textContent = 'Chargement...';
-            document.getElementById('jobs-list').innerHTML = '<div class="loading">Chargement des offres...</div>';
-
+            
             // Effectuer la requête AJAX
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    const jobsList = document.getElementById('jobs-list');
-                    const noJobsFound = document.getElementById('no-jobs-found');
-                    const jobsCount = document.getElementById('jobs-count');
-
-                    // Mettre à jour le compteur d'offres
-                    jobsCount.textContent = data.length + ' offres trouvées';
-
-                    // Vider la liste des offres
-                    jobsList.innerHTML = '';
-
-                    if (data.length === 0) {
-                        // Afficher le message "Aucun emploi trouvé"
-                        noJobsFound.classList.remove('hide');
-                        jobsList.classList.add('hide');
-                    } else {
-                        // Cacher le message "Aucun emploi trouvé"
-                        noJobsFound.classList.add('hide');
-                        jobsList.classList.remove('hide');
-
-                        // Vérifier d'abord si l'utilisateur est un étudiant
-                        fetch("app/views/login/session.php")
-                            .then(response => response.json())
-                            .then(sessionData => {
-                                console.log("Session data pour offres:", sessionData); // Débogage
-                                const isStudent = sessionData.logged_in && parseInt(sessionData.utilisateur) === 0;
-                                
-                                // Afficher les offres
-                                data.forEach(job => {
-                                    const jobCard = document.createElement('div');
-                                    jobCard.className = 'job-card';
-                                    
-                                    // Formater la date
-                                    const date = new Date(job.date_offre);
-                                    const formattedDate = date.toLocaleDateString('fr-FR', {
-                                        day: 'numeric',
-                                        month: 'long',
-                                        year: 'numeric'
-                                    });
-                                    
-                                    // Formater la rémunération
-                                    const salary = new Intl.NumberFormat('fr-FR', {
-                                        style: 'currency',
-                                        currency: 'EUR',
-                                        maximumFractionDigits: 0
-                                    }).format(job.remuneration);
-                                    
-                                    // Créer les compétences sous forme de badges
-                                    const skills = job.competences.split(',').map(skill => 
-                                        `<span class="job-skill">${skill.trim()}</span>`
-                                    ).join('');
-                                    
-                                    // Préparer les boutons d'action
-                                    let actionButtons = `<a href="#" class="button button-sm button-outline">Postuler</a>`;
-                                    
-                                    // Ajouter le bouton wishlist si l'utilisateur est un étudiant
-                                    if (isStudent) {
-                                        actionButtons += `
-                                            <button type="button" class="wishlist-button" data-job-id="${job.id}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                                </svg>
-                                                Ajouter à ma wishlist
-                                            </button>
-                                        `;
-                                    }
-                                    
-                                    jobCard.innerHTML = `
-                                        <div class="job-header">
-                                            <h3 class="job-title">${job.titre}</h3>
-                                            <span class="job-company">${job.entreprise}</span>
-                                        </div>
-                                        <div class="job-body">
-                                            <p class="job-description">${job.description}</p>
-                                            <div class="job-skills">${skills}</div>
-                                        </div>
-                                        <div class="job-footer">
-                                            <div class="job-meta">
-                                                <span class="job-salary">${salary}/an</span>
-                                                <span class="job-date">Publié le ${formattedDate}</span>
-                                                <span class="job-applicants">${job.nb_postulants} postulant(s)</span>
-                                            </div>
-                                            <div class="job-actions">
-                                                ${actionButtons}
-                                            </div>
-                                        </div>
-                                    `;
-                                    
-                                    jobsList.appendChild(jobCard);
-                                });
-                                
-                                // Ajouter les écouteurs d'événements pour les boutons wishlist
-                                if (isStudent) {
-                                    document.querySelectorAll('.wishlist-button').forEach(button => {
-                                        button.addEventListener('click', function() {
-                                            const jobId = this.getAttribute('data-job-id');
-                                            console.log("Ajout à la wishlist:", jobId);
-                                            
-                                            // Envoyer une requête pour ajouter l'offre à la wishlist
-                                            fetch('wishlist/add', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                                },
-                                                body: `item_id=${jobId}`
-                                            })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                if (data.success) {
-                                                    alert('Offre ajoutée à votre wishlist !');
-                                                } else {
-                                                    alert('Erreur: ' + data.message);
-                                                }
-                                            })
-                                            .catch(error => {
-                                                console.error('Erreur lors de l\'ajout à la wishlist:', error);
-                                                alert('Une erreur est survenue lors de l\'ajout à la wishlist.');
-                                            });
-                                        });
-                                    });
-                                }
-                            })
-                            .catch(error => {
-                                console.error("Erreur lors de la vérification de la session:", error);
-                                // En cas d'erreur, afficher les offres sans le bouton wishlist
+                    // Vérifier si l'utilisateur est un étudiant pour afficher les boutons wishlist
+                    fetch("app/views/login/session.php")
+                        .then(response => response.json())
+                        .then(sessionData => {
+                            if (sessionData.logged_in && parseInt(sessionData.utilisateur) === 0) {
+                                displayJobsWithWishlist(data);
+                            } else {
                                 displayJobsWithoutWishlist(data);
-                            });
-                    }
+                            }
+                            
+                            // Mettre à jour le compteur d'offres
+                            document.getElementById('jobs-count').textContent = `${data.length} offre(s) trouvée(s)`;
+                            
+                            // Afficher ou masquer le message "Aucun emploi trouvé"
+                            if (data.length === 0) {
+                                document.getElementById('jobs-list').classList.add('hide');
+                                document.getElementById('no-jobs-found').classList.remove('hide');
+                            } else {
+                                document.getElementById('jobs-list').classList.remove('hide');
+                                document.getElementById('no-jobs-found').classList.add('hide');
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Erreur lors de la vérification de la session:", error);
+                            displayJobsWithoutWishlist(data);
+                        });
                 })
                 .catch(error => {
-                    console.error('Erreur lors du chargement des offres:', error);
-                    document.getElementById('jobs-count').textContent = 'Erreur de chargement';
-                    document.getElementById('jobs-list').innerHTML = '<div class="error">Une erreur est survenue lors du chargement des offres.</div>';
+                    console.error("Erreur lors du chargement des offres:", error);
+                    document.getElementById('jobs-count').textContent = "Erreur lors du chargement des offres";
                 });
         }
-
-        // Fonction pour afficher les offres sans le bouton wishlist
-        function displayJobsWithoutWishlist(jobs) {
+        
+        // Fonction pour afficher les offres avec le bouton wishlist
+        function displayJobsWithWishlist(jobs) {
             const jobsList = document.getElementById('jobs-list');
+            jobsList.innerHTML = '';
             
             jobs.forEach(job => {
                 const jobCard = document.createElement('div');
                 jobCard.className = 'job-card';
                 
-                // Formater la date
-                const date = new Date(job.date_offre);
-                const formattedDate = date.toLocaleDateString('fr-FR', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                });
-                
-                // Formater la rémunération
-                const salary = new Intl.NumberFormat('fr-FR', {
-                    style: 'currency',
-                    currency: 'EUR',
-                    maximumFractionDigits: 0
-                }).format(job.remuneration);
-                
-                // Créer les compétences sous forme de badges
-                const skills = job.competences.split(',').map(skill => 
-                    `<span class="job-skill">${skill.trim()}</span>`
-                ).join('');
+                // Calculer la durée du stage
+                const dateDebut = new Date(job.date_debut);
+                const dateFin = new Date(job.date_fin);
+                const dureeMois = job.duree_stage;
                 
                 jobCard.innerHTML = `
                     <div class="job-header">
                         <h3 class="job-title">${job.titre}</h3>
-                        <span class="job-company">${job.entreprise}</span>
+                        <button class="wishlist-button" data-job-id="${job.id}" title="Ajouter à ma wishlist">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="job-body">
-                        <p class="job-description">${job.description}</p>
-                        <div class="job-skills">${skills}</div>
+                    <div class="job-company">${job.entreprise}</div>
+                    <div class="job-details">
+                        <div class="job-salary">${job.remuneration}€/an</div>
+                        <div class="job-date">Du ${dateDebut.toLocaleDateString()} au ${dateFin.toLocaleDateString()} (${dureeMois} mois)</div>
                     </div>
+                    <div class="job-skills">${job.competences || 'Aucune compétence spécifiée'}</div>
                     <div class="job-footer">
-                        <div class="job-meta">
-                            <span class="job-salary">${salary}/an</span>
-                            <span class="job-date">Publié le ${formattedDate}</span>
-                            <span class="job-applicants">${job.nb_postulants} postulant(s)</span>
-                        </div>
-                        <a href="#" class="button button-sm button-outline">Postuler</a>
+                        <a href="offres/details/${job.id}" class="button button-secondary">Voir détails</a>
+                        <div class="job-applicants">${job.nb_postulants || 0} candidat(s)</div>
+                    </div>
+                `;
+                
+                jobsList.appendChild(jobCard);
+            });
+            
+            // Ajouter les écouteurs d'événements pour les boutons wishlist
+            document.querySelectorAll('.wishlist-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const jobId = this.getAttribute('data-job-id');
+                    addToWishlist(jobId, this);
+                });
+            });
+        }
+        
+        // Fonction pour afficher les offres sans le bouton wishlist en cas d'erreur
+        function displayJobsWithoutWishlist(jobs) {
+            const jobsList = document.getElementById('jobs-list');
+            jobsList.innerHTML = '';
+            
+            jobs.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.className = 'job-card';
+                
+                // Calculer la durée du stage
+                const dateDebut = new Date(job.date_debut);
+                const dateFin = new Date(job.date_fin);
+                const dureeMois = job.duree_stage;
+                
+                jobCard.innerHTML = `
+                    <div class="job-header">
+                        <h3 class="job-title">${job.titre}</h3>
+                    </div>
+                    <div class="job-company">${job.entreprise}</div>
+                    <div class="job-details">
+                        <div class="job-salary">${job.remuneration}€/an</div>
+                        <div class="job-date">Du ${dateDebut.toLocaleDateString()} au ${dateFin.toLocaleDateString()} (${dureeMois} mois)</div>
+                    </div>
+                    <div class="job-skills">${job.competences || 'Aucune compétence spécifiée'}</div>
+                    <div class="job-footer">
+                        <a href="offres/details/${job.id}" class="button button-secondary">Voir détails</a>
+                        <div class="job-applicants">${job.nb_postulants || 0} candidat(s)</div>
                     </div>
                 `;
                 
@@ -403,85 +341,156 @@
             });
         }
         
+        // Fonction pour ajouter une offre à la wishlist
+        function addToWishlist(jobId, button) {
+            const formData = new FormData();
+            formData.append('item_id', jobId);
+            
+            fetch('wishlist/add', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Changer l'apparence du bouton pour indiquer que l'offre a été ajoutée
+                    button.classList.add('added');
+                    button.title = "Ajouté à votre wishlist";
+                    
+                    // Afficher un message de confirmation
+                    alert(data.message);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Erreur lors de l'ajout à la wishlist:", error);
+                alert("Une erreur est survenue lors de l'ajout à la wishlist");
+            });
+        }
+        
         // Charger les offres au chargement de la page
         loadJobs();
-
+        
         // Gérer la soumission du formulaire de recherche
         document.getElementById('search-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const searchParams = {
-                jobTitle: document.getElementById('job-search').value,
-                location: document.getElementById('location-search').value
-            };
+            const jobTitle = document.getElementById('job-search').value;
+            const location = document.getElementById('location-search').value;
             
-            loadJobs(searchParams);
+            // Récupérer les filtres actifs
+            const filters = {};
+            
+            // Filtres de salaire
+            const salaryFilters = Array.from(document.querySelectorAll('input[data-filter="salary"]:checked')).map(input => input.value);
+            if (salaryFilters.length > 0) {
+                filters.salary = salaryFilters;
+            }
+            
+            // Effectuer la recherche
+            loadJobs({
+                jobTitle: jobTitle,
+                location: location,
+                filters: filters
+            });
+            
+            // Mettre à jour les filtres actifs affichés
+            updateActiveFilters(jobTitle, location, filters);
         });
-
-        // Gérer les filtres
-        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const filters = {};
-                
-                // Récupérer les valeurs des filtres cochés
-                document.querySelectorAll('.filter-checkbox:checked').forEach(checked => {
-                    const filterType = checked.dataset.filter;
-                    if (!filters[filterType]) {
-                        filters[filterType] = [];
+        
+        // Fonction pour mettre à jour l'affichage des filtres actifs
+        function updateActiveFilters(jobTitle, location, filters) {
+            const activeFiltersContainer = document.getElementById('active-filters');
+            activeFiltersContainer.innerHTML = '';
+            
+            if (jobTitle) {
+                const filterTag = document.createElement('span');
+                filterTag.className = 'filter-tag';
+                filterTag.innerHTML = `
+                    Titre: ${jobTitle}
+                    <button class="remove-filter" data-type="jobTitle">&times;</button>
+                `;
+                activeFiltersContainer.appendChild(filterTag);
+            }
+            
+            if (location) {
+                const filterTag = document.createElement('span');
+                filterTag.className = 'filter-tag';
+                filterTag.innerHTML = `
+                    Lieu: ${location}
+                    <button class="remove-filter" data-type="location">&times;</button>
+                `;
+                activeFiltersContainer.appendChild(filterTag);
+            }
+            
+            if (filters.salary && filters.salary.length > 0) {
+                filters.salary.forEach(value => {
+                    let label = '';
+                    if (value === '0-50000') {
+                        label = '0€ - 50 000€';
+                    } else if (value === '50000-100000') {
+                        label = '50 000€ - 100 000€';
+                    } else if (value === '100000+') {
+                        label = '100 000€ +';
                     }
-                    filters[filterType].push(checked.value);
+                    
+                    const filterTag = document.createElement('span');
+                    filterTag.className = 'filter-tag';
+                    filterTag.innerHTML = `
+                        Salaire: ${label}
+                        <button class="remove-filter" data-type="salary" data-value="${value}">&times;</button>
+                    `;
+                    activeFiltersContainer.appendChild(filterTag);
                 });
-                
-                // Récupérer les valeurs de recherche
-                const searchParams = {
-                    jobTitle: document.getElementById('job-search').value,
-                    location: document.getElementById('location-search').value,
-                    filters: filters
-                };
-                
-                loadJobs(searchParams);
+            }
+            
+            // Ajouter les écouteurs d'événements pour les boutons de suppression de filtres
+            document.querySelectorAll('.remove-filter').forEach(button => {
+                button.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    const value = this.getAttribute('data-value');
+                    
+                    if (type === 'jobTitle') {
+                        document.getElementById('job-search').value = '';
+                    } else if (type === 'location') {
+                        document.getElementById('location-search').value = '';
+                    } else if (type === 'salary' && value) {
+                        document.querySelector(`input[data-filter="salary"][value="${value}"]`).checked = false;
+                    }
+                    
+                    // Relancer la recherche
+                    document.getElementById('search-form').dispatchEvent(new Event('submit'));
+                });
             });
-        });
-
-        // Gérer le bouton "Tout effacer"
+        }
+        
+        // Gérer le clic sur le bouton "Effacer les filtres"
         document.getElementById('clear-filters').addEventListener('click', function() {
-            // Décocher tous les filtres
-            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-                checkbox.checked = false;
-            });
+            // Réinitialiser le formulaire
+            document.getElementById('search-form').reset();
             
-            // Vider les champs de recherche
-            document.getElementById('job-search').value = '';
-            document.getElementById('location-search').value = '';
+            // Réinitialiser les filtres actifs
+            document.getElementById('active-filters').innerHTML = '';
             
             // Recharger les offres sans filtres
             loadJobs();
         });
-
-        // Gérer le bouton "Effacer les filtres" dans le message "Aucun emploi trouvé"
+        
+        // Gérer le clic sur le bouton "Effacer les filtres" dans le message "Aucun emploi trouvé"
         document.getElementById('reset-filters').addEventListener('click', function() {
-            // Décocher tous les filtres
-            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            
-            // Vider les champs de recherche
-            document.getElementById('job-search').value = '';
-            document.getElementById('location-search').value = '';
-            
-            // Recharger les offres sans filtres
-            loadJobs();
+            document.getElementById('clear-filters').click();
         });
-
-        // Gérer l'affichage/masquage des filtres
+        
+        // Gérer l'affichage/masquage des sections de filtres
         document.querySelectorAll('.filter-heading').forEach(heading => {
             heading.addEventListener('click', function() {
-                const targetId = this.dataset.toggle;
+                const targetId = this.getAttribute('data-toggle');
                 const targetElement = document.getElementById(targetId);
                 
                 if (targetElement) {
-                    targetElement.classList.toggle('hide');
-                    this.classList.toggle('collapsed');
+                    targetElement.classList.toggle('open');
+                    this.classList.toggle('open');
                 }
             });
         });

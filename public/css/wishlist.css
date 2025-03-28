@@ -1,114 +1,97 @@
 /* Styles pour la wishlist */
 
-/* Icône wishlist dans la navigation */
-.wishlist-icon-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 8px;
-}
-
-.wishlist-icon {
-    color: var(--foreground-muted);
-    transition: var(--transition-fast);
-}
-
-.wishlist-icon-link:hover .wishlist-icon {
-    color: white;
-    transform: scale(1.1);
-}
-
-/* Bouton wishlist */
-.wishlist-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background-color: rgba(255, 255, 255, 0.05);
-    color: var(--foreground);
-    border: 1px solid var(--white-10);
-    border-radius: var(--radius-md);
-    padding: 8px 16px;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: var(--transition-normal);
-}
-
-.wishlist-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: var(--white-20);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.wishlist-button svg {
-    color: var(--primary);
-}
-
-/* Lien de navigation vers la wishlist */
-.wishlist-nav-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--foreground-muted);
-    font-size: 0.875rem;
-    padding: 8px 0;
-    transition: var(--transition-fast);
-}
-
-.wishlist-nav-link:hover {
-    color: white;
-}
-
-/* Page wishlist */
+/* Conteneur principal */
 .wishlist-container {
-    padding: var(--spacing-xl) 0;
+    padding: 2rem 0;
 }
 
 .wishlist-title {
-    font-size: 1.875rem;
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: 2rem;
+    color: #333;
     text-align: center;
 }
 
+/* Message de statut */
+.status-message {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.status-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Wishlist vide */
 .wishlist-empty {
     text-align: center;
-    padding: var(--spacing-xl);
-    background-color: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(4px);
-    border: 1px solid var(--white-10);
-    border-radius: var(--radius-lg);
+    padding: 3rem 1rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wishlist-empty .icon {
+    margin-bottom: 1rem;
+    color: #ccc;
+    stroke-width: 1;
+}
+
+.wishlist-empty h3 {
+    margin-bottom: 0.5rem;
+    color: #333;
 }
 
 .wishlist-empty p {
-    color: var(--foreground-muted);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 1.5rem;
+    color: #666;
 }
 
+.wishlist-empty .btn {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.wishlist-empty .btn:hover {
+    background-color: #0069d9;
+}
+
+/* Liste des éléments */
 .wishlist-items {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
+    display: grid;
+    grid-gap: 1.5rem;
 }
 
 .wishlist-item {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background-color: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(4px);
-    border: 1px solid var(--white-10);
-    border-radius: var(--radius-lg);
-    transition: var(--transition-normal);
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.wishlist-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 
-                0 0 0 1px rgba(255, 255, 255, 0.05) inset, 
-                0 0 15px var(--primary-glow);
-    border-color: var(--white-20);
+@media (min-width: 768px) {
+    .wishlist-item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
 
 .item-details {
@@ -116,105 +99,133 @@
 }
 
 .item-details h3 {
+    margin: 0 0 0.5rem;
+    color: #333;
     font-size: 1.25rem;
-    margin-bottom: var(--spacing-sm);
 }
 
 .item-price {
-    font-size: 1.125rem;
-    font-weight: 500;
-    color: var(--primary);
-    margin-bottom: var(--spacing-sm);
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 0.5rem;
 }
 
 .item-description {
-    color: var(--foreground-muted);
-    margin-bottom: var(--spacing-md);
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.item-dates {
+    color: #666;
+    font-size: 0.9rem;
 }
 
 .item-actions {
     display: flex;
-    gap: var(--spacing-sm);
-    margin-top: var(--spacing-sm);
+    margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+    .item-actions {
+        margin-top: 0;
+        margin-left: 1rem;
+    }
 }
 
 .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 16px;
-    border-radius: var(--radius-md);
-    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
     font-weight: 500;
+    text-decoration: none;
     cursor: pointer;
-    transition: var(--transition-normal);
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: white;
     border: none;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
 }
 
 .btn-info {
-    background-color: rgba(14, 165, 233, 0.1);
-    color: var(--primary);
-    border: 1px solid rgba(14, 165, 233, 0.5);
+    background-color: #17a2b8;
+    color: white;
 }
 
 .btn-info:hover {
-    background-color: rgba(14, 165, 233, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #138496;
 }
 
 .btn-danger {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.5);
+    background-color: #dc3545;
+    color: white;
+    margin-left: 0.5rem;
 }
 
 .btn-danger:hover {
-    background-color: rgba(239, 68, 68, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #c82333;
 }
 
-/* Messages de statut */
-.status-message {
-    padding: var(--spacing-md) var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
-    border-radius: var(--radius-lg);
-    text-align: center;
+.remove-form {
+    display: inline-block;
 }
 
-.status-success {
-    background-color: rgba(34, 197, 94, 0.1);
-    color: #22c55e;
-    border: 1px solid rgba(34, 197, 94, 0.3);
+/* Icône wishlist dans la navbar */
+.wishlist-icon-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.status-error {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+.wishlist-icon {
+    stroke: currentColor;
+    fill: none;
+    transition: fill 0.2s, stroke 0.2s;
 }
 
-/* Responsive */
-@media (min-width: 768px) {
-    .wishlist-item {
-        flex-direction: row;
-        align-items: center;
-    }
-    
-    .item-actions {
-        margin-top: 0;
-        flex-shrink: 0;
-    }
+.wishlist-icon-link:hover .wishlist-icon,
+.wishlist-icon-link.active .wishlist-icon {
+    fill: rgba(255, 0, 0, 0.2);
+    stroke: #ff0000;
+}
+
+/* Bouton wishlist dans les cartes d'offres */
+.wishlist-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.wishlist-button:hover {
+    transform: scale(1.2);
+}
+
+.wishlist-button .icon {
+    stroke: #666;
+    fill: none;
+    transition: fill 0.2s, stroke 0.2s;
+}
+
+.wishlist-button:hover .icon {
+    stroke: #ff0000;
+}
+
+.wishlist-button.added .icon {
+    fill: rgba(255, 0, 0, 0.2);
+    stroke: #ff0000;
+}
+
+/* Lien de navigation vers la wishlist */
+.wishlist-nav-link {
+    display: block;
+    padding: 0.5rem 0;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.wishlist-nav-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }

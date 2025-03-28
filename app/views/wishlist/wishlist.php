@@ -89,7 +89,7 @@
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
                             <h3>Votre liste de souhaits est vide</h3>
-                            <p>Vous n'avez pas encore ajouté d'offres d'emploi à votre liste de souhaits.</p>
+                            <p>Vous n'avez pas encore ajouté d'offres de stage à votre liste de souhaits.</p>
                             <a href="offres" class="btn btn-primary">Découvrir nos offres</a>
                         </div>
                     <?php else: ?>
@@ -97,14 +97,15 @@
                             <?php foreach ($wishlistItems as $item): ?>
                                 <div class="wishlist-item">
                                     <div class="item-details">
-                                        <h3><?= htmlspecialchars($item['titre']) ?></h3>
-                                        <p class="item-price"><?= number_format($item['remuneration'], 0, ',', ' ') ?> €/an</p>
-                                        <p class="item-description"><?= htmlspecialchars($item['entreprise']) ?> - <?= htmlspecialchars($item['competences']) ?></p>
+                                        <h3><?= htmlspecialchars($item->titre) ?></h3>
+                                        <p class="item-price"><?= number_format($item->remuneration, 0, ',', ' ') ?> €/an</p>
+                                        <p class="item-description"><?= htmlspecialchars($item->entreprise) ?> - <?= htmlspecialchars($item->competences) ?></p>
+                                        <p class="item-dates">Du <?= date('d/m/Y', strtotime($item->date_debut)) ?> au <?= date('d/m/Y', strtotime($item->date_fin)) ?> (<?= $item->duree_stage ?> mois)</p>
                                     </div>
                                     <div class="item-actions">
-                                        <a href="offres/details/<?= $item['id'] ?>" class="btn btn-info">Voir détails</a>
+                                        <a href="offres/details/<?= $item->id ?>" class="btn btn-info">Voir détails</a>
                                         <form action="wishlist/remove" method="POST" class="remove-form">
-                                            <input type="hidden" name="item_id" value="<?= $item['id'] ?>">
+                                            <input type="hidden" name="item_id" value="<?= $item->id ?>">
                                             <button type="submit" class="btn btn-danger">Retirer</button>
                                         </form>
                                     </div>
