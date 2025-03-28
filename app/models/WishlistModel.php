@@ -10,7 +10,7 @@ class WishlistModel {
 
     public function getWishlistByUserId($userId) {
         $sql = "
-            SELECT os.*, e.nom as entreprise, 
+            SELECT os.*, e.nom as entreprise, MAX(w.date_ajout) as date_ajout,
             GROUP_CONCAT(c.nom SEPARATOR ', ') as competences
             FROM wishlist w
             JOIN etudiant et ON w.etudiant_id = et.id
@@ -20,8 +20,8 @@ class WishlistModel {
             LEFT JOIN offre_competence oc ON os.id = oc.offre_id
             LEFT JOIN competence c ON oc.competence_id = c.id
             WHERE u.id = ?
-            GROUP BY os.id
-            ORDER BY w.date_ajout DESC
+            GROUP BY os.id, e.nom
+            ORDER BY date_ajout DESC
         ";
         
         $stmt = $this->db->prepare($sql);
