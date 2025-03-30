@@ -304,21 +304,53 @@ class GestionController {
         $this->checkGestionAuth();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupérer les données du formulaire
+            // Récupérer les données du formulaire pour créer un nouvel utilisateur
+            $nom = $_POST['nom'] ?? '';
+            $prenom = $_POST['prenom'] ?? '';
+            $email = $_POST['email'] ?? '';
+            
+            // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
+            $utilisateur_id = 0;
+            if (!empty($nom) && !empty($prenom) && !empty($email)) {
+                // Inclure le modèle utilisateur
+                require_once 'app/models/UserModel.php';
+                $userModel = new UserModel();
+                
+                // Créer un mot de passe temporaire (à changer lors de la première connexion)
+                $password = password_hash('changeme', PASSWORD_DEFAULT);
+                
+                // Données pour créer l'utilisateur
+                $userData = [
+                    'nom' => $nom,
+                    'prenom' => $prenom,
+                    'email' => $email,
+                    'password' => $password,
+                    'type' => 'etudiant', // Type d'utilisateur: étudiant
+                    'date_creation' => date('Y-m-d H:i:s')
+                ];
+                
+                // Créer l'utilisateur et récupérer son ID
+                $utilisateur_id = $userModel->createUser($userData);
+            } else {
+                // Si on utilise un utilisateur existant (pour la rétrocompatibilité)
+                $utilisateur_id = $_POST['utilisateur_id'] ?? 0;
+            }
+            
+            // Récupérer les autres données du formulaire pour l'étudiant
             $etudiantData = [
-                'utilisateur_id' => $_POST['utilisateur_id'] ?? 0,
+                'utilisateur_id' => $utilisateur_id,
                 'promotion' => $_POST['promotion'] ?? '',
                 'formation' => $_POST['formation'] ?? '',
-                'offre_id' => $_POST['offre_id'] ?? null
+                'offre_id' => !empty($_POST['offre_id']) ? $_POST['offre_id'] : null
             ];
             
             // Ajouter l'étudiant dans la base de données
             $result = $this->etudiantModel->createEtudiant($etudiantData);
             
             if ($result) {
-                header("Location: gestion?section=etudiants&success=1");
+                header("Location: ../../gestion?section=etudiants&success=1");
             } else {
-                header("Location: gestion?section=etudiants&error=1");
+                header("Location: ../../gestion?section=etudiants&error=1");
             }
             exit;
         } else {

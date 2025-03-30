@@ -89,6 +89,7 @@
                     <!-- Boutons d'action -->
                     <div class="action-buttons">
                         <div>
+                            <!-- Correction ici: ajouter un slash avant le nom de section -->
                             <a href="gestion/<?php echo $section; ?>/add" class="button button-primary">Ajouter</a>
                             <a href="gestion/<?php echo $section; ?>/stats" class="button button-secondary">Statistiques</a>
                         </div>
@@ -289,22 +290,4 @@
         <footer class="footer">
             <div class="container">
                 <div class="footer-bottom">
-                    <p class="copyright">© <span id="current-year">2025</span> LeBonPlan. Tous droits réservés.</p>
-                </div>
-            </div>
-        </footer>
-    </div>
-    
-    <script>
-        // Mettre à jour l'année actuelle dans le footer
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        
-        // Fonction pour confirmer la suppression d'un élément
-        function confirmDelete(section, id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
-                window.location.href = 'gestion/' + section + '/delete?id=' + id;
-            }
-        }
-    </script>
-</body>
-</html>
+                    <p class="copyright">© <span i

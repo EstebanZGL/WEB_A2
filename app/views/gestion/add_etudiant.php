@@ -100,16 +100,6 @@
             </section>
         </main>
     
-        <footer class="footer">
-            <div class="container">
-                <div class="footer-bottom">
-                    <p class="copyright">© <span id="current-year">2025</span> LeBonPlan. Tous droits réservés.</p>
-                </div>
-            </div>
-        </footer>
-    </div>
-    <script>
-        // Mettre à jour l'année actuelle dans le footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
         
         // Générer automatiquement l'email au format prenom.nom@viacesi.fr
@@ -120,8 +110,18 @@
             if (prenom && nom) {
                 // Remplacer les caractères accentués et les espaces
                 const prenomNormalise = prenom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-");
-                const nomNormalise = nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-");
+        document.getElementById('current-year').textContent = new Date().getFullYear();
                 
+        // Générer automatiquement l'email au format prenom.nom@viacesi.fr
+        function generateEmail() {
+            const prenom = document.getElementById('prenom').value.trim().toLowerCase();
+            const nom = document.getElementById('nom').value.trim().toLowerCase();
+            }
+            if (prenom && nom) {
+                // Remplacer les caractères accentués et les espaces
+                const prenomNormalise = prenom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-");
+                const nomNormalise = nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-");
+
                 const email = `${prenomNormalise}.${nomNormalise}@viacesi.fr`;
                 document.getElementById('email').value = email;
             } else {
@@ -130,4 +130,3 @@
         }
     </script>
 </body>
-</html>
