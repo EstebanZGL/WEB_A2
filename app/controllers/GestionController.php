@@ -118,9 +118,9 @@ class GestionController {
             $result = $this->offreModel->createOffre($offreData);
             
             if ($result) {
-                header("Location: gestion?section=offres&success=1");
+                header("Location: ../gestion?section=offres&success=1");
             } else {
-                header("Location: gestion?section=offres&error=1");
+                header("Location: ../gestion?section=offres&error=1");
             }
             exit;
         } else {
@@ -154,9 +154,9 @@ class GestionController {
             $result = $this->offreModel->updateOffre($id, $offreData);
             
             if ($result) {
-                header("Location: gestion?section=offres&success=2");
+                header("Location: ../gestion?section=offres&success=2");
             } else {
-                header("Location: gestion?section=offres&error=2");
+                header("Location: ../gestion?section=offres&error=2");
             }
             exit;
         } else {
@@ -164,7 +164,7 @@ class GestionController {
             $offre = $this->offreModel->getOffreById($id);
             
             if (!$offre) {
-                header("Location: gestion?section=offres&error=3");
+                header("Location: ../gestion?section=offres&error=3");
                 exit;
             }
             
@@ -185,9 +185,9 @@ class GestionController {
         $result = $this->offreModel->deleteOffre($id);
         
         if ($result) {
-            header("Location: gestion?section=offres&success=3");
+            header("Location: ../gestion?section=offres&success=3");
         } else {
-            header("Location: gestion?section=offres&error=4");
+            header("Location: ../gestion?section=offres&error=4");
         }
         exit;
     }
@@ -223,9 +223,9 @@ class GestionController {
             $result = $this->entrepriseModel->createEntreprise($entrepriseData);
             
             if ($result) {
-                header("Location: gestion?section=entreprises&success=1");
+                header("Location: ../gestion?section=entreprises&success=1");
             } else {
-                header("Location: gestion?section=entreprises&error=1");
+                header("Location: ../gestion?section=entreprises&error=1");
             }
             exit;
         } else {
@@ -254,9 +254,9 @@ class GestionController {
             $result = $this->entrepriseModel->updateEntreprise($id, $entrepriseData);
             
             if ($result) {
-                header("Location: gestion?section=entreprises&success=2");
+                header("Location: ../gestion?section=entreprises&success=2");
             } else {
-                header("Location: gestion?section=entreprises&error=2");
+                header("Location: ../gestion?section=entreprises&error=2");
             }
             exit;
         } else {
@@ -264,7 +264,7 @@ class GestionController {
             $entreprise = $this->entrepriseModel->getEntrepriseById($id);
             
             if (!$entreprise) {
-                header("Location: gestion?section=entreprises&error=3");
+                header("Location: ../gestion?section=entreprises&error=3");
                 exit;
             }
             
@@ -282,9 +282,9 @@ class GestionController {
         $result = $this->entrepriseModel->deleteEntreprise($id);
         
         if ($result) {
-            header("Location: gestion?section=entreprises&success=3");
+            header("Location: ../gestion?section=entreprises&success=3");
         } else {
-            header("Location: gestion?section=entreprises&error=4");
+            header("Location: ../gestion?section=entreprises&error=4");
         }
         exit;
     }
@@ -344,9 +344,9 @@ class GestionController {
             $result = $this->etudiantModel->createEtudiant($etudiantData);
             
             if ($result) {
-                header("Location: ../../gestion?section=etudiants&success=1");
+                header("Location: ../gestion?section=etudiants&success=1");
             } else {
-                header("Location: ../../gestion?section=etudiants&error=1");
+                header("Location: ../gestion?section=etudiants&error=1");
             }
             exit;
         } else {
@@ -376,9 +376,9 @@ class GestionController {
             $result = $this->etudiantModel->updateEtudiant($id, $etudiantData);
             
             if ($result) {
-                header("Location: gestion?section=etudiants&success=2");
+                header("Location: ../gestion?section=etudiants&success=2");
             } else {
-                header("Location: gestion?section=etudiants&error=2");
+                header("Location: ../gestion?section=etudiants&error=2");
             }
             exit;
         } else {
@@ -386,7 +386,7 @@ class GestionController {
             $etudiant = $this->etudiantModel->getEtudiantById($id);
             
             if (!$etudiant) {
-                header("Location: gestion?section=etudiants&error=3");
+                header("Location: ../gestion?section=etudiants&error=3");
                 exit;
             }
             
@@ -407,9 +407,9 @@ class GestionController {
         $result = $this->etudiantModel->deleteEtudiant($id);
         
         if ($result) {
-            header("Location: gestion?section=etudiants&success=3");
+            header("Location: ../gestion?section=etudiants&success=3");
         } else {
-            header("Location: gestion?section=etudiants&error=4");
+            header("Location: ../gestion?section=etudiants&error=4");
         }
         exit;
     }
