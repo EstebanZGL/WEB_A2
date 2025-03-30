@@ -198,8 +198,31 @@ public function createEtudiant($email, $password, $nom, $prenom, $promotion = ''
             ];
         }
         
-               
-    } 
+        error_log("Exécution de la requête d'insertion d'étudiant avec les paramètres: " . print_r($params, true));
+        
+        if (!$stmt->execute($params)) {
+            $errorInfo = $stmt->errorInfo();
+            error_log("Erreur SQL lors de l'insertion de l'étudiant: " . print_r($errorInfo, true));
+            $this->pdo->rollBack();
+            return false;
+        }
+        
+        $this->pdo->commit();
+        error_log("Étudiant créé avec succès: ID utilisateur=$userId");
+        return $userId;
+    } catch (PDOException $e) {
+        error_log("Exception PDO lors de la création de l'étudiant: " . $e->getMessage());
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }
+        return false;
+    } catch (Exception $e) {
+        error_log("Exception générale lors de la création de l'étudiant: " . $e->getMessage());
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }
+        return false;
+    }
 }
     /**
      * Crée un pilote (utilisateur + entrée dans la table pilote)
