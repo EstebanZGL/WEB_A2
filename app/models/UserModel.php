@@ -74,11 +74,12 @@ class UserModel {
         }
     }
 
-    
-
-    public function createUser($email, $password, $userType, $nom = 'Nouvel', $prenom = 'Utilisateur') {
+    /**
+     * Crée un utilisateur de base (fonction interne)
+     */
+    private function createBaseUser($email, $password, $nom, $prenom) {
         try {
-            // Insérer d'abord dans la table utilisateur
+            // Insérer dans la table utilisateur
             $stmt = $this->pdo->prepare("
                 INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, date_creation)
                 VALUES (:email, :mot_de_passe, :nom, :prenom, :date_creation)
@@ -92,43 +93,131 @@ class UserModel {
                 ':date_creation' => date('Y-m-d H:i:s')
             ]);
             
-            $userId = $this->pdo->lastInsertId();
+            return $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la création de l'utilisateur de base: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Crée un étudiant (utilisateur + entrée dans la table étudiant)
+     */
+    public function createEtudiant($email, $password, $nom, $prenom, $promotion = '', $formation = '', $offre_id = null) {
+        try {
+            $this->pdo->beginTransaction();
             
-            // Reste du code inchangé...
+            // Créer l'utilisateur de base
+            $userId = $this->createBaseUser($email, $password, $nom, $prenom);
             
-            // Ensuite, insérer dans la table correspondant au type d'utilisateur
-            if ($userType == 0) { // Étudiant
-                $stmt = $this->pdo->prepare("
-                    INSERT INTO etudiant (utilisateur_id, promotion, formation)
-                    VALUES (:utilisateur_id, :promotion, :formation)
-                ");
-                $stmt->execute([
-                    ':utilisateur_id' => $userId,
-                    ':promotion' => 'Promotion ' . (date('Y') + 2),
-                    ':formation' => 'Formation 1'
-                ]);
-            } elseif ($userType == 1) { // Pilote
-                $stmt = $this->pdo->prepare("
-                    INSERT INTO pilote (utilisateur_id, departement, specialite)
-                    VALUES (:utilisateur_id, :departement, :specialite)
-                ");
-                $stmt->execute([
-                    ':utilisateur_id' => $userId,
-                    ':departement' => 'Département 1',
-                    ':specialite' => 'Spécialité 1'
-                ]);
-            } elseif ($userType == 2) { // Administrateur
-                $stmt = $this->pdo->prepare("
-                    INSERT INTO administrateur (utilisateur_id)
-                    VALUES (:utilisateur_id)
-                ");
-                $stmt->execute([':utilisateur_id' => $userId]);
+            if (!$userId) {
+                $this->pdo->rollBack();
+                return false;
             }
             
+            // Créer l'entrée dans la table étudiant
+            $stmt = $this->pdo->prepare("
+                INSERT INTO etudiant (utilisateur_id, promotion, formation, offre_id)
+                VALUES (:utilisateur_id, :promotion, :formation, :offre_id)
+            ");
+            
+            $stmt->execute([
+                ':utilisateur_id' => $userId,
+                ':promotion' => $promotion ?: ('Promotion ' . (date('Y') + 2)),
+                ':formation' => $formation ?: 'Formation 1',
+                ':offre_id' => $offre_id
+            ]);
+            
+            $this->pdo->commit();
             return $userId;
         } catch (PDOException $e) {
-            error_log("Erreur lors de la création de l'utilisateur: " . $e->getMessage());
+            $this->pdo->rollBack();
+            error_log("Erreur lors de la création de l'étudiant: " . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Crée un pilote (utilisateur + entrée dans la table pilote)
+     */
+    public function createPilote($email, $password, $nom, $prenom, $departement = '', $specialite = '') {
+        try {
+            $this->pdo->beginTransaction();
+            
+            // Créer l'utilisateur de base
+            $userId = $this->createBaseUser($email, $password, $nom, $prenom);
+            
+            if (!$userId) {
+                $this->pdo->rollBack();
+                return false;
+            }
+            
+            // Créer l'entrée dans la table pilote
+            $stmt = $this->pdo->prepare("
+                INSERT INTO pilote (utilisateur_id, departement, specialite)
+                VALUES (:utilisateur_id, :departement, :specialite)
+            ");
+            
+            $stmt->execute([
+                ':utilisateur_id' => $userId,
+                ':departement' => $departement ?: 'Département 1',
+                ':specialite' => $specialite ?: 'Spécialité 1'
+            ]);
+            
+            $this->pdo->commit();
+            return $userId;
+        } catch (PDOException $e) {
+            $this->pdo->rollBack();
+            error_log("Erreur lors de la création du pilote: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Crée un administrateur (utilisateur + entrée dans la table administrateur)
+     */
+    public function createAdmin($email, $password, $nom, $prenom) {
+        try {
+            $this->pdo->beginTransaction();
+            
+            // Créer l'utilisateur de base
+            $userId = $this->createBaseUser($email, $password, $nom, $prenom);
+            
+            if (!$userId) {
+                $this->pdo->rollBack();
+                return false;
+            }
+            
+            // Créer l'entrée dans la table administrateur
+            $stmt = $this->pdo->prepare("
+                INSERT INTO administrateur (utilisateur_id)
+                VALUES (:utilisateur_id)
+            ");
+            
+            $stmt->execute([':utilisateur_id' => $userId]);
+            
+            $this->pdo->commit();
+            return $userId;
+        } catch (PDOException $e) {
+            $this->pdo->rollBack();
+            error_log("Erreur lors de la création de l'administrateur: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Fonction de compatibilité pour l'ancien code
+     */
+    public function createUser($email, $password, $userType, $nom = 'Nouvel', $prenom = 'Utilisateur') {
+        switch ($userType) {
+            case 0: // Étudiant
+                return $this->createEtudiant($email, $password, $nom, $prenom);
+            case 1: // Pilote
+                return $this->createPilote($email, $password, $nom, $prenom);
+            case 2: // Administrateur
+                return $this->createAdmin($email, $password, $nom, $prenom);
+            default:
+                return false;
         }
     }
 

@@ -299,65 +299,55 @@ class GestionController {
         require 'app/views/gestion/stats_entreprises.php';
     }
     
-    // Méthodes pour les étudiants
-    public function addEtudiant() {
-        $this->checkGestionAuth();
-        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupérer les données du formulaire pour créer un nouvel utilisateur
-            $nom = $_POST['nom'] ?? '';
-            $prenom = $_POST['prenom'] ?? '';
-            $email = $_POST['email'] ?? '';
+        public function addEtudiant() {
+            $this->checkGestionAuth();
             
-            // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
-            $utilisateur_id = 0;
-            if (!empty($nom) && !empty($prenom) && !empty($email)) {
-                // Inclure le modèle utilisateur
-                require_once 'app/models/UserModel.php';
-                $userModel = new UserModel();
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Récupérer les données du formulaire pour créer un nouvel utilisateur
+                $nom = $_POST['nom'] ?? '';
+                $prenom = $_POST['prenom'] ?? '';
+                $email = $_POST['email'] ?? '';
+                $promotion = $_POST['promotion'] ?? '';
+                $formation = $_POST['formation'] ?? '';
+                $offre_id = !empty($_POST['offre_id']) ? $_POST['offre_id'] : null;
                 
-                // Créer un mot de passe temporaire (à changer lors de la première connexion)
-                $password = password_hash('changeme', PASSWORD_DEFAULT);
-                
-                // Créer l'utilisateur et récupérer son ID
-                $userType = 0; // 0 pour étudiant
-                $utilisateur_id = $userModel->createUser($email, $password, $userType);
-                
-                // Mettre à jour les informations de l'utilisateur
-                if ($utilisateur_id) {
-                    $userModel->updateUser($utilisateur_id, [
-                        'nom' => $nom,
-                        'prenom' => $prenom
-                    ]);
+                // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
+                if (!empty($nom) && !empty($prenom) && !empty($email)) {
+                    // Inclure le modèle utilisateur
+                    require_once 'app/models/UserModel.php';
+                    $userModel = new UserModel();
+                    
+                    // Créer un mot de passe temporaire (à changer lors de la première connexion)
+                    $password = password_hash('changeme', PASSWORD_DEFAULT);
+                    
+                    // Créer l'étudiant directement avec tous ses attributs
+                    $utilisateur_id = $userModel->createEtudiant(
+                        $email,
+                        $password,
+                        $nom,
+                        $prenom,
+                        $promotion,
+                        $formation,
+                        $offre_id
+                    );
+                    
+                    if ($utilisateur_id) {
+                        header("Location: ../../gestion?section=etudiants&success=1");
+                    } else {
+                        header("Location: ../../gestion?section=etudiants&error=1");
+                    }
+                } else {
+                    header("Location: ../../gestion?section=etudiants&error=1");
                 }
-            }
-            
-            // Récupérer les autres données du formulaire pour l'étudiant
-            $etudiantData = [
-                'utilisateur_id' => $utilisateur_id,
-                'promotion' => $_POST['promotion'] ?? '',
-                'formation' => $_POST['formation'] ?? '',
-                'offre_id' => !empty($_POST['offre_id']) ? $_POST['offre_id'] : null
-            ];
-            
-            // Ajouter l'étudiant dans la base de données
-            $result = $this->etudiantModel->createEtudiant($etudiantData);
-            
-            if ($result) {
-                header("Location: ../../gestion?section=etudiants&success=1");
+                exit;
             } else {
-                header("Location: ../../gestion?section=etudiants&error=1");
+                // Récupérer la liste des offres pour le formulaire
+                $offres = $this->offreModel->getOffresForSelect();
+                
+                // Afficher le formulaire d'ajout d'étudiant
+                require 'app/views/gestion/add_etudiant.php';
             }
-            exit;
-        } else {
-            // Récupérer la liste des utilisateurs et des offres pour le formulaire
-            $utilisateurs = $this->etudiantModel->getUtilisateursForSelect();
-            $offres = $this->offreModel->getOffresForSelect();
-            
-            // Afficher le formulaire d'ajout d'étudiant
-            require 'app/views/gestion/add_etudiant.php';
         }
-    }
     
     public function editEtudiant() {
         $this->checkGestionAuth();

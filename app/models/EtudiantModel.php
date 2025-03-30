@@ -158,5 +158,56 @@ class EtudiantModel {
         
         return $stats;
     }
+        /**
+     * Met à jour un étudiant par son ID utilisateur
+     */
+    public function updateEtudiantByUserId($utilisateur_id, $data) {
+        try {
+            // Vérifier d'abord si l'étudiant existe
+            $stmt = $this->db->prepare("SELECT id FROM etudiant WHERE utilisateur_id = :utilisateur_id");
+            $stmt->bindParam(':utilisateur_id', $utilisateur_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $etudiant = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($etudiant) {
+                // Mettre à jour l'étudiant existant
+                $query = "UPDATE etudiant SET 
+                         promotion = :promotion, 
+                         formation = :formation";
+                
+                if (isset($data['offre_id'])) {
+                    $query .= ", offre_id = :offre_id";
+                }
+                
+                $query .= " WHERE utilisateur_id = :utilisateur_id";
+                
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':utilisateur_id', $utilisateur_id, PDO::PARAM_INT);
+                $stmt->bindParam(':promotion', $data['promotion'], PDO::PARAM_STR);
+                $stmt->bindParam(':formation', $data['formation'], PDO::PARAM_STR);
+                
+                if (isset($data['offre_id'])) {
+                    $stmt->bindParam(':offre_id', $data['offre_id'], PDO::PARAM_INT);
+                }
+                
+                return $stmt->execute();
+            } else {
+                // Créer un nouvel étudiant
+                $query = "INSERT INTO etudiant (utilisateur_id, promotion, formation, offre_id) 
+                         VALUES (:utilisateur_id, :promotion, :formation, :offre_id)";
+                
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':utilisateur_id', $utilisateur_id, PDO::PARAM_INT);
+                $stmt->bindParam(':promotion', $data['promotion'], PDO::PARAM_STR);
+                $stmt->bindParam(':formation', $data['formation'], PDO::PARAM_STR);
+                $stmt->bindParam(':offre_id', $data['offre_id'], PDO::PARAM_INT);
+                
+                return $stmt->execute();
+            }
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour de l'étudiant par ID utilisateur: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 ?>
