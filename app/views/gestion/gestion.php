@@ -245,7 +245,8 @@
                     <?php 
                     // S'assurer que les variables de pagination sont définies
                     $totalPages = isset($totalPages) ? $totalPages : 1;
-                    
+                    $currentPage = isset($currentPage) ? (int)$currentPage : 1; // Conversion explicite en entier
+
                     if ($totalPages > 1): 
                     ?>
                         <div class="pagination">
@@ -260,7 +261,7 @@
                             
                             // Toujours afficher la première page
                             if ($startPage > 1) {
-                                echo '<a href="gestion?section=' . $section . '&page=1" class="pagination-item">1</a>';
+                                echo '<a href="gestion?section=' . $section . '&page=1" class="pagination-item ' . ($currentPage === 1 ? 'active' : '') . '">1</a>';
                                 if ($startPage > 2) {
                                     echo '<span class="pagination-item">...</span>';
                                 }
@@ -277,7 +278,7 @@
                                 if ($endPage < $totalPages - 1) {
                                     echo '<span class="pagination-item">...</span>';
                                 }
-                                echo '<a href="gestion?section=' . $section . '&page=' . $totalPages . '" class="pagination-item">' . $totalPages . '</a>';
+                                echo '<a href="gestion?section=' . $section . '&page=' . $totalPages . '" class="pagination-item ' . ($currentPage === $totalPages ? 'active' : '') . '">' . $totalPages . '</a>';
                             }
                             ?>
                             
