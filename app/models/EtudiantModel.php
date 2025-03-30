@@ -87,6 +87,21 @@ class EtudiantModel {
             // Commencer une transaction
             $this->db->beginTransaction();
             
+            // D'abord, récupérer l'ID de l'utilisateur associé à cet étudiant
+            $query = "SELECT utilisateur_id FROM etudiant WHERE id = :id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            $etudiant = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$etudiant || !isset($etudiant['utilisateur_id'])) {
+                $this->db->rollBack();
+                error_log("Erreur: Étudiant avec ID $id non trouvé ou sans utilisateur associé");
+                return false;
+            }
+            
+            $utilisateur_id = $etudiant['utilisateur_id'];
+            
             // Supprimer d'abord les candidatures liées
             $query = "DELETE FROM candidature WHERE etudiant_id = :id";
             $stmt = $this->db->prepare($query);
@@ -105,13 +120,19 @@ class EtudiantModel {
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             
+            // Supprimer l'utilisateur associé
+            $query = "DELETE FROM utilisateur WHERE id = :utilisateur_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':utilisateur_id', $utilisateur_id, PDO::PARAM_INT);
+            $stmt->execute();
+            
             // Valider la transaction
             $this->db->commit();
             return true;
         } catch (PDOException $e) {
             // En cas d'erreur, annuler les modifications
             $this->db->rollBack();
-            error_log("Erreur lors de la suppression de l'étudiant: " . $e->getMessage());
+            error_log("Erreur lors de la suppression de l'étudiant et de l'utilisateur associé: " . $e->getMessage());
             return false;
         }
     }
