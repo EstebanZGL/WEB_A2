@@ -299,55 +299,64 @@ class GestionController {
         require 'app/views/gestion/stats_entreprises.php';
     }
     
-        public function addEtudiant() {
-            $this->checkGestionAuth();
+    public function addEtudiant() {
+        $this->checkGestionAuth();
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Récupérer les données du formulaire pour créer un nouvel utilisateur
+            $nom = $_POST['nom'] ?? '';
+            $prenom = $_POST['prenom'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            $promotion = $_POST['promotion'] ?? '';
+            $formation = $_POST['formation'] ?? '';
+            $offre_id = !empty($_POST['offre_id']) ? $_POST['offre_id'] : null;
             
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Récupérer les données du formulaire pour créer un nouvel utilisateur
-                $nom = $_POST['nom'] ?? '';
-                $prenom = $_POST['prenom'] ?? '';
-                $email = $_POST['email'] ?? '';
-                $promotion = $_POST['promotion'] ?? '';
-                $formation = $_POST['formation'] ?? '';
-                $offre_id = !empty($_POST['offre_id']) ? $_POST['offre_id'] : null;
+            // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
+            if (!empty($nom) && !empty($prenom) && !empty($email)) {
+                // Inclure le modèle utilisateur
+                require_once 'app/models/UserModel.php';
+                $userModel = new UserModel();
                 
-                // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
-                if (!empty($nom) && !empty($prenom) && !empty($email)) {
-                    // Inclure le modèle utilisateur
-                    require_once 'app/models/UserModel.php';
-                    $userModel = new UserModel();
-                    
-                    // Créer un mot de passe temporaire (à changer lors de la première connexion)
+                // Créer un mot de passe - soit celui fourni, soit un par défaut
+                if (empty($password)) {
                     $password = password_hash('changeme', PASSWORD_DEFAULT);
-                    
-                    // Créer l'étudiant directement avec tous ses attributs
-                    $utilisateur_id = $userModel->createEtudiant(
-                        $email,
-                        $password,
-                        $nom,
-                        $prenom,
-                        $promotion,
-                        $formation,
-                        $offre_id
-                    );
-                    
-                    if ($utilisateur_id) {
-                        header("Location: ../../gestion?section=etudiants&success=1");
-                    } else {
-                        header("Location: ../../gestion?section=etudiants&error=1");
-                    }
                 } else {
-                    header("Location: ../../gestion?section=etudiants&error=1");
+                    $password = password_hash($password, PASSWORD_DEFAULT);
                 }
-                exit;
-            } else {
-                // Récupérer la liste des offres pour le formulaire
-                $offres = $this->offreModel->getOffresForSelect();
                 
-                // Afficher le formulaire d'ajout d'étudiant
-                require 'app/views/gestion/add_etudiant.php';
+                // Créer l'étudiant directement avec tous ses attributs
+                $utilisateur_id = $userModel->createEtudiant(
+                    $email,
+                    $password,
+                    $nom,
+                    $prenom,
+                    $promotion,
+                    $formation,
+                    $offre_id
+                );
+                
+                if ($utilisateur_id) {
+                    header("Location: ../../gestion?section=etudiants&success=1");
+                    exit;
+                } else {
+                    // Ajouter un log pour diagnostiquer le problème
+                    error_log("Erreur lors de la création de l'étudiant: " . print_r($_POST, true));
+                    header("Location: ../../gestion?section=etudiants&error=1");
+                    exit;
+                }
+            } else {
+                header("Location: ../../gestion?section=etudiants&error=1");
+                exit;
             }
+        } else {
+            // Récupérer la liste des offres pour le formulaire
+            $offres = $this->offreModel->getOffresForSelect();
+            
+            // Afficher le formulaire d'ajout d'étudiant
+            require 'app/views/gestion/add_etudiant.php';
         }
+    }
     
     public function editEtudiant() {
         $this->checkGestionAuth();
