@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LeBonPlan | Ajouter une offre</title>
-    <meta name="description" content="Ajouter une nouvelle offre de stage sur la plateforme LeBonPlan." />
+    <title>LeBonPlan | Modifier une offre</title>
+    <meta name="description" content="Modifier une offre de stage sur la plateforme LeBonPlan." />
     <link rel="stylesheet" href="../../public/css/style.css" />
     <link rel="stylesheet" href="../../public/css/responsive-complete.css">
     <link rel="stylesheet" href="../../public/css/gestion.css">
@@ -16,7 +16,7 @@
                 <a href="../../home">
                     <img src="../../public/images/logo.png" alt="D" width="150" height="170">
                 </a>
-
+                
                 <nav class="navbar-nav">
                     <a href="../../home" class="nav-link">Accueil</a>
                     <a href="../../offres" class="nav-link">Emplois</a>
@@ -29,68 +29,72 @@
                 </div>
             </div>
         </header>
-
+        
         <main>
             <section class="section">
                 <div class="container">
                     <div class="form-container">
-                        <h1 class="section-title">Ajouter une nouvelle offre</h1>
+                        <h1 class="section-title">Modifier une offre</h1>
                         <a href="../../gestion?section=offres" class="button button-secondary">Retour à la liste</a>
                         
-                        <form action="../../gestion/offres/add" method="post" class="form">
+                        <form action="../../gestion/offres/edit?id=<?php echo $offre['id']; ?>" method="post" class="form">
                             <div class="form-group">
                                 <label for="entreprise_id">Entreprise</label>
                                 <select id="entreprise_id" name="entreprise_id" required>
                                     <option value="">Sélectionner une entreprise</option>
                                     <?php foreach ($entreprises as $entreprise): ?>
-                                        <option value="<?php echo $entreprise['id']; ?>"><?php echo htmlspecialchars($entreprise['nom']); ?></option>
+                                        <option value="<?php echo $entreprise['id']; ?>" <?php echo $entreprise['id'] == $offre['entreprise_id'] ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($entreprise['nom']); ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-
+                            
                             <div class="form-group">
                                 <label for="titre">Titre de l'offre</label>
-                                <input type="text" id="titre" name="titre" required>
+                                <input type="text" id="titre" name="titre" value="<?php echo htmlspecialchars($offre['titre']); ?>" required>
                             </div>
-
+                            
                             <div class="form-group">
                                 <label for="description">Description</label>
-                                <textarea id="description" name="description" rows="6" required></textarea>
+                                <textarea id="description" name="description" rows="6" required><?php echo htmlspecialchars($offre['description']); ?></textarea>
                             </div>
-
+                            
                             <div class="form-group">
                                 <label for="remuneration">Rémunération (€)</label>
-                                <input type="number" id="remuneration" name="remuneration" step="0.01" min="0" required>
+                                <input type="number" id="remuneration" name="remuneration" step="0.01" min="0" value="<?php echo $offre['remuneration']; ?>" required>
                             </div>
-
+                            
                             <div class="form-row">
                                 <div class="form-group half">
                                     <label for="date_debut">Date de début</label>
-                                    <input type="date" id="date_debut" name="date_debut" required>
+                                    <input type="date" id="date_debut" name="date_debut" value="<?php echo $offre['date_debut']; ?>" required>
                                 </div>
                                 
                                 <div class="form-group half">
                                     <label for="date_fin">Date de fin</label>
-                                    <input type="date" id="date_fin" name="date_fin" required>
+                                    <input type="date" id="date_fin" name="date_fin" value="<?php echo $offre['date_fin']; ?>" required>
                                 </div>
                             </div>
+                            
                             <div class="form-row">
                                 <div class="form-group half">
                                     <label for="duree_stage">Durée du stage (mois)</label>
-                                    <input type="number" id="duree_stage" name="duree_stage" min="1" max="12" required>
+                                    <input type="number" id="duree_stage" name="duree_stage" min="1" max="12" value="<?php echo $offre['duree_stage']; ?>" required>
                                 </div>
                                 
                                 <div class="form-group half">
                                     <label for="statut">Statut</label>
                                     <select id="statut" name="statut" required>
-                                        <option value="ACTIVE">Active</option>
-                                        <option value="POURVUE">Pourvue</option>
-                                        <option value="EXPIREE">Expirée</option>
+                                        <option value="ACTIVE" <?php echo $offre['statut'] == 'ACTIVE' ? 'selected' : ''; ?>>Active</option>
+                                        <option value="POURVUE" <?php echo $offre['statut'] == 'POURVUE' ? 'selected' : ''; ?>>Pourvue</option>
+                                        <option value="EXPIREE" <?php echo $offre['statut'] == 'EXPIREE' ? 'selected' : ''; ?>>Expirée</option>
                                     </select>
                                 </div>
                             </div>
+                            
                             <div class="form-actions">
-                                <button type="submit" class="button button-primary">Ajouter l'offre</button>
+                                <button type="submit" class="button button-primary">Enregistrer les modifications</button>
                                 <a href="../../gestion?section=offres" class="button button-outline">Annuler</a>
                             </div>
                         </form>
@@ -98,7 +102,7 @@
                 </div>
             </section>
         </main>
-    
+
         <footer class="footer">
             <div class="container">
                 <div class="footer-bottom">
@@ -107,6 +111,7 @@
             </div>
         </footer>
     </div>
+    
     <script>
         // Mettre à jour l'année actuelle dans le footer
         document.getElementById('current-year').textContent = new Date().getFullYear();

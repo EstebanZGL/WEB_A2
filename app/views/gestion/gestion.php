@@ -4,48 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LeBonPlan | Gestion</title>
-    <meta name="description" content="Recherchez et postulez à des milliers d'offres d'emploi dans la technologie, le design, le marketing et plus encore." />
+    <meta name="description" content="Interface de gestion des offres, entreprises et étudiants sur la plateforme LeBonPlan." />
     <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <link rel="stylesheet" href="public/css/gestion.css">
 </head>
 <body>
     <div id="app">
-        <!-- Menu Mobile Overlay -->
-        <div class="mobile-menu-overlay"></div>
-        
-        <!-- Menu Mobile -->
-        <div class="mobile-menu">
-            <div class="mobile-menu-header">
-                <img src="public/images/logo.png" alt="D" width="100" height="113">
-                <button class="mobile-menu-close">&times;</button>
-            </div>
-            <nav class="mobile-nav">
-                <a href="home" class="mobile-nav-link">Accueil</a>
-                <a href="offres" class="mobile-nav-link">Emplois</a>
-                <a href="gestion" class="mobile-nav-link active" id="mobile-page-gestion">Gestion</a>
-                <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
-            </nav>
-            <div class="mobile-menu-footer">
-                <div class="mobile-menu-buttons">
-                    <a href="login" id="mobile-login-Bouton" class="button button-primary button-glow">Connexion</a>
-                    <a href="logout" id="mobile-logout-Bouton" class="button button-primary button-glow" style="display:none;">Déconnexion</a>
-                </div>
-            </div>
-        </div>
-        
         <header class="navbar">
             <div class="container">
-                <img src="public/images/logo.png" alt="D" width="150" height="170">
-                
-                <!-- Bouton Menu Mobile -->
-                <button class="mobile-menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-
+                <a href="home">
+                    <img src="public/images/logo.png" alt="D" width="150" height="170">
+                </a>
                 <nav class="navbar-nav">
                     <a href="home" class="nav-link">Accueil</a>
                     <a href="offres" class="nav-link">Emplois</a>
@@ -53,134 +23,273 @@
                     <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
                 </nav>
                 <div id="user-status">
-                    <a href="login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
-                    <a href="logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
+                    <a href="login" id="login-Bouton" class="button button-outline button-glow" style="display:none;">Connexion</a>
+                    <a href="logout" id="logout-Bouton" class="button button-outline button-glow">Déconnexion</a>
                 </div>
-            
-                <script src="public/js/app.js"></script>
             </div>
-            <span id="welcome-message" class="welcome-message"></span>
         </header>
         
         <main>
-            <section class="hero">
-                <div class="hero-overlay"></div>
-                <div class="container">
-                    <h1 class="hero-title">Bienvenue dans la page <span class="gradient-text">Gestion</span></h1>
-                    <p class="hero-subtitle">EN TRAVAUX, PERMETTRA DE GERER DES TRUCS</p>
-                    <form class="search-form" id="search-form">
-                        <input type="text" placeholder="Titre du poste, mot-clé ou entreprise" id="job-search" class="search-input" />
-                        <input type="text" placeholder="Lieu" id="location-search" class="search-input" />
-                        <button type="submit" class="button button-primary button-glow">Rechercher</button>
-                    </form>
-                    <div class="popular-searches">
-                        <span>Recherches populaires:</span>
-                        <a href="jobs?q=developer" class="popular-link">Développeur</a>
-                        <a href="jobs?q=designer" class="popular-link">Designer</a>
-                        <a href="jobs?q=marketing" class="popular-link">Marketing</a>
-                        <a href="jobs?q=remote" class="popular-link">Télétravail</a>
-                    </div>
-                </div>
-            </section>
-
             <section class="section">
                 <div class="container">
-                    <h2 class="section-title">Offres <span class="accent-text">Mises en Avant</span></h2>
-                    <div class="jobs-grid" id="featured-jobs">
-                        <!-- Jobs will be loaded here via JavaScript -->
+                    <h1 class="section-title">Gestion de la plateforme</h1>
+                    
+                    <!-- Onglets de navigation -->
+                    <div class="tabs">
+                        <a href="gestion?section=offres" class="tab <?php echo $section === 'offres' ? 'active' : ''; ?>">Offres</a>
+                        <a href="gestion?section=entreprises" class="tab <?php echo $section === 'entreprises' ? 'active' : ''; ?>">Entreprises</a>
+                        <a href="gestion?section=etudiants" class="tab <?php echo $section === 'etudiants' ? 'active' : ''; ?>">Étudiants</a>
                     </div>
-                </div>
-            </section>
-
-            <section class="section section-dark">
-                <div class="container">
-                    <h2 class="section-title section-title-center">Parcourir par <span class="accent-text-pink">Catégorie</span></h2>
-                    <div class="categories-grid">
-                        <a href="jobs?q=technology" class="category-card">Technologie</a>
-                        <a href="jobs?q=design" class="category-card">Design</a>
-                        <a href="jobs?q=marketing" class="category-card">Marketing</a>
-                        <a href="jobs?q=finance" class="category-card">Finance</a>
+                    <!-- Messages d'alerte -->
+                    <?php if (isset($_GET['success'])): ?>
+                        <div class="alert alert-success">
+                            <?php 
+                                $successMessage = '';
+                                switch ($_GET['success']) {
+                                    case 1:
+                                        $successMessage = 'Élément ajouté avec succès.';
+                                        break;
+                                    case 2:
+                                        $successMessage = 'Élément modifié avec succès.';
+                                        break;
+                                    case 3:
+                                        $successMessage = 'Élément supprimé avec succès.';
+                                        break;
+                                }
+                                echo $successMessage;
+                            ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if (isset($_GET['error'])): ?>
+                        <div class="alert alert-error">
+                            <?php 
+                                $errorMessage = '';
+                                switch ($_GET['error']) {
+                                    case 1:
+                                        $errorMessage = 'Erreur lors de l\'ajout de l\'élément.';
+                                        break;
+                                    case 2:
+                                        $errorMessage = 'Erreur lors de la modification de l\'élément.';
+                                        break;
+                                    case 3:
+                                        $errorMessage = 'Élément non trouvé.';
+                                        break;
+                                    case 4:
+                                        $errorMessage = 'Erreur lors de la suppression de l\'élément.';
+                                        break;
+                                }
+                                echo $errorMessage;
+                            ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <!-- Boutons d'action -->
+                    <div class="action-buttons">
+                        <div>
+                            <a href="gestion/<?php echo $section; ?>/add" class="button button-primary">Ajouter</a>
+                            <a href="gestion/<?php echo $section; ?>/stats" class="button button-secondary">Statistiques</a>
+                        </div>
+                        
+                        <!-- Formulaire de recherche (à implémenter plus tard) -->
+                        <div>
+                            <form action="gestion" method="get" class="search-form-inline">
+                                <input type="hidden" name="section" value="<?php echo $section; ?>">
+                                <input type="text" name="search" placeholder="Rechercher..." class="search-input-small">
+                                <button type="submit" class="button button-small">Rechercher</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </section>
-
-            <section class="section">
-                <div class="container">
-                    <div class="cta-card">
-                        <h2 class="cta-title">Prêt à faire le prochain pas dans votre carrière ?</h2>
-                        <p class="cta-text">Rejoignez des milliers de chercheurs d'emploi qui ont trouvé leur emploi de rêve grâce à notre plateforme.</p>
-                        <a href="jobs" class="button button-primary button-glow">Trouver des Emplois Maintenant</a>
+                    
+                    <!-- Information de pagination -->
+                    <div class="pagination-info">
+                        Affichage de <?php echo min(($currentPage - 1) * $itemsPerPage + 1, $totalItems); ?> à 
+                        <?php echo min($currentPage * $itemsPerPage, $totalItems); ?> sur <?php echo $totalItems; ?> éléments
                     </div>
+                    
+                    <!-- Tableau des données -->
+                    <div class="table-responsive">
+                        <?php if ($section === 'offres'): ?>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Titre</th>
+                                        <th>Entreprise</th>
+                                        <th>Date de début</th>
+                                        <th>Durée</th>
+                                        <th>Rémunération</th>
+                                        <th>Statut</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($items)): ?>
+                                        <tr>
+                                            <td colspan="8" class="text-center">Aucune offre trouvée</td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php foreach ($items as $item): ?>
+                                            <tr>
+                                                <td><?php echo $item['id']; ?></td>
+                                                <td><?php echo htmlspecialchars($item['titre']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['nom_entreprise']); ?></td>
+                                                <td><?php echo date('d/m/Y', strtotime($item['date_debut'])); ?></td>
+                                                <td><?php echo $item['duree_stage']; ?> mois</td>
+                                                <td><?php echo number_format($item['remuneration'], 2, ',', ' '); ?> €</td>
+                                                <td>
+                                                    <span class="badge badge-<?php echo strtolower($item['statut']); ?>">
+                                                        <?php echo $item['statut']; ?>
+                                                    </span>
+                                                </td>
+                                                <td class="actions">
+                                                    <a href="gestion/offres/edit?id=<?php echo $item['id']; ?>" class="button button-small button-edit">Modifier</a>
+                                                    <button onclick="confirmDelete('offres', <?php echo $item['id']; ?>)" class="button button-small button-delete">Supprimer</button>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        <?php elseif ($section === 'entreprises'): ?>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Adresse</th>
+                                        <th>Date de création</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($items)): ?>
+                                        <tr>
+                                            <td colspan="7" class="text-center">Aucune entreprise trouvée</td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php foreach ($items as $item): ?>
+                                            <tr>
+                                                <td><?php echo $item['id']; ?></td>
+                                                <td><?php echo htmlspecialchars($item['nom']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['email_contact']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['telephone_contact']); ?></td>
+                                                <td><?php echo htmlspecialchars(substr($item['adresse'], 0, 30) . (strlen($item['adresse']) > 30 ? '...' : '')); ?></td>
+                                                <td><?php echo date('d/m/Y', strtotime($item['date_creation'])); ?></td>
+                                                <td class="actions">
+                                                    <a href="gestion/entreprises/edit?id=<?php echo $item['id']; ?>" class="button button-small button-edit">Modifier</a>
+                                                    <button onclick="confirmDelete('entreprises', <?php echo $item['id']; ?>)" class="button button-small button-delete">Supprimer</button>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        <?php elseif ($section === 'etudiants'): ?>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Email</th>
+                                        <th>Promotion</th>
+                                        <th>Formation</th>
+                                        <th>Offre assignée</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($items)): ?>
+                                        <tr>
+                                            <td colspan="8" class="text-center">Aucun étudiant trouvé</td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php foreach ($items as $item): ?>
+                                            <tr>
+                                                <td><?php echo $item['id']; ?></td>
+                                                <td><?php echo htmlspecialchars($item['nom']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['prenom']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['email']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['promotion']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['formation']); ?></td>
+                                                <td><?php echo $item['offre_titre'] ? htmlspecialchars($item['offre_titre']) : 'Non assignée'; ?></td>
+                                                <td class="actions">
+                                                    <a href="gestion/etudiants/edit?id=<?php echo $item['id']; ?>" class="button button-small button-edit">Modifier</a>
+                                                    <button onclick="confirmDelete('etudiants', <?php echo $item['id']; ?>)" class="button button-small button-delete">Supprimer</button>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <?php if ($totalPages > 1): ?>
+                        <div class="pagination">
+                            <?php if ($currentPage > 1): ?>
+                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage - 1; ?>" class="pagination-link">&laquo; Précédent</a>
+                            <?php endif; ?>
+                            
+                            <?php
+                            // Afficher un nombre limité de liens de pagination
+                            $startPage = max(1, $currentPage - 2);
+                            $endPage = min($totalPages, $currentPage + 2);
+                            
+                            // Toujours afficher la première page
+                            if ($startPage > 1) {
+                                echo '<a href="gestion?section=' . $section . '&page=1" class="pagination-link">1</a>';
+                                if ($startPage > 2) {
+                                    echo '<span class="pagination-ellipsis">...</span>';
+                                }
+                            }
+                            
+                            // Afficher les pages intermédiaires
+                            for ($i = $startPage; $i <= $endPage; $i++) {
+                                $activeClass = ($i === $currentPage) ? 'active' : '';
+                                echo '<a href="gestion?section=' . $section . '&page=' . $i . '" class="pagination-link ' . $activeClass . '">' . $i . '</a>';
+                            }
+                            
+                            // Toujours afficher la dernière page
+                            if ($endPage < $totalPages) {
+                                if ($endPage < $totalPages - 1) {
+                                    echo '<span class="pagination-ellipsis">...</span>';
+                                }
+                                echo '<a href="gestion?section=' . $section . '&page=' . $totalPages . '" class="pagination-link">' . $totalPages . '</a>';
+                            }
+                            ?>
+                            
+                            <?php if ($currentPage < $totalPages): ?>
+                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage + 1; ?>" class="pagination-link">Suivant &raquo;</a>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </section>
         </main>
 
         <footer class="footer">
             <div class="container">
-                <div class="footer-grid">
-                    <div class="footer-brand">
-                        <a href="home" class="footer-logo">
-                            <img src="public/images/logo.png" alt="D" width="150" height="170">
-                        </a>
-                        <p class="footer-tagline">Votre passerelle vers des opportunités de carrière.</p>
-                    </div>
-                    <div class="footer-links">
-                        <h3 class="footer-heading">Pour les Chercheurs d'Emploi</h3>
-                        <ul>
-                            <li><a href="jobs" class="footer-link">Parcourir les Emplois</a></li>
-                            <li><a href="#" class="footer-link">Ressources de Carrière</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links">
-                        <h3 class="footer-heading">Entreprise</h3>
-                        <ul>
-                            <li><a href="#" class="footer-link">À Propos de Nous</a></li>
-                            <li><a href="#" class="footer-link">Contact</a></li>
-                        </ul>
-                    </div>
-                </div>
                 <div class="footer-bottom">
                     <p class="copyright">© <span id="current-year">2025</span> LeBonPlan. Tous droits réservés.</p>
                 </div>
             </div>
         </footer>
     </div>
-    <script src="public/js/mobile-menu.js"></script>
     <script>
-        // Synchroniser les états de connexion entre le menu mobile et le menu normal
-        document.addEventListener('DOMContentLoaded', function() {
-            // Vérifier si l'utilisateur est connecté et mettre à jour le menu mobile
-            function updateMobileMenuVisibility() {
-                // Synchroniser les liens de gestion et admin
-                const pageGestion = document.getElementById('page-gestion');
-                const mobilePageGestion = document.getElementById('mobile-page-gestion');
-                const pageAdmin = document.getElementById('page-admin');
-                const mobilePageAdmin = document.getElementById('mobile-page-admin');
-            
-                // Vérifier si les éléments existent avant de manipuler leur style
-                if (pageGestion && mobilePageGestion) {
-                    mobilePageGestion.style.display = pageGestion.style.display;
-                }
-                if (pageAdmin && mobilePageAdmin) {
-                    mobilePageAdmin.style.display = pageAdmin.style.display;
-                }
-                // Synchroniser les boutons de connexion/déconnexion
-                const loginBtn = document.getElementById('login-Bouton');
-                const mobileLoginBtn = document.getElementById('mobile-login-Bouton');
-                const logoutBtn = document.getElementById('logout-Bouton');
-                const mobileLogoutBtn = document.getElementById('mobile-logout-Bouton');
-            
-                if (loginBtn && mobileLoginBtn) {
-                    mobileLoginBtn.style.display = loginBtn.style.display;
-                }
-                if (logoutBtn && mobileLogoutBtn) {
-                    mobileLogoutBtn.style.display = logoutBtn.style.display;
-                }
+        // Mettre à jour l'année actuelle dans le footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Fonction pour confirmer la suppression d'un élément
+        function confirmDelete(section, id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
+                window.location.href = 'gestion/' + section + '/delete?id=' + id;
             }
-            
-            // Exécuter après un court délai pour s'assurer que app.js a terminé
-            setTimeout(updateMobileMenuVisibility, 100);
-        });
+        }
     </script>
 </body>
 </html>
