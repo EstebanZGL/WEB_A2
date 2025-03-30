@@ -407,9 +407,9 @@ class GestionController {
         $result = $this->etudiantModel->deleteEtudiant($id);
         
         if ($result) {
-            header("Location: ../gestion?section=etudiants&success=3");
+            header("Location: ../../gestion?section=etudiants&success=3");
         } else {
-            header("Location: ../gestion?section=etudiants&error=4");
+            header("Location: ../../gestion?section=etudiants&error=4");
         }
         exit;
     }
