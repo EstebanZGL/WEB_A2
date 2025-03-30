@@ -330,7 +330,18 @@ class GestionController {
                 ];
                 
                 // Créer l'utilisateur et récupérer son ID
-                $utilisateur_id = $userModel->createUser($userData);
+                $email = $email;
+                $password = $password; // Le mot de passe déjà haché
+                $userType = 0; // 0 pour étudiant
+                $utilisateur_id = $userModel->createUser($email, $password, $userType);
+
+// Puis après avoir obtenu l'ID de l'utilisateur, mettre à jour ses informations
+                if ($utilisateur_id) {
+                    $userModel->updateUser($utilisateur_id, [
+                    'nom' => $nom,
+                    'prenom' => $prenom
+                    ]);
+                }
             } else {
                 // Si on utilise un utilisateur existant (pour la rétrocompatibilité)
                 $utilisateur_id = $_POST['utilisateur_id'] ?? 0;
