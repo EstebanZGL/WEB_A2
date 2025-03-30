@@ -50,16 +50,9 @@
                                 <input type="email" id="email" name="email" required>
                                 <small>L'email sera généré automatiquement au format prenom.nom@viacesi.fr</small>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group half">
-                                    <label for="password">Mot de passe</label>
-                                    <input type="password" id="password" name="password" placeholder="Mot de passe">
-                                    <small>Laissez vide pour générer un mot de passe par défaut (changeme)</small>
-                                </div>
-                                <div class="form-group half">
-                                    <label for="password_confirm">Confirmer le mot de passe</label>
-                                    <input type="password" id="password_confirm" name="password_confirm" placeholder="Confirmer le mot de passe">
-                                </div>
+                            <div class="form-group">
+                                <label for="password">Mot de passe</label>
+                                <input type="text" id="password" name="password" placeholder="Mot de passe" required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group half">
@@ -130,17 +123,6 @@
                 document.getElementById('email').value = '';
             }
         }
-        
-        // Vérifier que les mots de passe correspondent
-        document.getElementById('add-etudiant-form').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const passwordConfirm = document.getElementById('password_confirm').value;
-            
-            if (password && password !== passwordConfirm) {
-                e.preventDefault();
-                alert('Les mots de passe ne correspondent pas.');
-            }
-        });
     </script>
 </body>
 </html>
