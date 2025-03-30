@@ -1,234 +1,265 @@
 <?php
+require_once 'config/database.php';
+
 class OffreModel {
-    private $db;
+    private $pdo;
 
     public function __construct() {
-        require_once 'config/database.php';
-        $this->db = getDbConnection();
+        // Utiliser la fonction getDbConnection pour obtenir la connexion PDO
+        $this->pdo = getDbConnection();
     }
 
+    // Méthodes existantes
+    public function getAllOffres() {
+        try {
+            $stmt = $this->pdo->query("SELECT * FROM offres ORDER BY date_offre DESC");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des offres: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function searchOffres($jobTitle = '', $location = '') {
+        try {
+            $query = "SELECT * FROM offres WHERE 1=1";
+            $params = [];
+
+            // Ajouter des conditions de recherche si elles sont fournies
+            if (!empty($jobTitle)) {
+                $query .= " AND (titre LIKE :jobTitle OR description LIKE :jobTitle OR competences LIKE :jobTitle)";
+                $params[':jobTitle'] = "%$jobTitle%";
+            }
+
+            if (!empty($location)) {
+                $query .= " AND entreprise LIKE :location";
+                $params[':location'] = "%$location%";
+            }
+
+            // Trier par date décroissante
+            $query .= " ORDER BY date_offre DESC";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la recherche d'offres: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    // Méthodes pour la gestion avec pagination
     public function getOffres($limit = 10, $offset = 0) {
-        $query = "SELECT o.*, e.nom as entreprise_nom, u.nom as createur_nom, u.prenom as createur_prenom 
-                 FROM offre_stage o 
-                 LEFT JOIN entreprise e ON o.entreprise_id = e.id 
-                 LEFT JOIN utilisateur u ON o.createur_id = u.id 
-                 ORDER BY o.date_publication DESC 
-                 LIMIT :limit OFFSET :offset";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT o.*, e.nom as nom_entreprise
+                FROM offres o
+                LEFT JOIN entreprises e ON o.entreprise_id = e.id
+                ORDER BY o.date_publication DESC
+                LIMIT :limit OFFSET :offset
+            ");
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des offres avec pagination: " . $e->getMessage());
+            return [];
+        }
     }
 
     public function countOffres() {
-        $query = "SELECT COUNT(*) as total FROM offre_stage";
-        $stmt = $this->db->query($query);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        return (int)$result['total'];
+        try {
+            $stmt = $this->pdo->query("SELECT COUNT(*) FROM offres");
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Erreur lors du comptage des offres: " . $e->getMessage());
+            return 0;
+        }
     }
+
     public function getOffreById($id) {
-        $query = "SELECT o.*, e.nom as entreprise_nom 
-                 FROM offre_stage o 
-                 LEFT JOIN entreprise e ON o.entreprise_id = e.id 
-                 WHERE o.id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT o.*, e.nom as nom_entreprise
+                FROM offres o
+                LEFT JOIN entreprises e ON o.entreprise_id = e.id
+                WHERE o.id = :id
+            ");
+            $stmt->execute([':id' => $id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération de l'offre: " . $e->getMessage());
+            return null;
+        }
     }
-    
-    public function getOffresForSelect() {
-        $query = "SELECT o.id, CONCAT(o.titre, ' (', e.nom, ')') as titre_complet 
-                 FROM offre_stage o 
-                 JOIN entreprise e ON o.entreprise_id = e.id 
-                 WHERE o.statut = 'ACTIVE' 
-                 ORDER BY o.titre ASC";
-        $stmt = $this->db->query($query);
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-    
+
     public function createOffre($data) {
-        $query = "INSERT INTO offre_stage (entreprise_id, createur_id, titre, description, 
-                 remuneration, date_debut, date_fin, date_publication, statut, duree_stage) 
-                 VALUES (:entreprise_id, :createur_id, :titre, :description, 
-                 :remuneration, :date_debut, :date_fin, :date_publication, :statut, :duree_stage)";
-        
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':entreprise_id', $data['entreprise_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':createur_id', $data['createur_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':titre', $data['titre'], PDO::PARAM_STR);
-        $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
-        $stmt->bindParam(':remuneration', $data['remuneration'], PDO::PARAM_STR);
-        $stmt->bindParam(':date_debut', $data['date_debut'], PDO::PARAM_STR);
-        $stmt->bindParam(':date_fin', $data['date_fin'], PDO::PARAM_STR);
-        $stmt->bindParam(':date_publication', $data['date_publication'], PDO::PARAM_STR);
-        $stmt->bindParam(':statut', $data['statut'], PDO::PARAM_STR);
-        $stmt->bindParam(':duree_stage', $data['duree_stage'], PDO::PARAM_INT);
-        
-        return $stmt->execute();
+        try {
+            $stmt = $this->pdo->prepare("
+                INSERT INTO offres (
+                    entreprise_id, createur_id, titre, description, 
+                    remuneration, date_debut, date_fin, date_publication, 
+                    statut, duree_stage
+                ) VALUES (
+                    :entreprise_id, :createur_id, :titre, :description, 
+                    :remuneration, :date_debut, :date_fin, :date_publication, 
+                    :statut, :duree_stage
+                )
+            ");
+            
+            $stmt->execute([
+                ':entreprise_id' => $data['entreprise_id'],
+                ':createur_id' => $data['createur_id'],
+                ':titre' => $data['titre'],
+                ':description' => $data['description'],
+                ':remuneration' => $data['remuneration'],
+                ':date_debut' => $data['date_debut'],
+                ':date_fin' => $data['date_fin'],
+                ':date_publication' => $data['date_publication'],
+                ':statut' => $data['statut'],
+                ':duree_stage' => $data['duree_stage']
+            ]);
+            
+            return $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la création de l'offre: " . $e->getMessage());
+            return false;
+        }
     }
-    
+
     public function updateOffre($id, $data) {
-        $query = "UPDATE offre_stage SET 
-                 entreprise_id = :entreprise_id, 
-                 titre = :titre, 
-                 description = :description, 
-                 remuneration = :remuneration, 
-                 date_debut = :date_debut, 
-                 date_fin = :date_fin, 
-                 statut = :statut, 
-                 duree_stage = :duree_stage 
-                 WHERE id = :id";
-        
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->bindParam(':entreprise_id', $data['entreprise_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':titre', $data['titre'], PDO::PARAM_STR);
-        $stmt->bindParam(':description', $data['description'], PDO::PARAM_STR);
-        $stmt->bindParam(':remuneration', $data['remuneration'], PDO::PARAM_STR);
-        $stmt->bindParam(':date_debut', $data['date_debut'], PDO::PARAM_STR);
-        $stmt->bindParam(':date_fin', $data['date_fin'], PDO::PARAM_STR);
-        $stmt->bindParam(':statut', $data['statut'], PDO::PARAM_STR);
-        $stmt->bindParam(':duree_stage', $data['duree_stage'], PDO::PARAM_INT);
-        
-        return $stmt->execute();
+        try {
+            $stmt = $this->pdo->prepare("
+                UPDATE offres SET 
+                entreprise_id = :entreprise_id,
+                titre = :titre,
+                description = :description,
+                remuneration = :remuneration,
+                date_debut = :date_debut,
+                date_fin = :date_fin,
+                statut = :statut,
+                duree_stage = :duree_stage
+                WHERE id = :id
+            ");
+            
+            $stmt->execute([
+                ':id' => $id,
+                ':entreprise_id' => $data['entreprise_id'],
+                ':titre' => $data['titre'],
+                ':description' => $data['description'],
+                ':remuneration' => $data['remuneration'],
+                ':date_debut' => $data['date_debut'],
+                ':date_fin' => $data['date_fin'],
+                ':statut' => $data['statut'],
+                ':duree_stage' => $data['duree_stage']
+            ]);
+            
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour de l'offre: " . $e->getMessage());
+            return false;
+        }
     }
-    
+
     public function deleteOffre($id) {
-        // Vérifier d'abord s'il y a des candidatures liées à cette offre
-        $query = "SELECT COUNT(*) as count FROM candidature WHERE offre_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($result['count'] > 0) {
-            // Il y a des candidatures liées, ne pas supprimer
+        try {
+            // Vérifier s'il y a des étudiants liés à cette offre
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM etudiants WHERE offre_id = :id");
+            $stmt->execute([':id' => $id]);
+            $count = (int) $stmt->fetchColumn();
+            
+            if ($count > 0) {
+                // Mettre à jour les étudiants pour enlever la référence à cette offre
+                $stmtUpdate = $this->pdo->prepare("UPDATE etudiants SET offre_id = NULL WHERE offre_id = :id");
+                $stmtUpdate->execute([':id' => $id]);
+            }
+            
+            // Supprimer l'offre
+            $stmtDelete = $this->pdo->prepare("DELETE FROM offres WHERE id = :id");
+            $stmtDelete->execute([':id' => $id]);
+            
+            return $stmtDelete->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la suppression de l'offre: " . $e->getMessage());
             return false;
         }
-        
-        // Vérifier s'il y a des étudiants liés à cette offre
-        $query = "SELECT COUNT(*) as count FROM etudiant WHERE offre_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($result['count'] > 0) {
-            // Il y a des étudiants liés, ne pas supprimer
-            return false;
-        }
-        
-        // Supprimer les entrées de la wishlist
-        $query = "DELETE FROM wishlist WHERE offre_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        // Supprimer les compétences liées à l'offre
-        $query = "DELETE FROM offre_competence WHERE offre_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        // Supprimer l'offre
-        $query = "DELETE FROM offre_stage WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        
-        return $stmt->execute();
     }
-    
-    public function searchOffres($params) {
-        $query = "SELECT o.*, e.nom as entreprise_nom 
-                 FROM offre_stage o 
-                 JOIN entreprise e ON o.entreprise_id = e.id 
-                 WHERE 1=1";
-        $queryParams = [];
-        
-        if (!empty($params['jobTitle'])) {
-            $query .= " AND (o.titre LIKE :jobTitle OR o.description LIKE :jobTitle)";
-            $queryParams[':jobTitle'] = '%' . $params['jobTitle'] . '%';
-        }
-        
-        if (!empty($params['location'])) {
-            $query .= " AND e.adresse LIKE :location";
-            $queryParams[':location'] = '%' . $params['location'] . '%';
-        }
-        
-        // Ajouter d'autres filtres selon les besoins
-        
-        $query .= " ORDER BY o.date_publication DESC";
-        
-        $stmt = $this->db->prepare($query);
-        foreach ($queryParams as $key => $value) {
-            $stmt->bindValue($key, $value, PDO::PARAM_STR);
-        }
-        $stmt->execute();
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    public function getAllOffres() {
-        $query = "SELECT o.*, e.nom as entreprise_nom 
-                 FROM offre_stage o 
-                 JOIN entreprise e ON o.entreprise_id = e.id 
-                 ORDER BY o.date_publication DESC";
-        $stmt = $this->db->query($query);
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
+
+    // Méthode pour obtenir les statistiques des offres
     public function getOffreStats() {
-        $stats = [];
+        $stats = [
+            'total' => 0,
+            'remuneration_moyenne' => 0,
+            'duree_moyenne' => 0,
+            'par_statut' => [],
+            'par_entreprise' => [],
+            'recentes' => []
+        ];
         
-        // Nombre total d'offres
-        $query = "SELECT COUNT(*) as total FROM offre_stage";
-        $stmt = $this->db->query($query);
-        $stats['total'] = $stmt->fetchColumn();
-        
-        // Répartition par statut
-        $query = "SELECT statut, COUNT(*) as count 
-                 FROM offre_stage 
-                 GROUP BY statut";
-        $stmt = $this->db->query($query);
-        $stats['par_statut'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Offres par entreprise
-        $query = "SELECT e.nom, COUNT(o.id) as count 
-                 FROM entreprise e 
-                 LEFT JOIN offre_stage o ON e.id = o.entreprise_id 
-                 GROUP BY e.id 
-                 ORDER BY count DESC 
-                 LIMIT 10";
-        $stmt = $this->db->query($query);
-        $stats['par_entreprise'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Rémunération moyenne
-        $query = "SELECT AVG(remuneration) as moyenne FROM offre_stage";
-        $stmt = $this->db->query($query);
-        $stats['remuneration_moyenne'] = $stmt->fetchColumn();
-        
-        // Durée moyenne des stages
-        $query = "SELECT AVG(duree_stage) as moyenne FROM offre_stage";
-        $stmt = $this->db->query($query);
-        $stats['duree_moyenne'] = $stmt->fetchColumn();
-        
-        // Offres les plus récentes
-        $query = "SELECT o.titre, e.nom as entreprise, o.date_publication 
-                 FROM offre_stage o 
-                 JOIN entreprise e ON o.entreprise_id = e.id 
-                 ORDER BY o.date_publication DESC 
-                 LIMIT 5";
-        $stmt = $this->db->query($query);
-        $stats['recentes'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        return $stats;
+        try {
+            // Nombre total d'offres
+            $stmt = $this->pdo->query("SELECT COUNT(*) FROM offres");
+            $stats['total'] = (int) $stmt->fetchColumn();
+            
+            // Rémunération moyenne
+            $stmt = $this->pdo->query("SELECT AVG(remuneration) FROM offres WHERE remuneration > 0");
+            $stats['remuneration_moyenne'] = (float) $stmt->fetchColumn();
+            
+            // Durée moyenne des stages
+            $stmt = $this->pdo->query("SELECT AVG(duree_stage) FROM offres WHERE duree_stage > 0");
+            $stats['duree_moyenne'] = (float) $stmt->fetchColumn();
+            
+            // Répartition par statut
+            $stmt = $this->pdo->query("
+                SELECT statut, COUNT(*) as count
+                FROM offres
+                GROUP BY statut
+                ORDER BY count DESC
+            ");
+            $stats['par_statut'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Top entreprises par nombre d'offres
+            $stmt = $this->pdo->query("
+                SELECT e.nom, COUNT(*) as count
+                FROM offres o
+                JOIN entreprises e ON o.entreprise_id = e.id
+                GROUP BY o.entreprise_id
+                ORDER BY count DESC
+                LIMIT 5
+            ");
+            $stats['par_entreprise'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Offres les plus récentes
+            $stmt = $this->pdo->query("
+                SELECT o.titre, e.nom as entreprise, o.date_publication
+                FROM offres o
+                JOIN entreprises e ON o.entreprise_id = e.id
+                ORDER BY o.date_publication DESC
+                LIMIT 5
+            ");
+            $stats['recentes'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return $stats;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des statistiques des offres: " . $e->getMessage());
+            return $stats;
+        }
+    }
+
+    // Méthode pour obtenir la liste des offres pour un select
+    public function getOffresForSelect() {
+        try {
+            $stmt = $this->pdo->query("
+                SELECT id, titre
+                FROM offres
+                WHERE statut = 'ACTIVE'
+                ORDER BY titre ASC
+            ");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des offres pour select: " . $e->getMessage());
+            return [];
+        }
     }
 }
 ?>
