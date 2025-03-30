@@ -101,54 +101,101 @@ private function createBaseUser($email, $password, $nom, $prenom) {
 }
 
     /**
-     * Crée un étudiant (utilisateur + entrée dans la table étudiant)
-     */
+ * Crée un étudiant (utilisateur + entrée dans la table étudiant)
+ */
+/**
+ * Crée un étudiant (utilisateur + entrée dans la table étudiant)
+ */
 public function createEtudiant($email, $password, $nom, $prenom, $promotion = '', $formation = '', $offre_id = null) {
     try {
-        $this->pdo->beginTransaction();
-        
-        // Créer l'utilisateur de base
-        $userId = $this->createBaseUser($email, $password, $nom, $prenom);
-        
-        if (!$userId) {
-            $this->pdo->rollBack();
-            error_log("Erreur lors de la création de l'utilisateur de base pour l'étudiant");
+        // Vérifier si l'email existe déjà
+        $stmt = $this->pdo->prepare("SELECT id FROM utilisateur WHERE email = :email");
+        $stmt->execute([':email' => $email]);
+        if ($stmt->fetch()) {
+            error_log("Erreur: L'email $email existe déjà dans la base de données");
             return false;
         }
         
-        // Créer l'entrée dans la table étudiant
-        if ($offre_id === null || $offre_id === '') {
-            // Requête sans offre_id
+        $this->pdo->beginTransaction();
+        
+        // Créer l'utilisateur de base
+        $stmt = $this->pdo->prepare("
+            INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, date_creation)
+            VALUES (:email, :mot_de_passe, :nom, :prenom, :date_creation)
+        ");
+        
+        $stmt->execute([
+            ':email' => $email,
+            ':mot_de_passe' => $password,
+            ':nom' => $nom,
+            ':prenom' => $prenom,
+            ':date_creation' => date('Y-m-d H:i:s')
+        ]);
+        
+        $userId = $this->pdo->lastInsertId();
+        
+        if (!$userId) {
+            $this->pdo->rollBack();
+            error_log("Erreur: Impossible d'obtenir l'ID de l'utilisateur après insertion");
+            return false;
+        }
+        
+        // Définir les valeurs par défaut si nécessaire
+        $promotion = $promotion ?: ('Promotion ' . (date('Y') + 2));
+        $formation = $formation ?: 'Formation 1';
+        
+        // Créer l'entrée dans la table etudiant
+        if (empty($offre_id)) {
+            // Si offre_id est vide, null ou 0, on ne l'inclut pas dans la requête
             $stmt = $this->pdo->prepare("
                 INSERT INTO etudiant (utilisateur_id, promotion, formation)
                 VALUES (:utilisateur_id, :promotion, :formation)
             ");
             
-            $stmt->execute([
+            $params = [
                 ':utilisateur_id' => $userId,
-                ':promotion' => $promotion ?: ('Promotion ' . (date('Y') + 2)),
-                ':formation' => $formation ?: 'Formation 1'
-            ]);
+                ':promotion' => $promotion,
+                ':formation' => $formation
+            ];
         } else {
-            // Requête avec offre_id
+            // Si offre_id a une valeur, on l'inclut dans la requête
             $stmt = $this->pdo->prepare("
                 INSERT INTO etudiant (utilisateur_id, promotion, formation, offre_id)
                 VALUES (:utilisateur_id, :promotion, :formation, :offre_id)
             ");
             
-            $stmt->execute([
+            $params = [
                 ':utilisateur_id' => $userId,
-                ':promotion' => $promotion ?: ('Promotion ' . (date('Y') + 2)),
-                ':formation' => $formation ?: 'Formation 1',
-                ':offre_id' => $offre_id
-            ]);
+                ':promotion' => $promotion,
+                ':formation' => $formation,
+                ':offre_id' => intval($offre_id)
+            ];
+        }
+        
+        // Ajouter un log pour diagnostiquer le problème
+        error_log("Exécution de la requête d'insertion d'étudiant avec les paramètres: " . print_r($params, true));
+        
+        if (!$stmt->execute($params)) {
+            $errorInfo = $stmt->errorInfo();
+            error_log("Erreur SQL lors de l'insertion de l'étudiant: " . print_r($errorInfo, true));
+            $this->pdo->rollBack();
+            return false;
         }
         
         $this->pdo->commit();
+        error_log("Étudiant créé avec succès: ID utilisateur=$userId");
         return $userId;
     } catch (PDOException $e) {
-        $this->pdo->rollBack();
-        error_log("Erreur lors de la création de l'étudiant: " . $e->getMessage());
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }
+        error_log("Exception PDO lors de la création de l'étudiant: " . $e->getMessage());
+        return false;
+    } catch (Exception $e) {
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }
+        error_log("Exception générale lors de la création de l'étudiant: " . $e->getMessage());
         return false;
     }
 }

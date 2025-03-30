@@ -304,13 +304,13 @@ class GestionController {
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Récupérer les données du formulaire pour créer un nouvel utilisateur
-            $nom = $_POST['nom'] ?? '';
-            $prenom = $_POST['prenom'] ?? '';
-            $email = $_POST['email'] ?? '';
+            $nom = trim($_POST['nom'] ?? '');
+            $prenom = trim($_POST['prenom'] ?? '');
+            $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
-            $promotion = $_POST['promotion'] ?? '';
-            $formation = $_POST['formation'] ?? '';
-            $offre_id = !empty($_POST['offre_id']) ? intval($_POST['offre_id']) : null;
+            $promotion = trim($_POST['promotion'] ?? '');
+            $formation = trim($_POST['formation'] ?? '');
+            $offre_id = !empty($_POST['offre_id']) ? $_POST['offre_id'] : null;
             
             // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
             if (!empty($nom) && !empty($prenom) && !empty($email)) {
@@ -351,7 +351,12 @@ class GestionController {
                     exit;
                 }
             } else {
-                error_log("Données d'étudiant incomplètes: nom=$nom, prenom=$prenom, email=$email");
+                $missing = [];
+                if (empty($nom)) $missing[] = "nom";
+                if (empty($prenom)) $missing[] = "prenom";
+                if (empty($email)) $missing[] = "email";
+                
+                error_log("Données d'étudiant incomplètes. Champs manquants: " . implode(", ", $missing));
                 header("Location: ../../gestion?section=etudiants&error=1");
                 exit;
             }
