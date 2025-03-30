@@ -80,6 +80,9 @@
                                     case 4:
                                         $errorMessage = 'Erreur lors de la suppression de l\'élément.';
                                         break;
+                                    case 5:
+                                        $errorMessage = 'Impossible de supprimer cet étudiant car il a des candidatures associées.';
+                                        break;
                                 }
                                 echo $errorMessage;
                             ?>
@@ -290,4 +293,22 @@
         <footer class="footer">
             <div class="container">
                 <div class="footer-bottom">
-                    <p class="copyright">© <span i
+                    <p class="copyright">© <span id="current-year">2025</span> LeBonPlan. Tous droits réservés.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Mettre à jour l'année actuelle dans le footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Fonction pour confirmer la suppression
+        function confirmDelete(section, id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
+                window.location.href = 'gestion/' + section + '/delete?id=' + id;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -83,25 +83,37 @@ class EtudiantModel {
     }
     
     public function deleteEtudiant($id) {
-        // Vérifier d'abord s'il y a des candidatures liées à cet étudiant
-        $query = "SELECT COUNT(*) as count FROM candidature WHERE etudiant_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        
-        // Supprimer les entrées de la wishlist
-        $query = "DELETE FROM wishlist WHERE etudiant_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        // Supprimer l'étudiant
-        $query = "DELETE FROM etudiant WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        
-        return $stmt->execute();
+        try {
+            // Commencer une transaction
+            $this->db->beginTransaction();
+            
+            // Supprimer d'abord les candidatures liées
+            $query = "DELETE FROM candidature WHERE etudiant_id = :id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Supprimer les entrées de la wishlist
+            $query = "DELETE FROM wishlist WHERE etudiant_id = :id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Supprimer l'étudiant
+            $query = "DELETE FROM etudiant WHERE id = :id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Valider la transaction
+            $this->db->commit();
+            return true;
+        } catch (PDOException $e) {
+            // En cas d'erreur, annuler les modifications
+            $this->db->rollBack();
+            error_log("Erreur lors de la suppression de l'étudiant: " . $e->getMessage());
+            return false;
+        }
     }
     
     public function getEtudiantStats() {

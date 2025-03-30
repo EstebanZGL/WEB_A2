@@ -319,22 +319,18 @@ class GestionController {
                 // Créer un mot de passe temporaire (à changer lors de la première connexion)
                 $password = password_hash('changeme', PASSWORD_DEFAULT);
                 
-                // Données pour créer l'utilisateur
-                $userData = [
-                    'nom' => $nom,
-                    'prenom' => $prenom,
-                    'email' => $email,
-                    'password' => $password,
-                    'type' => 'etudiant', // Type d'utilisateur: étudiant
-                    'date_creation' => date('Y-m-d H:i:s')
-                ];
-                
                 // Créer l'utilisateur et récupérer son ID
-                $email = $email;
-                $password = $password; // Le mot de passe déjà haché
                 $userType = 0; // 0 pour étudiant
-                $utilisateur_id = $userModel->createUser($email, $password, $userType, $nom, $prenom);
-            $   
+                $utilisateur_id = $userModel->createUser($email, $password, $userType);
+                
+                // Mettre à jour les informations de l'utilisateur
+                if ($utilisateur_id) {
+                    $userModel->updateUser($utilisateur_id, [
+                        'nom' => $nom,
+                        'prenom' => $prenom
+                    ]);
+                }
+            }
             
             // Récupérer les autres données du formulaire pour l'étudiant
             $etudiantData = [
@@ -362,7 +358,6 @@ class GestionController {
             require 'app/views/gestion/add_etudiant.php';
         }
     }
-}
     
     public function editEtudiant() {
         $this->checkGestionAuth();
