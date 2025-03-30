@@ -37,7 +37,7 @@
                         <h1 class="section-title">Ajouter un nouvel étudiant</h1>
                         <a href="../../gestion?section=etudiants" class="button button-secondary">Retour à la liste</a>
                         
-                        <form action="../../gestion/etudiants/create" method="post" class="form">
+                        <form action="../../gestion/etudiants/add" method="post" class="form">
                             <div class="form-row">
                                 <div class="form-group half">
                                     <label for="nom">Nom</label>
