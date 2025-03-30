@@ -91,23 +91,33 @@
 }
 
 /* Formulaires */
-.gestion-form {
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
   background-color: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(4px);
   border: 1px solid var(--white-10);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
-  max-width: 800px;
-  margin: 0 auto;
 }
 
-.gestion-form h2 {
-  margin-bottom: var(--spacing-lg);
-  color: var(--foreground);
+.form {
+  margin-top: var(--spacing-lg);
+}
+
+.form-row {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
 }
 
 .form-group {
   margin-bottom: var(--spacing-lg);
+  width: 100%;
+}
+
+.form-group.half {
+  width: 50%;
 }
 
 .form-group label {
@@ -117,7 +127,13 @@
   font-weight: 500;
 }
 
-.form-control {
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
   background-color: rgba(51, 65, 85, 0.7);
@@ -127,67 +143,35 @@
   transition: var(--transition-fast);
 }
 
-.form-control:focus {
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="number"]:focus,
+.form-group input[type="date"]:focus,
+.form-group textarea:focus,
+.form-group select:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 2px var(--primary-glow);
 }
 
-.form-control::placeholder {
+.form-group input::placeholder,
+.form-group textarea::placeholder {
   color: var(--foreground-muted);
   opacity: 0.7;
 }
 
-.form-select {
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: rgba(51, 65, 85, 0.7);
-  border: 1px solid var(--white-10);
-  border-radius: var(--radius-md);
-  color: var(--foreground);
-  transition: var(--transition-fast);
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right var(--spacing-md) center;
-  background-size: 16px 16px;
+.form-group small {
+  display: block;
+  margin-top: var(--spacing-xs);
+  color: var(--foreground-muted);
+  font-size: 0.75rem;
 }
 
-.form-select:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--primary-glow);
-}
-
-.btn-submit {
-  background-color: var(--primary);
-  color: white;
-  padding: var(--spacing-sm) var(--spacing-xl);
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  font-weight: 500;
-}
-
-.btn-submit:hover {
-  background-color: var(--primary-hover);
-}
-
-.btn-cancel {
-  background-color: var(--secondary);
-  color: white;
-  padding: var(--spacing-sm) var(--spacing-xl);
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  font-weight: 500;
-  margin-right: var(--spacing-md);
-}
-
-.btn-cancel:hover {
-  background-color: var(--secondary-hover);
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
 }
 
 /* Messages */
@@ -407,4 +391,109 @@
   display: flex;
   gap: var(--spacing-sm);
   justify-content: center;
+}
+
+/* Styles pour les tables */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--white-10);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--spacing-xl);
+}
+
+.table th {
+  background-color: var(--background-darker);
+  color: var(--foreground);
+  font-weight: 600;
+  text-align: left;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--white-20);
+}
+
+.table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--white-10);
+  color: var(--foreground);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Styles pour les boutons */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-lg);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+}
+
+.button-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.button-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.button-secondary {
+  background-color: var(--secondary);
+  color: white;
+}
+
+.button-secondary:hover {
+  background-color: var(--secondary-hover);
+}
+
+.button-outline {
+  background-color: transparent;
+  border: 1px solid var(--white-10);
+  color: var(--foreground);
+}
+
+.button-outline:hover {
+  background-color: var(--white-10);
+}
+
+.button-small {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: 0.75rem;
+}
+
+.button-edit {
+  background-color: var(--primary);
+}
+
+.button-edit:hover {
+  background-color: var(--primary-hover);
+}
+
+.button-delete {
+  background-color: var(--accent);
+}
+
+.button-delete:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Style pour le texte centré */
+.text-center {
+  text-align: center;
 }
