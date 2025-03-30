@@ -105,8 +105,15 @@
                     
                     <!-- Information de pagination -->
                     <div class="pagination-info">
-                        Affichage de <?php echo min(($currentPage - 1) * $itemsPerPage + 1, $totalItems); ?> à 
-                        <?php echo min($currentPage * $itemsPerPage, $totalItems); ?> sur <?php echo $totalItems; ?> éléments
+                        <?php
+                        // S'assurer que les variables de pagination sont définies
+                        $currentPage = isset($currentPage) ? $currentPage : 1;
+                        $itemsPerPage = isset($itemsPerPage) ? $itemsPerPage : 10;
+                        $totalItems = isset($totalItems) ? $totalItems : 0;
+                        
+                        echo "Affichage de " . min(($currentPage - 1) * $itemsPerPage + 1, $totalItems) . " à " . 
+                             min($currentPage * $itemsPerPage, $totalItems) . " sur " . $totalItems . " éléments";
+                        ?>
                     </div>
                     
                     <!-- Tableau des données -->
@@ -135,10 +142,10 @@
                                             <tr>
                                                 <td><?php echo $item['id']; ?></td>
                                                 <td><?php echo htmlspecialchars($item['titre']); ?></td>
-                                                <td><?php echo htmlspecialchars($item['nom_entreprise']); ?></td>
-                                                <td><?php echo date('d/m/Y', strtotime($item['date_debut'])); ?></td>
+                                                <td><?php echo htmlspecialchars($item['nom_entreprise'] ?? ''); ?></td>
+                                                <td><?php echo isset($item['date_debut']) ? date('d/m/Y', strtotime($item['date_debut'])) : ''; ?></td>
                                                 <td><?php echo $item['duree_stage']; ?> mois</td>
-                                                <td><?php echo number_format($item['remuneration'], 2, ',', ' '); ?> €</td>
+                                                <td><?php echo number_format((float)$item['remuneration'], 2, ',', ' '); ?> €</td>
                                                 <td>
                                                     <span class="badge badge-<?php echo strtolower($item['statut']); ?>">
                                                         <?php echo $item['statut']; ?>
@@ -178,8 +185,8 @@
                                                 <td><?php echo htmlspecialchars($item['nom']); ?></td>
                                                 <td><?php echo htmlspecialchars($item['email_contact']); ?></td>
                                                 <td><?php echo htmlspecialchars($item['telephone_contact']); ?></td>
-                                                <td><?php echo htmlspecialchars(substr($item['adresse'], 0, 30) . (strlen($item['adresse']) > 30 ? '...' : '')); ?></td>
-                                                <td><?php echo date('d/m/Y', strtotime($item['date_creation'])); ?></td>
+                                                <td><?php echo htmlspecialchars(substr($item['adresse'] ?? '', 0, 30) . (strlen($item['adresse'] ?? '') > 30 ? '...' : '')); ?></td>
+                                                <td><?php echo isset($item['date_creation']) ? date('d/m/Y', strtotime($item['date_creation'])) : ''; ?></td>
                                                 <td class="actions">
                                                     <a href="gestion/entreprises/edit?id=<?php echo $item['id']; ?>" class="button button-small button-edit">Modifier</a>
                                                     <button onclick="confirmDelete('entreprises', <?php echo $item['id']; ?>)" class="button button-small button-delete">Supprimer</button>
@@ -212,12 +219,12 @@
                                         <?php foreach ($items as $item): ?>
                                             <tr>
                                                 <td><?php echo $item['id']; ?></td>
-                                                <td><?php echo htmlspecialchars($item['nom']); ?></td>
-                                                <td><?php echo htmlspecialchars($item['prenom']); ?></td>
-                                                <td><?php echo htmlspecialchars($item['email']); ?></td>
-                                                <td><?php echo htmlspecialchars($item['promotion']); ?></td>
-                                                <td><?php echo htmlspecialchars($item['formation']); ?></td>
-                                                <td><?php echo $item['offre_titre'] ? htmlspecialchars($item['offre_titre']) : 'Non assignée'; ?></td>
+                                                <td><?php echo htmlspecialchars($item['nom'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['prenom'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['email'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['promotion'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['formation'] ?? ''); ?></td>
+                                                <td><?php echo isset($item['offre_titre']) ? htmlspecialchars($item['offre_titre']) : 'Non assignée'; ?></td>
                                                 <td class="actions">
                                                     <a href="gestion/etudiants/edit?id=<?php echo $item['id']; ?>" class="button button-small button-edit">Modifier</a>
                                                     <button onclick="confirmDelete('etudiants', <?php echo $item['id']; ?>)" class="button button-small button-delete">Supprimer</button>
@@ -231,7 +238,12 @@
                     </div>
                     
                     <!-- Pagination -->
-                    <?php if ($totalPages > 1): ?>
+                    <?php 
+                    // S'assurer que les variables de pagination sont définies
+                    $totalPages = isset($totalPages) ? $totalPages : 1;
+                    
+                    if ($totalPages > 1): 
+                    ?>
                         <div class="pagination">
                             <?php if ($currentPage > 1): ?>
                                 <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage - 1; ?>" class="pagination-link">&laquo; Précédent</a>
