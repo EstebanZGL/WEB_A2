@@ -88,12 +88,7 @@ class EtudiantModel {
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if ($result['count'] > 0) {
-            // Il y a des candidatures liées, ne pas supprimer
-            return false;
-        }
         
         // Supprimer les entrées de la wishlist
         $query = "DELETE FROM wishlist WHERE etudiant_id = :id";

@@ -76,7 +76,7 @@ class UserModel {
 
     
 
-    public function createUser($email, $password, $userType) {
+    public function createUser($email, $password, $userType, $nom = 'Nouvel', $prenom = 'Utilisateur') {
         try {
             // Insérer d'abord dans la table utilisateur
             $stmt = $this->pdo->prepare("
@@ -87,12 +87,14 @@ class UserModel {
             $stmt->execute([
                 ':email' => $email,
                 ':mot_de_passe' => $password,
-                ':nom' => 'Nouvel', // Valeurs par défaut
-                ':prenom' => 'Utilisateur',
+                ':nom' => $nom,
+                ':prenom' => $prenom,
                 ':date_creation' => date('Y-m-d H:i:s')
             ]);
             
             $userId = $this->pdo->lastInsertId();
+            
+            // Reste du code inchangé...
             
             // Ensuite, insérer dans la table correspondant au type d'utilisateur
             if ($userType == 0) { // Étudiant
