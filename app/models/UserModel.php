@@ -74,21 +74,22 @@ class UserModel {
         }
     }
 
+    
+
     public function createUser($email, $password, $userType) {
         try {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            
             // Insérer d'abord dans la table utilisateur
             $stmt = $this->pdo->prepare("
-                INSERT INTO utilisateur (email, mot_de_passe, nom, prenom)
-                VALUES (:email, :mot_de_passe, :nom, :prenom)
+                INSERT INTO utilisateur (email, mot_de_passe, nom, prenom, date_creation)
+                VALUES (:email, :mot_de_passe, :nom, :prenom, :date_creation)
             ");
             
             $stmt->execute([
                 ':email' => $email,
-                ':mot_de_passe' => $hashedPassword,
-                ':nom' => 'Nouvel', // Valeurs par défaut, à modifier selon vos besoins
-                ':prenom' => 'Utilisateur'
+                ':mot_de_passe' => $password,
+                ':nom' => 'Nouvel', // Valeurs par défaut
+                ':prenom' => 'Utilisateur',
+                ':date_creation' => date('Y-m-d H:i:s')
             ]);
             
             $userId = $this->pdo->lastInsertId();
@@ -101,7 +102,7 @@ class UserModel {
                 ");
                 $stmt->execute([
                     ':utilisateur_id' => $userId,
-                    ':promotion' => 'Promotion ' . (date('Y') + 2), // Exemple: Promotion 2027
+                    ':promotion' => 'Promotion ' . (date('Y') + 2),
                     ':formation' => 'Formation 1'
                 ]);
             } elseif ($userType == 1) { // Pilote
