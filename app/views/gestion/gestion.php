@@ -16,6 +16,7 @@
                 <a href="home">
                     <img src="public/images/logo.png" alt="D" width="150" height="170">
                 </a>
+                
                 <nav class="navbar-nav">
                     <a href="home" class="nav-link">Accueil</a>
                     <a href="offres" class="nav-link">Emplois</a>
@@ -40,6 +41,7 @@
                         <a href="gestion?section=entreprises" class="tab <?php echo $section === 'entreprises' ? 'active' : ''; ?>">Entreprises</a>
                         <a href="gestion?section=etudiants" class="tab <?php echo $section === 'etudiants' ? 'active' : ''; ?>">Étudiants</a>
                     </div>
+                    
                     <!-- Messages d'alerte -->
                     <?php if (isset($_GET['success'])): ?>
                         <div class="alert alert-success">
@@ -280,6 +282,7 @@
             </div>
         </footer>
     </div>
+    
     <script>
         // Mettre à jour l'année actuelle dans le footer
         document.getElementById('current-year').textContent = new Date().getFullYear();

@@ -9,10 +9,10 @@ class OffreModel {
         $this->pdo = getDbConnection();
     }
 
-    // Méthodes existantes
+    // Méthodes existantes adaptées au nom de table offre_stage
     public function getAllOffres() {
         try {
-            $stmt = $this->pdo->query("SELECT * FROM offres ORDER BY date_offre DESC");
+            $stmt = $this->pdo->query("SELECT * FROM offre_stage ORDER BY date_publication DESC");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Erreur lors de la récupération des offres: " . $e->getMessage());
@@ -22,22 +22,25 @@ class OffreModel {
 
     public function searchOffres($jobTitle = '', $location = '') {
         try {
-            $query = "SELECT * FROM offres WHERE 1=1";
+            $query = "SELECT o.*, e.nom as entreprise FROM offre_stage o 
+                      LEFT JOIN entreprise e ON o.entreprise_id = e.id
+                      WHERE 1=1";
             $params = [];
 
             // Ajouter des conditions de recherche si elles sont fournies
             if (!empty($jobTitle)) {
-                $query .= " AND (titre LIKE :jobTitle OR description LIKE :jobTitle OR competences LIKE :jobTitle)";
+                $query .= " AND (o.titre LIKE :jobTitle OR o.description LIKE :jobTitle)";
                 $params[':jobTitle'] = "%$jobTitle%";
             }
 
             if (!empty($location)) {
-                $query .= " AND entreprise LIKE :location";
+                $query .= " AND e.nom LIKE :location";
                 $params[':location'] = "%$location%";
             }
 
             // Trier par date décroissante
-            $query .= " ORDER BY date_offre DESC";
+            $query .= " ORDER BY o.date_publication DESC";
+
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -52,8 +55,8 @@ class OffreModel {
         try {
             $stmt = $this->pdo->prepare("
                 SELECT o.*, e.nom as nom_entreprise
-                FROM offres o
-                LEFT JOIN entreprises e ON o.entreprise_id = e.id
+                FROM offre_stage o
+                LEFT JOIN entreprise e ON o.entreprise_id = e.id
                 ORDER BY o.date_publication DESC
                 LIMIT :limit OFFSET :offset
             ");
@@ -69,7 +72,7 @@ class OffreModel {
 
     public function countOffres() {
         try {
-            $stmt = $this->pdo->query("SELECT COUNT(*) FROM offres");
+            $stmt = $this->pdo->query("SELECT COUNT(*) FROM offre_stage");
             return (int) $stmt->fetchColumn();
         } catch (PDOException $e) {
             error_log("Erreur lors du comptage des offres: " . $e->getMessage());
@@ -81,8 +84,8 @@ class OffreModel {
         try {
             $stmt = $this->pdo->prepare("
                 SELECT o.*, e.nom as nom_entreprise
-                FROM offres o
-                LEFT JOIN entreprises e ON o.entreprise_id = e.id
+                FROM offre_stage o
+                LEFT JOIN entreprise e ON o.entreprise_id = e.id
                 WHERE o.id = :id
             ");
             $stmt->execute([':id' => $id]);
@@ -96,7 +99,7 @@ class OffreModel {
     public function createOffre($data) {
         try {
             $stmt = $this->pdo->prepare("
-                INSERT INTO offres (
+                INSERT INTO offre_stage (
                     entreprise_id, createur_id, titre, description, 
                     remuneration, date_debut, date_fin, date_publication, 
                     statut, duree_stage
@@ -130,7 +133,7 @@ class OffreModel {
     public function updateOffre($id, $data) {
         try {
             $stmt = $this->pdo->prepare("
-                UPDATE offres SET 
+                UPDATE offre_stage SET 
                 entreprise_id = :entreprise_id,
                 titre = :titre,
                 description = :description,
@@ -164,18 +167,51 @@ class OffreModel {
     public function deleteOffre($id) {
         try {
             // Vérifier s'il y a des étudiants liés à cette offre
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM etudiants WHERE offre_id = :id");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM etudiant WHERE offre_id = :id");
             $stmt->execute([':id' => $id]);
             $count = (int) $stmt->fetchColumn();
             
             if ($count > 0) {
                 // Mettre à jour les étudiants pour enlever la référence à cette offre
-                $stmtUpdate = $this->pdo->prepare("UPDATE etudiants SET offre_id = NULL WHERE offre_id = :id");
+                $stmtUpdate = $this->pdo->prepare("UPDATE etudiant SET offre_id = NULL WHERE offre_id = :id");
                 $stmtUpdate->execute([':id' => $id]);
             }
             
+            // Vérifier s'il y a des candidatures liées à cette offre
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM candidature WHERE offre_id = :id");
+            $stmt->execute([':id' => $id]);
+            $count = (int) $stmt->fetchColumn();
+            
+            if ($count > 0) {
+                // Supprimer les candidatures liées à cette offre
+                $stmtDelete = $this->pdo->prepare("DELETE FROM candidature WHERE offre_id = :id");
+                $stmtDelete->execute([':id' => $id]);
+            }
+            
+            // Vérifier s'il y a des entrées dans wishlist liées à cette offre
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM wishlist WHERE offre_id = :id");
+            $stmt->execute([':id' => $id]);
+            $count = (int) $stmt->fetchColumn();
+            
+            if ($count > 0) {
+                // Supprimer les entrées de wishlist liées à cette offre
+                $stmtDelete = $this->pdo->prepare("DELETE FROM wishlist WHERE offre_id = :id");
+                $stmtDelete->execute([':id' => $id]);
+            }
+            
+            // Vérifier s'il y a des compétences liées à cette offre
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM offre_competence WHERE offre_id = :id");
+            $stmt->execute([':id' => $id]);
+            $count = (int) $stmt->fetchColumn();
+            
+            if ($count > 0) {
+                // Supprimer les compétences liées à cette offre
+                $stmtDelete = $this->pdo->prepare("DELETE FROM offre_competence WHERE offre_id = :id");
+                $stmtDelete->execute([':id' => $id]);
+            }
+            
             // Supprimer l'offre
-            $stmtDelete = $this->pdo->prepare("DELETE FROM offres WHERE id = :id");
+            $stmtDelete = $this->pdo->prepare("DELETE FROM offre_stage WHERE id = :id");
             $stmtDelete->execute([':id' => $id]);
             
             return $stmtDelete->rowCount() > 0;
@@ -198,21 +234,21 @@ class OffreModel {
         
         try {
             // Nombre total d'offres
-            $stmt = $this->pdo->query("SELECT COUNT(*) FROM offres");
+            $stmt = $this->pdo->query("SELECT COUNT(*) FROM offre_stage");
             $stats['total'] = (int) $stmt->fetchColumn();
             
             // Rémunération moyenne
-            $stmt = $this->pdo->query("SELECT AVG(remuneration) FROM offres WHERE remuneration > 0");
+            $stmt = $this->pdo->query("SELECT AVG(remuneration) FROM offre_stage WHERE remuneration > 0");
             $stats['remuneration_moyenne'] = (float) $stmt->fetchColumn();
             
             // Durée moyenne des stages
-            $stmt = $this->pdo->query("SELECT AVG(duree_stage) FROM offres WHERE duree_stage > 0");
+            $stmt = $this->pdo->query("SELECT AVG(duree_stage) FROM offre_stage WHERE duree_stage > 0");
             $stats['duree_moyenne'] = (float) $stmt->fetchColumn();
             
             // Répartition par statut
             $stmt = $this->pdo->query("
                 SELECT statut, COUNT(*) as count
-                FROM offres
+                FROM offre_stage
                 GROUP BY statut
                 ORDER BY count DESC
             ");
@@ -221,8 +257,8 @@ class OffreModel {
             // Top entreprises par nombre d'offres
             $stmt = $this->pdo->query("
                 SELECT e.nom, COUNT(*) as count
-                FROM offres o
-                JOIN entreprises e ON o.entreprise_id = e.id
+                FROM offre_stage o
+                JOIN entreprise e ON o.entreprise_id = e.id
                 GROUP BY o.entreprise_id
                 ORDER BY count DESC
                 LIMIT 5
@@ -232,8 +268,8 @@ class OffreModel {
             // Offres les plus récentes
             $stmt = $this->pdo->query("
                 SELECT o.titre, e.nom as entreprise, o.date_publication
-                FROM offres o
-                JOIN entreprises e ON o.entreprise_id = e.id
+                FROM offre_stage o
+                JOIN entreprise e ON o.entreprise_id = e.id
                 ORDER BY o.date_publication DESC
                 LIMIT 5
             ");
@@ -251,7 +287,7 @@ class OffreModel {
         try {
             $stmt = $this->pdo->query("
                 SELECT id, titre
-                FROM offres
+                FROM offre_stage
                 WHERE statut = 'ACTIVE'
                 ORDER BY titre ASC
             ");
