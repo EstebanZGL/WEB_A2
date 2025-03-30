@@ -310,7 +310,7 @@ class GestionController {
             $password = $_POST['password'] ?? '';
             $promotion = $_POST['promotion'] ?? '';
             $formation = $_POST['formation'] ?? '';
-            $offre_id = !empty($_POST['offre_id']) ? $_POST['offre_id'] : null;
+            $offre_id = !empty($_POST['offre_id']) ? intval($_POST['offre_id']) : null;
             
             // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
             if (!empty($nom) && !empty($prenom) && !empty($email)) {
@@ -324,6 +324,11 @@ class GestionController {
                 } else {
                     $password = password_hash($password, PASSWORD_DEFAULT);
                 }
+                
+                // Ajouter un log pour diagnostiquer le problème
+                error_log("Tentative de création d'étudiant avec les données: " . 
+                          "email=$email, nom=$nom, prenom=$prenom, promotion=$promotion, formation=$formation, offre_id=" . 
+                          ($offre_id === null ? "NULL" : $offre_id));
                 
                 // Créer l'étudiant directement avec tous ses attributs
                 $utilisateur_id = $userModel->createEtudiant(
@@ -346,6 +351,7 @@ class GestionController {
                     exit;
                 }
             } else {
+                error_log("Données d'étudiant incomplètes: nom=$nom, prenom=$prenom, email=$email");
                 header("Location: ../../gestion?section=etudiants&error=1");
                 exit;
             }

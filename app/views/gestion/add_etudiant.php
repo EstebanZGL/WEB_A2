@@ -34,7 +34,7 @@
                     <div class="form-container">
                         <h1 class="section-title">Ajouter un nouvel étudiant</h1>
                         <a href="../../gestion?section=etudiants" class="button button-secondary">Retour à la liste</a>
-                        <form action="../../gestion/etudiants/add" method="post" class="form">
+                        <form action="../../gestion/etudiants/add" method="post" class="form" id="add-etudiant-form">
                             <div class="form-row">
                                 <div class="form-group half">
                                     <label for="nom">Nom</label>
@@ -132,7 +132,7 @@
         }
         
         // Vérifier que les mots de passe correspondent
-        document.querySelector('form').addEventListener('submit', function(e) {
+        document.getElementById('add-etudiant-form').addEventListener('submit', function(e) {
             const password = document.getElementById('password').value;
             const passwordConfirm = document.getElementById('password_confirm').value;
             
