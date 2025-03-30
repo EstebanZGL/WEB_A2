@@ -37,31 +37,24 @@
                         <h1 class="section-title">Ajouter un nouvel étudiant</h1>
                         <a href="../../gestion?section=etudiants" class="button button-secondary">Retour à la liste</a>
                         
-                        <form action="../../gestion/etudiants/add" method="post" class="form">
+                        <form action="../../gestion/etudiants/create" method="post" class="form">
                             <div class="form-row">
                                 <div class="form-group half">
                                     <label for="nom">Nom</label>
-                                    <input type="text" id="nom" name="nom" required placeholder="Nom de l'étudiant">
+                                    <input type="text" id="nom" name="nom" required placeholder="Nom de l'étudiant" oninput="generateEmail()">
                                 </div>
                                 
                                 <div class="form-group half">
                                     <label for="prenom">Prénom</label>
-                                    <input type="text" id="prenom" name="prenom" required placeholder="Prénom de l'étudiant">
+                                    <input type="text" id="prenom" name="prenom" required placeholder="Prénom de l'étudiant" oninput="generateEmail()">
                                 </div>
                             </div>
                             
-                            
-                            // à enlever
-                            <div class="form-group" style="display: none;">
-                                <label for="utilisateur_id">Utilisateur</label>
-                                <select id="utilisateur_id" name="utilisateur_id">
-                                    <option value="">Sélectionner un utilisateur</option>
-                                    <?php foreach ($utilisateurs as $utilisateur): ?>
-                                        <option value="<?php echo $utilisateur['id']; ?>"><?php echo htmlspecialchars($utilisateur['nom_complet']); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required readonly>
+                                <small>L'email sera généré automatiquement au format prenom.nom@viacesi.fr</small>
                             </div>
-                            
                             
                             <div class="form-row">
                                 <div class="form-group half">
@@ -118,6 +111,23 @@
     <script>
         // Mettre à jour l'année actuelle dans le footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Générer automatiquement l'email au format prenom.nom@viacesi.fr
+        function generateEmail() {
+            const prenom = document.getElementById('prenom').value.trim().toLowerCase();
+            const nom = document.getElementById('nom').value.trim().toLowerCase();
+            
+            if (prenom && nom) {
+                // Remplacer les caractères accentués et les espaces
+                const prenomNormalise = prenom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-");
+                const nomNormalise = nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-");
+                
+                const email = `${prenomNormalise}.${nomNormalise}@viacesi.fr`;
+                document.getElementById('email').value = email;
+            } else {
+                document.getElementById('email').value = '';
+            }
+        }
     </script>
 </body>
 </html>
