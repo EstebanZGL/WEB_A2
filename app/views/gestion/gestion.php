@@ -64,7 +64,7 @@
                     <?php endif; ?>
                     
                     <?php if (isset($_GET['error'])): ?>
-                        <div class="alert alert-error">
+                        <div class="alert alert-danger">
                             <?php 
                                 $errorMessage = '';
                                 switch ($_GET['error']) {
@@ -123,7 +123,7 @@
                     <!-- Tableau des données -->
                     <div class="table-responsive">
                         <?php if ($section === 'offres'): ?>
-                            <table class="table">
+                            <table class="gestion-table gestion-table-offres">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -156,8 +156,8 @@
                                                     </span>
                                                 </td>
                                                 <td class="actions">
-                                                    <a href="gestion/offres/edit?id=<?php echo $item['id']; ?>" class="button button-small button-edit">Modifier</a>
-                                                    <button onclick="confirmDelete('offres', <?php echo $item['id']; ?>)" class="button button-small button-delete">Supprimer</button>
+                                                    <a href="gestion/offres/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>
+                                                    <button onclick="confirmDelete('offres', <?php echo $item['id']; ?>)" class="btn-supprimer">Supprimer</button>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -165,7 +165,7 @@
                                 </tbody>
                             </table>
                         <?php elseif ($section === 'entreprises'): ?>
-                            <table class="table">
+                            <table class="gestion-table gestion-table-entreprises">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -192,8 +192,8 @@
                                                 <td><?php echo htmlspecialchars(substr($item['adresse'] ?? '', 0, 30) . (strlen($item['adresse'] ?? '') > 30 ? '...' : '')); ?></td>
                                                 <td><?php echo isset($item['date_creation']) ? date('d/m/Y', strtotime($item['date_creation'])) : ''; ?></td>
                                                 <td class="actions">
-                                                    <a href="gestion/entreprises/edit?id=<?php echo $item['id']; ?>" class="button button-small button-edit">Modifier</a>
-                                                    <button onclick="confirmDelete('entreprises', <?php echo $item['id']; ?>)" class="button button-small button-delete">Supprimer</button>
+                                                    <a href="gestion/entreprises/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>
+                                                    <button onclick="confirmDelete('entreprises', <?php echo $item['id']; ?>)" class="btn-supprimer">Supprimer</button>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -201,7 +201,7 @@
                                 </tbody>
                             </table>
                         <?php elseif ($section === 'etudiants'): ?>
-                            <table class="table">
+                            <table class="gestion-table gestion-table-etudiants">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -230,8 +230,8 @@
                                                 <td><?php echo htmlspecialchars($item['formation'] ?? ''); ?></td>
                                                 <td><?php echo isset($item['offre_titre']) ? htmlspecialchars($item['offre_titre']) : 'Non assignée'; ?></td>
                                                 <td class="actions">
-                                                    <a href="gestion/etudiants/edit?id=<?php echo $item['id']; ?>" class="button button-small button-edit">Modifier</a>
-                                                    <button onclick="confirmDelete('etudiants', <?php echo $item['id']; ?>)" class="button button-small button-delete">Supprimer</button>
+                                                    <a href="gestion/etudiants/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>
+                                                    <button onclick="confirmDelete('etudiants', <?php echo $item['id']; ?>)" class="btn-supprimer">Supprimer</button>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -250,7 +250,7 @@
                     ?>
                         <div class="pagination">
                             <?php if ($currentPage > 1): ?>
-                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage - 1; ?>" class="pagination-link">&laquo; Précédent</a>
+                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage - 1; ?>" class="pagination-item">&laquo;</a>
                             <?php endif; ?>
                             
                             <?php
@@ -260,29 +260,29 @@
                             
                             // Toujours afficher la première page
                             if ($startPage > 1) {
-                                echo '<a href="gestion?section=' . $section . '&page=1" class="pagination-link">1</a>';
+                                echo '<a href="gestion?section=' . $section . '&page=1" class="pagination-item">1</a>';
                                 if ($startPage > 2) {
-                                    echo '<span class="pagination-ellipsis">...</span>';
+                                    echo '<span class="pagination-item">...</span>';
                                 }
                             }
                             
                             // Afficher les pages intermédiaires
                             for ($i = $startPage; $i <= $endPage; $i++) {
                                 $activeClass = ($i === $currentPage) ? 'active' : '';
-                                echo '<a href="gestion?section=' . $section . '&page=' . $i . '" class="pagination-link ' . $activeClass . '">' . $i . '</a>';
+                                echo '<a href="gestion?section=' . $section . '&page=' . $i . '" class="pagination-item ' . $activeClass . '">' . $i . '</a>';
                             }
                             
                             // Toujours afficher la dernière page
                             if ($endPage < $totalPages) {
                                 if ($endPage < $totalPages - 1) {
-                                    echo '<span class="pagination-ellipsis">...</span>';
+                                    echo '<span class="pagination-item">...</span>';
                                 }
-                                echo '<a href="gestion?section=' . $section . '&page=' . $totalPages . '" class="pagination-link">' . $totalPages . '</a>';
+                                echo '<a href="gestion?section=' . $section . '&page=' . $totalPages . '" class="pagination-item">' . $totalPages . '</a>';
                             }
                             ?>
                             
                             <?php if ($currentPage < $totalPages): ?>
-                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage + 1; ?>" class="pagination-link">Suivant &raquo;</a>
+                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage + 1; ?>" class="pagination-item">&raquo;</a>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
