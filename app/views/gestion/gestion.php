@@ -11,8 +11,38 @@
 </head>
 <body>
     <div id="app">
+        <!-- Menu Mobile Overlay - Déplacé ici comme dans home.php -->
+        <div class="mobile-menu-overlay"></div>
+        
+        <!-- Menu Mobile - Déplacé ici comme dans home.php -->
+        <div class="mobile-menu">
+            <div class="mobile-menu-header">
+                <img src="public/images/logo.png" alt="D" width="100" height="113">
+                <button class="mobile-menu-close">&times;</button>
+            </div>
+            <nav class="mobile-nav">
+                <a href="home" class="mobile-nav-link">Accueil</a>
+                <a href="offres" class="mobile-nav-link">Emplois</a>
+                <a href="gestion" class="mobile-nav-link active">Gestion</a>
+                <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <div class="mobile-menu-buttons">
+                    <a href="logout" class="button button-primary button-glow">Déconnexion</a>
+                </div>
+            </div>
+        </div>
+        
         <header class="navbar">
             <div class="container">
+                <!-- Bouton burger pour le menu mobile -->
+                <button class="mobile-menu-toggle" aria-label="Menu mobile">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
                 <a href="home">
                     <img src="public/images/logo.png" alt="D" width="150" height="170">
                 </a>
@@ -314,33 +344,27 @@
                 window.location.href = 'gestion/' + section + '/delete?id=' + id;
             }
         }
-    // Mettre à jour l'année actuelle dans le footer
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-    
-    // Fonction pour confirmer la suppression
-    function confirmDelete(section, id) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
-            window.location.href = 'gestion/' + section + '/delete?id=' + id;
-        }
-    }
-    
-    // Corriger la pagination active
-    document.addEventListener('DOMContentLoaded', function() {
-        // Récupérer le numéro de page actuel à partir de l'URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentPage = parseInt(urlParams.get('page')) || 1;
         
-        // Supprimer la classe 'active' de tous les éléments de pagination
-        document.querySelectorAll('.pagination-item').forEach(item => {
-            item.classList.remove('active');
+        // Corriger la pagination active
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupérer le numéro de page actuel à partir de l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentPage = parseInt(urlParams.get('page')) || 1;
+            
+            // Supprimer la classe 'active' de tous les éléments de pagination
+            document.querySelectorAll('.pagination-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Ajouter la classe 'active' à l'élément correspondant à la page actuelle
+            const activePageItem = document.querySelector(`.pagination-item[href$="page=${currentPage}"]`);
+            if (activePageItem) {
+                activePageItem.classList.add('active');
+            }
         });
-        
-        // Ajouter la classe 'active' à l'élément correspondant à la page actuelle
-        const activePageItem = document.querySelector(`.pagination-item[href$="page=${currentPage}"]`);
-        if (activePageItem) {
-            activePageItem.classList.add('active');
-        }
-    });
-</script>
+    </script>
+    
+    <!-- Important: Charger mobile-menu.js avant les autres scripts -->
+    <script src="public/js/mobile-menu.js"></script>
 </body>
 </html>
