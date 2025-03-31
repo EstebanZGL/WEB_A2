@@ -4,6 +4,18 @@
     padding: 2rem 0;
 }
 
+/* Ajout d'un conteneur flex pour le titre et le bouton */
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.stats-header h1 {
+    margin-bottom: 0;
+}
+
 .stats-overview {
     display: flex;
     justify-content: space-between;
@@ -148,5 +160,14 @@ canvas {
 @media (max-width: 768px) {
     .stats-overview {
         flex-direction: column;
+    }
+    
+    .stats-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .stats-header h1 {
+        margin-bottom: var(--spacing-md);
     }
 }

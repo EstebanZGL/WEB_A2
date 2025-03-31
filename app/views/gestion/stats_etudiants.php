@@ -36,9 +36,10 @@
             <section class="section">
                 <div class="container">
                     <div class="stats-container">
-                        <h1 class="section-title">Statistiques des étudiants</h1>
-                        <a href="../../gestion?section=etudiants" class="button button-secondary">Retour à la liste</a>
-                        
+                        <div class="stats-header">
+                            <h1 class="section-title">Statistiques des étudiants</h1>
+                            <a href="../../gestion?section=etudiants" class="button button-secondary">Retour à la liste</a>
+                        </div>
                         <div class="stats-overview">
                             <div class="stat-card">
                                 <h3>Nombre total d'étudiants</h3>
