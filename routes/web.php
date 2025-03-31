@@ -125,6 +125,27 @@ function route($uri) {
             // Consulter les statistiques des étudiants
             $gestionController->statsEtudiants();
             break;
+            
+        // Routes pour les pilotes dans la section gestion
+        case 'gestion/pilotes/add':
+            // Ajouter un nouveau pilote
+            $gestionController->addPilote();
+            break;
+
+        case 'gestion/pilotes/edit':
+            // Modifier un pilote existant
+            $gestionController->editPilote();
+            break;
+
+        case 'gestion/pilotes/delete':
+            // Supprimer un pilote
+            $gestionController->deletePilote();
+            break;
+
+        case 'gestion/pilotes/stats':
+            // Consulter les statistiques des pilotes
+            $gestionController->statsPilotes();
+            break;
 
         case 'admin':
             // Afficher la page administrateur
