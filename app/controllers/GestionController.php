@@ -478,6 +478,7 @@ class GestionController {
             $password = $_POST['password'] ?? '';
             $departement = trim($_POST['departement'] ?? '');
             $specialite = trim($_POST['specialite'] ?? '');
+            
             // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
             if (!empty($nom) && !empty($prenom) && !empty($email)) {
                 // Inclure le modèle utilisateur
@@ -491,26 +492,12 @@ class GestionController {
                     $password = password_hash($password, PASSWORD_DEFAULT);
                 }
                 
-                // Créer l'utilisateur
-                $utilisateur_id = $userModel->createUser($email, $password, $nom, $prenom);
+                // Créer directement le pilote avec la méthode createPilote
+                $utilisateur_id = $userModel->createPilote($email, $password, $nom, $prenom, $departement, $specialite);
+                
                 if ($utilisateur_id) {
-                    // Créer le pilote
-                    $piloteData = [
-                        'utilisateur_id' => $utilisateur_id,
-                        'departement' => $departement,
-                        'specialite' => $specialite
-                    ];
-                    
-                    $result = $this->piloteModel->createPilote($piloteData);
-                    if ($result) {
-                        header("Location: ../../gestion?section=pilotes&success=1");
-                        exit;
-                    } else {
-                        // En cas d'échec, supprimer l'utilisateur créé
-                        $userModel->deleteUser($utilisateur_id);
-                        header("Location: ../../gestion?section=pilotes&error=1");
-                        exit;
-                    }
+                    header("Location: ../../gestion?section=pilotes&success=1");
+                    exit;
                 } else {
                     header("Location: ../../gestion?section=pilotes&error=1");
                     exit;
