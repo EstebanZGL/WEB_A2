@@ -157,10 +157,16 @@ function route($uri) {
             break;
 
         default:
-        http_response_code(404);
-        echo "Page non trouvée pour l'URI: '" . $uri . "'";
-        echo "URI traitée: '" . $uri . "'<br>";
-        break;
+            // Gestion des détails des offres avec un pattern comme "offres/details/123"
+            if (preg_match('/^offres\/details\/(\d+)$/', $uri, $matches)) {
+                $id = $matches[1]; // Récupère l'ID de l'offre
+                $offresController->details($id);
+            } else {
+                http_response_code(404);
+                echo "Page non trouvée pour l'URI: '" . $uri . "'";
+                echo "URI traitée: '" . $uri . "'<br>";
+            }
+            break;
     }
 }
 
