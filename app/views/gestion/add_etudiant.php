@@ -59,10 +59,11 @@
                                     <label for="promotion">Promotion</label>
                                     <select id="promotion" name="promotion" required>
                                         <option value="">Sélectionner une promotion</option>
+                                        <option value="Promotion 2021">Promotion 2021</option>
+                                        <option value="Promotion 2022">Promotion 2022</option>
+                                        <option value="Promotion 2023">Promotion 2023</option>
+                                        <option value="Promotion 2024">Promotion 2024</option>
                                         <option value="Promotion 2025">Promotion 2025</option>
-                                        <option value="Promotion 2026">Promotion 2026</option>
-                                        <option value="Promotion 2027">Promotion 2027</option>
-                                        <option value="Promotion 2028">Promotion 2028</option>
                                     </select>
                                 </div>
                                 <div class="form-group half">
