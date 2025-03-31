@@ -13,6 +13,14 @@
     <div id="app">
         <header class="navbar">
             <div class="container">
+                <!-- Bouton burger pour le menu mobile -->
+                <button class="mobile-menu-toggle" aria-label="Menu mobile">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
                 <a href="home">
                     <img src="public/images/logo.png" alt="D" width="150" height="170">
                 </a>
@@ -26,6 +34,26 @@
                 <div id="user-status">
                     <a href="login" id="login-Bouton" class="button button-outline button-glow" style="display:none;">Connexion</a>
                     <a href="logout" id="logout-Bouton" class="button button-outline button-glow">Déconnexion</a>
+                </div>
+                
+                <!-- Menu mobile -->
+                <div class="mobile-menu-overlay"></div>
+                <div class="mobile-menu">
+                    <div class="mobile-menu-header">
+                        <span>Menu</span>
+                        <button class="mobile-menu-close" aria-label="Fermer le menu">&times;</button>
+                    </div>
+                    <nav class="mobile-nav">
+                        <a href="home" class="mobile-nav-link">Accueil</a>
+                        <a href="offres" class="mobile-nav-link">Emplois</a>
+                        <a href="gestion" class="mobile-nav-link active">Gestion</a>
+                        <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                    </nav>
+                    <div class="mobile-menu-footer">
+                        <div class="mobile-menu-buttons">
+                            <a href="logout" class="button button-primary">Déconnexion</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -314,33 +342,27 @@
                 window.location.href = 'gestion/' + section + '/delete?id=' + id;
             }
         }
-    // Mettre à jour l'année actuelle dans le footer
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-    
-    // Fonction pour confirmer la suppression
-    function confirmDelete(section, id) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
-            window.location.href = 'gestion/' + section + '/delete?id=' + id;
-        }
-    }
-    
-    // Corriger la pagination active
-    document.addEventListener('DOMContentLoaded', function() {
-        // Récupérer le numéro de page actuel à partir de l'URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentPage = parseInt(urlParams.get('page')) || 1;
         
-        // Supprimer la classe 'active' de tous les éléments de pagination
-        document.querySelectorAll('.pagination-item').forEach(item => {
-            item.classList.remove('active');
+        // Corriger la pagination active
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupérer le numéro de page actuel à partir de l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentPage = parseInt(urlParams.get('page')) || 1;
+            
+            // Supprimer la classe 'active' de tous les éléments de pagination
+            document.querySelectorAll('.pagination-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Ajouter la classe 'active' à l'élément correspondant à la page actuelle
+            const activePageItem = document.querySelector(`.pagination-item[href$="page=${currentPage}"]`);
+            if (activePageItem) {
+                activePageItem.classList.add('active');
+            }
         });
-        
-        // Ajouter la classe 'active' à l'élément correspondant à la page actuelle
-        const activePageItem = document.querySelector(`.pagination-item[href$="page=${currentPage}"]`);
-        if (activePageItem) {
-            activePageItem.classList.add('active');
-        }
-    });
-</script>
+    </script>
+    
+    <!-- Script pour le menu mobile -->
+    <script src="public/js/mobile-menu.js"></script>
 </body>
 </html>

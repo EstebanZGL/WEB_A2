@@ -497,3 +497,48 @@
 .text-center {
   text-align: center;
 }
+
+/* Styles pour les tableaux responsives */
+@media (max-width: 767px) {
+  .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+  }
+  
+  .gestion-table {
+      min-width: 800px; /* Assure que le tableau est plus large que l'écran mobile */
+  }
+  
+  .action-buttons {
+      flex-direction: column;
+      gap: 15px;
+  }
+  
+  .action-buttons > div {
+      width: 100%;
+  }
+  
+  .search-form-inline {
+      display: flex;
+      width: 100%;
+  }
+  
+  .search-input-small {
+      flex-grow: 1;
+  }
+  
+  .tabs {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 5px;
+  }
+  
+  .section-title {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+  }
+  
+  .pagination {
+      justify-content: center;
+  }
+}
