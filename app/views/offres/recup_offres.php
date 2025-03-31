@@ -1,74 +1,68 @@
 <?php
-// Utiliser la fonction de connexion existante
-require_once '../../config/database.php';
-$pdo = getDbConnection();
+// Connexion à la base de données (modifie les valeurs en fonction de ta configuration)
+$host = '20.107.81.71'; // hôte de la base de données
+$dbname = 'LeBonPlan'; // nom de la base de données
+$username = 'G3_Distant'; // votre nom d'utilisateur MySQL
+$password = '?LeCrewDuCesi6942'; // votre mot de passe MySQL
+
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Erreur de connexion : " . $e->getMessage());
+}
 
 // Récupération des filtres et paramètres de recherche
 $search = $_GET['search'] ?? '';
 $location = $_GET['location'] ?? '';
-$filters = isset($_GET['filters']) ? json_decode($_GET['filters'], true) : [];
+$filters = $_GET['filters'] ?? [];
 
 // Création de la requête SQL dynamique
-$query = "SELECT o.*, e.nom as entreprise FROM offre_stage o 
-          LEFT JOIN entreprise e ON o.entreprise_id = e.id
-          WHERE 1=1";
+$query = "SELECT * FROM offre_stage WHERE 1=1";
 $params = [];
 
 if (!empty($search)) {
-    $query .= " AND (o.titre LIKE :search OR o.description LIKE :search)";
+    $query .= " AND (titre LIKE :search OR description LIKE :search OR entreprise LIKE :search)";
     $params[':search'] = "%$search%";
 }
 
 if (!empty($location)) {
-    $query .= " AND e.nom LIKE :location";
+    $query .= " AND entreprise LIKE :location"; // Supposons que l'entreprise reflète la localisation
     $params[':location'] = "%$location%";
 }
 
-// Gestion des filtres de salaire
+if (!empty($filters['jobType'])) {
+    $placeholders = implode(',', array_fill(0, count($filters['jobType']), '?'));
+    $query .= " AND type_emploi IN ($placeholders)";
+    $params = array_merge($params, $filters['jobType']);
+}
+
+if (!empty($filters['experienceLevel'])) {
+    $placeholders = implode(',', array_fill(0, count($filters['experienceLevel']), '?'));
+    $query .= " AND experience IN ($placeholders)";
+    $params = array_merge($params, $filters['experienceLevel']);
+}
+
 if (!empty($filters['salary'])) {
     foreach ($filters['salary'] as $range) {
-        if ($range === '0-50000') {
-            $query .= " AND o.remuneration BETWEEN 0 AND 50000";
-        } elseif ($range === '50000-100000') {
-            $query .= " AND o.remuneration BETWEEN 50000 AND 100000";
-        } elseif ($range === '100000+') {
-            $query .= " AND o.remuneration >= 100000";
+        if ($range === '$0-$50K') {
+            $query .= " AND remuneration BETWEEN 0 AND 50000";
+        } elseif ($range === '$50K-$100K') {
+            $query .= " AND remuneration BETWEEN 50000 AND 100000";
+        } elseif ($range === '$100K-$150K') {
+            $query .= " AND remuneration BETWEEN 100000 AND 150000";
+        } elseif ($range === '$150K+') {
+            $query .= " AND remuneration >= 150000";
         }
     }
 }
-
-// Trier par date de publication décroissante
-$query .= " ORDER BY o.date_publication DESC";
 
 // Préparer et exécuter la requête
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 
-// Récupérer les compétences pour chaque offre
-$jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-foreach ($jobs as &$job) {
-    // Récupérer les compétences associées à cette offre
-    $stmt = $pdo->prepare("
-        SELECT c.nom
-        FROM offre_competence oc
-        JOIN competence c ON oc.competence_id = c.id
-        WHERE oc.offre_id = :offre_id
-    ");
-    $stmt->execute([':offre_id' => $job['id']]);
-    $competences = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    $job['competences'] = implode(', ', $competences);
-    
-    // Compter le nombre de candidatures pour cette offre
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*) 
-        FROM candidature 
-        WHERE offre_id = :offre_id
-    ");
-    $stmt->execute([':offre_id' => $job['id']]);
-    $job['nb_postulants'] = $stmt->fetchColumn();
-}
-
 // Renvoyer les résultats au format JSON
-header('Content-Type: application/json');
+$jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 echo json_encode($jobs);
 ?>
