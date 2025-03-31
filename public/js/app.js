@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const queryParams = new URLSearchParams({ search, location, filters: JSON.stringify(filters) });
 
         try {
-            const response = await fetch(`recup_offres.php?${queryParams.toString()}`);
+            const response = await fetch(`app/views/offres/recup_offres.php?${queryParams.toString()}`);
             const jobs = await response.json();
 
             jobListContainer.innerHTML = "";
