@@ -57,6 +57,11 @@ function route($uri) {
             // Traiter la recherche et les filtres pour les offres
             $offresController->search();
             break;
+            
+        case 'offres/cities':
+            // Récupérer la liste des villes disponibles
+            $offresController->cities();
+            break;
 
         case 'gestion':
             // Afficher la page de gestion

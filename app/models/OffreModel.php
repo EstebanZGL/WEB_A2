@@ -20,6 +20,19 @@ class OffreModel {
         }
     }
 
+    // Méthode pour récupérer la liste des villes disponibles
+    public function getAvailableCities() {
+        try {
+            // Récupérer les villes distinctes des offres
+            $stmt = $this->pdo->query("SELECT DISTINCT ville FROM offre_stage WHERE ville IS NOT NULL AND ville != '' ORDER BY ville ASC");
+            $cities = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            return $cities;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des villes: " . $e->getMessage());
+            return [];
+        }
+    }
+
     // Méthode modifiée pour accepter un tableau de paramètres de recherche
     public function searchOffres($searchParams = []) {
         try {
@@ -40,22 +53,93 @@ class OffreModel {
             }
 
             if (!empty($location)) {
-                $query .= " AND e.nom LIKE :location";
+                $query .= " AND (e.nom LIKE :location OR o.ville LIKE :location)";
                 $params[':location'] = "%$location%";
             }
 
             // Ajouter des filtres supplémentaires si nécessaire
             if (!empty($filters) && is_array($filters)) {
-                // Exemple de traitement des filtres de salaire
-                if (isset($filters['salary']) && is_array($filters['salary'])) {
+                // Filtres de ville
+                if (isset($filters['city']) && is_array($filters['city']) && !empty($filters['city'])) {
+                    $cityPlaceholders = [];
+                    foreach ($filters['city'] as $index => $city) {
+                        $param = ":city$index";
+                        $cityPlaceholders[] = $param;
+                        $params[$param] = $city;
+                    }
+                    $query .= " AND o.ville IN (" . implode(", ", $cityPlaceholders) . ")";
+                }
+                
+                // Filtres de famille d'emploi
+                if (isset($filters['jobFamily']) && is_array($filters['jobFamily']) && !empty($filters['jobFamily'])) {
+                    $jobFamilyConditions = [];
+                    foreach ($filters['jobFamily'] as $index => $jobFamily) {
+                        $param = ":jobFamily$index";
+                        
+                        // Créer des conditions de recherche spécifiques pour chaque famille d'emploi
+                        switch ($jobFamily) {
+                            case 'informatique':
+                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
+                                $params[$param] = "%informatique%";
+                                $params[":jobFamilyAlt$index"] = "%développeur%";
+                                break;
+                            case 'btp':
+                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
+                                $params[$param] = "%btp%";
+                                $params[":jobFamilyAlt$index"] = "%construction%";
+                                break;
+                            case 'finance':
+                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
+                                $params[$param] = "%finance%";
+                                $params[":jobFamilyAlt$index"] = "%comptabilité%";
+                                break;
+                            case 'marketing':
+                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
+                                $params[$param] = "%marketing%";
+                                $params[":jobFamilyAlt$index"] = "%communication%";
+                                break;
+                            case 'sante':
+                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
+                                $params[$param] = "%santé%";
+                                $params[":jobFamilyAlt$index"] = "%médical%";
+                                break;
+                            case 'autre':
+                                // Pour "autre", on exclut toutes les autres catégories
+                                $jobFamilyConditions[] = "(
+                                    o.titre NOT LIKE '%informatique%' AND o.description NOT LIKE '%informatique%' AND
+                                    o.titre NOT LIKE '%développeur%' AND o.description NOT LIKE '%développeur%' AND
+                                    o.titre NOT LIKE '%btp%' AND o.description NOT LIKE '%btp%' AND
+                                    o.titre NOT LIKE '%construction%' AND o.description NOT LIKE '%construction%' AND
+                                    o.titre NOT LIKE '%finance%' AND o.description NOT LIKE '%finance%' AND
+                                    o.titre NOT LIKE '%comptabilité%' AND o.description NOT LIKE '%comptabilité%' AND
+                                    o.titre NOT LIKE '%marketing%' AND o.description NOT LIKE '%marketing%' AND
+                                    o.titre NOT LIKE '%communication%' AND o.description NOT LIKE '%communication%' AND
+                                    o.titre NOT LIKE '%santé%' AND o.description NOT LIKE '%santé%' AND
+                                    o.titre NOT LIKE '%médical%' AND o.description NOT LIKE '%médical%'
+                                )";
+                                break;
+                        }
+                    }
+                    
+                    if (!empty($jobFamilyConditions)) {
+                        $query .= " AND (" . implode(" OR ", $jobFamilyConditions) . ")";
+                    }
+                }
+                
+                // Filtres de salaire
+                if (isset($filters['salary']) && is_array($filters['salary']) && !empty($filters['salary'])) {
+                    $salaryConditions = [];
                     foreach ($filters['salary'] as $range) {
                         if ($range === '0-50000') {
-                            $query .= " AND o.remuneration BETWEEN 0 AND 50000";
+                            $salaryConditions[] = "(o.remuneration BETWEEN 0 AND 50000)";
                         } elseif ($range === '50000-100000') {
-                            $query .= " AND o.remuneration BETWEEN 50000 AND 100000";
+                            $salaryConditions[] = "(o.remuneration BETWEEN 50000 AND 100000)";
                         } elseif ($range === '100000+') {
-                            $query .= " AND o.remuneration >= 100000";
+                            $salaryConditions[] = "(o.remuneration >= 100000)";
                         }
+                    }
+                    if (!empty($salaryConditions)) {
+                        $query .= " AND (" . implode(" OR ", $salaryConditions) . ")";
                     }
                 }
             }
@@ -128,11 +212,11 @@ class OffreModel {
                 INSERT INTO offre_stage (
                     entreprise_id, createur_id, titre, description, 
                     remuneration, date_debut, date_fin, date_publication, 
-                    statut, duree_stage
+                    statut, duree_stage, ville
                 ) VALUES (
                     :entreprise_id, :createur_id, :titre, :description, 
                     :remuneration, :date_debut, :date_fin, :date_publication, 
-                    :statut, :duree_stage
+                    :statut, :duree_stage, :ville
                 )
             ");
             
@@ -146,7 +230,8 @@ class OffreModel {
                 ':date_fin' => $data['date_fin'],
                 ':date_publication' => $data['date_publication'],
                 ':statut' => $data['statut'],
-                ':duree_stage' => $data['duree_stage']
+                ':duree_stage' => $data['duree_stage'],
+                ':ville' => isset($data['ville']) ? $data['ville'] : null
             ]);
             
             return $this->pdo->lastInsertId();
@@ -167,7 +252,8 @@ class OffreModel {
                 date_debut = :date_debut,
                 date_fin = :date_fin,
                 statut = :statut,
-                duree_stage = :duree_stage
+                duree_stage = :duree_stage,
+                ville = :ville
                 WHERE id = :id
             ");
             
@@ -180,7 +266,8 @@ class OffreModel {
                 ':date_debut' => $data['date_debut'],
                 ':date_fin' => $data['date_fin'],
                 ':statut' => $data['statut'],
-                ':duree_stage' => $data['duree_stage']
+                ':duree_stage' => $data['duree_stage'],
+                ':ville' => isset($data['ville']) ? $data['ville'] : null
             ]);
             
             return $stmt->rowCount() > 0;
