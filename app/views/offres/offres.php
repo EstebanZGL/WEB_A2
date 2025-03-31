@@ -274,6 +274,11 @@
                 
                 // Créer la carte avec la nouvelle structure
                 jobCard.innerHTML = `
+                    <div class="job-card-header">
+                        <button class="wishlist-button" data-job-id="${job.id}" title="Ajouter à ma wishlist">
+                            <span class="iconify" data-icon="mdi:heart-outline" width="24" height="24"></span>
+                        </button>
+                    </div>
                     <div class="job-card-image">
                         <img src="public/images/job-placeholder.png" alt="${job.titre}" class="job-image">
                     </div>
@@ -293,16 +298,15 @@
                         </div>
                     </div>
                     <div class="job-card-actions">
-                        <button class="wishlist-button" data-job-id="${job.id}" title="Ajouter à ma wishlist">
-                            <span class="iconify" data-icon="mdi:heart-outline" width="24" height="24"></span>
-                        </button>
+                        <a href="offres/details/${job.id}" class="job-details-link">
+                            <span class="iconify" data-icon="mdi:arrow-right" width="20" height="20"></span>
+                        </a>
+                    </div>
+                    <div class="job-card-footer">
                         <div class="job-date">
                             <span class="iconify" data-icon="mdi:calendar" width="16" height="16"></span>
                             <span>${formattedDate}</span>
                         </div>
-                        <a href="offres/details/${job.id}" class="job-details-link">
-                            <span class="iconify" data-icon="mdi:arrow-right" width="20" height="20"></span>
-                        </a>
                     </div>
                 `;
                 
@@ -337,6 +341,7 @@
                 
                 // Créer la carte avec la nouvelle structure mais sans bouton wishlist
                 jobCard.innerHTML = `
+                    <div class="job-card-header"></div>
                     <div class="job-card-image">
                         <img src="public/images/job-placeholder.png" alt="${job.titre}" class="job-image">
                     </div>
@@ -356,13 +361,15 @@
                         </div>
                     </div>
                     <div class="job-card-actions">
+                        <a href="offres/details/${job.id}" class="job-details-link">
+                            <span class="iconify" data-icon="mdi:arrow-right" width="20" height="20"></span>
+                        </a>
+                    </div>
+                    <div class="job-card-footer">
                         <div class="job-date">
                             <span class="iconify" data-icon="mdi:calendar" width="16" height="16"></span>
                             <span>${formattedDate}</span>
                         </div>
-                        <a href="offres/details/${job.id}" class="job-details-link">
-                            <span class="iconify" data-icon="mdi:arrow-right" width="20" height="20"></span>
-                        </a>
                     </div>
                 `;
                 
@@ -533,5 +540,7 @@
     
     <!-- Charger le script app.js à la fin du body -->
     <script src="public/js/app.js"></script>
+    <!-- Charger le script wishlist.js pour gérer les fonctionnalités de wishlist -->
+    <script src="public/js/wishlist.js"></script>
 </body>
 </html>
