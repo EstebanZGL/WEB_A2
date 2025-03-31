@@ -8,9 +8,31 @@
     <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
     <link rel="stylesheet" href="public/css/gestion.css">
-    <link rel="stylesheet" href="public/css/gestion-mobile-menu-fix.css">
+</head>
 <body>
     <div id="app">
+        <!-- Menu Mobile Overlay - Déplacé ici comme dans home.php -->
+        <div class="mobile-menu-overlay"></div>
+        
+        <!-- Menu Mobile - Déplacé ici comme dans home.php -->
+        <div class="mobile-menu">
+            <div class="mobile-menu-header">
+                <img src="public/images/logo.png" alt="D" width="100" height="113">
+                <button class="mobile-menu-close">&times;</button>
+            </div>
+            <nav class="mobile-nav">
+                <a href="home" class="mobile-nav-link">Accueil</a>
+                <a href="offres" class="mobile-nav-link">Emplois</a>
+                <a href="gestion" class="mobile-nav-link active">Gestion</a>
+                <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <div class="mobile-menu-buttons">
+                    <a href="logout" class="button button-primary button-glow">Déconnexion</a>
+                </div>
+            </div>
+        </div>
+        
         <header class="navbar">
             <div class="container">
                 <!-- Bouton burger pour le menu mobile -->
@@ -34,26 +56,6 @@
                 <div id="user-status">
                     <a href="login" id="login-Bouton" class="button button-outline button-glow" style="display:none;">Connexion</a>
                     <a href="logout" id="logout-Bouton" class="button button-outline button-glow">Déconnexion</a>
-                </div>
-                
-                <!-- Menu mobile -->
-                <div class="mobile-menu-overlay"></div>
-                <div class="mobile-menu">
-                    <div class="mobile-menu-header">
-                        <span>Menu</span>
-                        <button class="mobile-menu-close" aria-label="Fermer le menu">&times;</button>
-                    </div>
-                    <nav class="mobile-nav">
-                        <a href="home" class="mobile-nav-link">Accueil</a>
-                        <a href="offres" class="mobile-nav-link">Emplois</a>
-                        <a href="gestion" class="mobile-nav-link active">Gestion</a>
-                        <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
-                    </nav>
-                    <div class="mobile-menu-footer">
-                        <div class="mobile-menu-buttons">
-                            <a href="logout" class="button button-primary">Déconnexion</a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </header>
@@ -362,7 +364,7 @@
         });
     </script>
     
-    <!-- Script pour le menu mobile -->
-    <script src="public/js/gestion-mobile-menu.js"></script>
+    <!-- Important: Charger mobile-menu.js avant les autres scripts -->
+    <script src="public/js/mobile-menu.js"></script>
 </body>
 </html>
