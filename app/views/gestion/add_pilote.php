@@ -5,8 +5,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['utilisateur'] != 2) {
     exit;
 }
 
-// Inclure l'en-tête
-require_once 'app/views/header.php';
+// Supprimer cette ligne qui cause l'erreur
+// require_once 'app/views/header.php';
 ?>
 
 <!DOCTYPE html>
