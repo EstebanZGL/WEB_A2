@@ -12,6 +12,33 @@
     <!-- Ajout d'Iconify pour les icônes -->
     <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <style>
+        /* Styles supplémentaires pour les cartes d'offres */
+        .job-card {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .job-card-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .job-salary {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+        }
+        
+        .wishlist-button {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -274,6 +301,7 @@
                 
                 // Créer la carte avec la nouvelle structure
                 jobCard.innerHTML = `
+                    <a href="offres/details/${job.id}" class="job-card-link" aria-label="Voir les détails de ${job.titre}"></a>
                     <div class="job-card-image">
                         <img src="public/images/job-placeholder.png" alt="${job.titre}" class="job-image">
                     </div>
@@ -300,9 +328,6 @@
                             <span class="iconify" data-icon="mdi:calendar" width="16" height="16"></span>
                             <span>${formattedDate}</span>
                         </div>
-                        <a href="offres/details/${job.id}" class="job-details-link">
-                            <span class="iconify" data-icon="mdi:arrow-right" width="20" height="20"></span>
-                        </a>
                     </div>
                 `;
                 
@@ -311,7 +336,9 @@
             
             // Ajouter les écouteurs d'événements pour les boutons wishlist
             document.querySelectorAll('.wishlist-button').forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function(e) {
+                    // Empêcher la propagation de l'événement pour éviter de cliquer sur la carte
+                    e.stopPropagation();
                     const jobId = this.getAttribute('data-job-id');
                     addToWishlist(jobId, this);
                 });
@@ -337,6 +364,7 @@
                 
                 // Créer la carte avec la nouvelle structure mais sans bouton wishlist
                 jobCard.innerHTML = `
+                    <a href="offres/details/${job.id}" class="job-card-link" aria-label="Voir les détails de ${job.titre}"></a>
                     <div class="job-card-image">
                         <img src="public/images/job-placeholder.png" alt="${job.titre}" class="job-image">
                     </div>
@@ -360,9 +388,6 @@
                             <span class="iconify" data-icon="mdi:calendar" width="16" height="16"></span>
                             <span>${formattedDate}</span>
                         </div>
-                        <a href="offres/details/${job.id}" class="job-details-link">
-                            <span class="iconify" data-icon="mdi:arrow-right" width="20" height="20"></span>
-                        </a>
                     </div>
                 `;
                 
