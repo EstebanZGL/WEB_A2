@@ -19,11 +19,12 @@ $location = $_GET['location'] ?? '';
 $filters = isset($_GET['filters']) ? json_decode($_GET['filters'], true) : [];
 
 // Création de la requête SQL dynamique
+
 $query = "SELECT o.*, e.nom as entreprise 
           FROM offre_stage o 
           LEFT JOIN entreprise e ON o.entreprise_id = e.id 
           WHERE 1=1";
-$params = [];
+
 
 if (!empty($search)) {
     $query .= " AND (o.titre LIKE :search OR o.description LIKE :search)";
