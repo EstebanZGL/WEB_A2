@@ -301,7 +301,7 @@
                 
                 // Créer la carte avec la nouvelle structure
                 jobCard.innerHTML = `
-                    <a href="offres/details/${job.id}" class="job-card-link" aria-label="Voir les détails de ${job.titre}"></a>
+                    <a href="/offres/details/${job.id}" class="job-card-link" aria-label="Voir les détails de ${job.titre}"></a>
                     <div class="job-card-image">
                         <img src="public/images/job-placeholder.png" alt="${job.titre}" class="job-image">
                     </div>
