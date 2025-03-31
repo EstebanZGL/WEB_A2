@@ -65,25 +65,25 @@
                         </div>
                         
                         <div class="stats-table">
-                            <h3>Top étudiants par nombre de candidatures</h3>
+                            <h3>Top étudiants par nombre de candidatures et wishlist</h3>
                             <table class="table">
                                 <thead>
                                     <tr>
                                         <th>Nom</th>
                                         <th>Prénom</th>
-                                        <th>Nombre de candidatures</th>
+                                        <th>Candidatures</th>
+                                        <th>Wishlist</th>
+                                        <th>Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($stats['candidatures'] as $etudiant): ?>
+                                    <?php foreach ($stats['activite_etudiants'] as $etudiant): ?>
                                         <tr>
                                             <td><?php echo htmlspecialchars($etudiant['nom']); ?></td>
                                             <td><?php echo htmlspecialchars($etudiant['prenom']); ?></td>
-                                            <td><?php 
-                                                    echo isset($item['nb_offres_wishlist']) ? 
-                                                        ($item['nb_offres_wishlist'] > 0 ? $item['nb_offres_wishlist'] . " offre(s) sélectionnée(s)" : "Aucune offre sélectionnée") : 
-                                                        "Aucune offre sélectionnée"; 
-                                                ?></td>
+                                            <td><?php echo $etudiant['nb_candidatures']; ?></td>
+                                            <td><?php echo $etudiant['nb_wishlist']; ?></td>
+                                            <td><?php echo $etudiant['total']; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -116,10 +116,16 @@
                 datasets: [{
                     data: <?php echo json_encode(array_column($stats['par_promotion'], 'count')); ?>,
                     backgroundColor: [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#FFCE56',
-                        '#4BC0C0'
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -128,7 +134,10 @@
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            color: '#f1f5f9' // var(--foreground)
+                        }
                     }
                 }
             }
@@ -145,7 +154,9 @@
                     data: <?php echo json_encode(array_column($stats['par_formation'], 'count')); ?>,
                     backgroundColor: 'rgba(153, 102, 255, 0.5)',
                     borderColor: 'rgba(153, 102, 255, 1)',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(236, 72, 153, 0.5)',
+                    hoverBorderColor: 'rgba(236, 72, 153, 1)'
                 }]
             },
             options: {
@@ -154,7 +165,26 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            precision: 0
+                            precision: 0,
+                            color: '#94a3b8' // var(--foreground-muted)
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#94a3b8' // var(--foreground-muted)
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#f1f5f9' // var(--foreground)
                         }
                     }
                 }

@@ -178,6 +178,34 @@ class EtudiantModel {
     $stmt = $this->db->query($query);
     $stats['candidatures'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
+    // Activité des étudiants (candidatures + wishlist)
+    $query = "SELECT 
+                u.nom, 
+                u.prenom, 
+                IFNULL(c.nb_candidatures, 0) as nb_candidatures,
+                IFNULL(w.nb_wishlist, 0) as nb_wishlist,
+                (IFNULL(c.nb_candidatures, 0) + IFNULL(w.nb_wishlist, 0)) as total
+             FROM 
+                etudiant e
+                JOIN utilisateur u ON e.utilisateur_id = u.id
+                LEFT JOIN (
+                    SELECT etudiant_id, COUNT(*) as nb_candidatures 
+                    FROM candidature 
+                    GROUP BY etudiant_id
+                ) c ON e.id = c.etudiant_id
+                LEFT JOIN (
+                    SELECT etudiant_id, COUNT(*) as nb_wishlist 
+                    FROM wishlist 
+                    GROUP BY etudiant_id
+                ) w ON e.id = w.etudiant_id
+             WHERE 
+                (IFNULL(c.nb_candidatures, 0) > 0 OR IFNULL(w.nb_wishlist, 0) > 0)
+             ORDER BY 
+                total DESC, nb_candidatures DESC, nb_wishlist DESC
+             LIMIT 10";
+    $stmt = $this->db->query($query);
+    $stats['activite_etudiants'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
     return $stats;
 }
         /**
