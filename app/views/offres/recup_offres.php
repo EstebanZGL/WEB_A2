@@ -16,47 +16,40 @@ try {
 // Récupération des filtres et paramètres de recherche
 $search = $_GET['search'] ?? '';
 $location = $_GET['location'] ?? '';
-$filters = $_GET['filters'] ?? [];
+$filters = isset($_GET['filters']) ? json_decode($_GET['filters'], true) : [];
 
 // Création de la requête SQL dynamique
-$query = "SELECT * FROM offres WHERE 1=1";
+$query = "SELECT o.*, e.nom as entreprise 
+          FROM offre_stage o 
+          LEFT JOIN entreprise e ON o.entreprise_id = e.id 
+          WHERE 1=1";
 $params = [];
 
 if (!empty($search)) {
-    $query .= " AND (titre LIKE :search OR description LIKE :search OR entreprise LIKE :search)";
+    $query .= " AND (o.titre LIKE :search OR o.description LIKE :search)";
     $params[':search'] = "%$search%";
 }
 
 if (!empty($location)) {
-    $query .= " AND entreprise LIKE :location"; // Supposons que l'entreprise reflète la localisation
+    $query .= " AND e.nom LIKE :location";
     $params[':location'] = "%$location%";
 }
 
-if (!empty($filters['jobType'])) {
-    $placeholders = implode(',', array_fill(0, count($filters['jobType']), '?'));
-    $query .= " AND type_emploi IN ($placeholders)";
-    $params = array_merge($params, $filters['jobType']);
-}
-
-if (!empty($filters['experienceLevel'])) {
-    $placeholders = implode(',', array_fill(0, count($filters['experienceLevel']), '?'));
-    $query .= " AND experience IN ($placeholders)";
-    $params = array_merge($params, $filters['experienceLevel']);
-}
-
+// Ajout des filtres de salaire
 if (!empty($filters['salary'])) {
     foreach ($filters['salary'] as $range) {
-        if ($range === '$0-$50K') {
-            $query .= " AND remuneration BETWEEN 0 AND 50000";
-        } elseif ($range === '$50K-$100K') {
-            $query .= " AND remuneration BETWEEN 50000 AND 100000";
-        } elseif ($range === '$100K-$150K') {
-            $query .= " AND remuneration BETWEEN 100000 AND 150000";
-        } elseif ($range === '$150K+') {
-            $query .= " AND remuneration >= 150000";
+        if ($range === '0-50000') {
+            $query .= " AND o.remuneration BETWEEN 0 AND 50000";
+        } elseif ($range === '50000-100000') {
+            $query .= " AND o.remuneration BETWEEN 50000 AND 100000";
+        } elseif ($range === '100000+') {
+            $query .= " AND o.remuneration >= 100000";
         }
     }
 }
+
+// Trier par date de publication décroissante
+$query .= " ORDER BY o.date_publication DESC";
 
 // Préparer et exécuter la requête
 $stmt = $pdo->prepare($query);
@@ -64,5 +57,32 @@ $stmt->execute($params);
 
 // Renvoyer les résultats au format JSON
 $jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Ajouter des informations supplémentaires pour l'affichage
+foreach ($jobs as &$job) {
+    // Calculer la durée du stage
+    $job['competences'] = 'Non spécifiées'; // Par défaut
+    $job['nb_postulants'] = 0; // Par défaut
+    
+    // Récupérer le nombre de candidatures pour cette offre
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM candidature WHERE offre_id = :offre_id");
+    $stmt->execute([':offre_id' => $job['id']]);
+    $job['nb_postulants'] = $stmt->fetchColumn();
+    
+    // Récupérer les compétences associées à cette offre
+    $stmt = $pdo->prepare("
+        SELECT c.nom 
+        FROM offre_competence oc 
+        JOIN competence c ON oc.competence_id = c.id 
+        WHERE oc.offre_id = :offre_id
+    ");
+    $stmt->execute([':offre_id' => $job['id']]);
+    $competences = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    
+    if (!empty($competences)) {
+        $job['competences'] = implode(', ', $competences);
+    }
+}
+
 echo json_encode($jobs);
 ?>
