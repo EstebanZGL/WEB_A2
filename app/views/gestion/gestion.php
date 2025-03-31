@@ -229,14 +229,9 @@
                                                 <td><?php echo htmlspecialchars($item['promotion'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['formation'] ?? ''); ?></td>
                                                 <td><?php 
-                                                    // Requête pour compter le nombre d'offres dans la wishlist de cet étudiant
-                                                    $etudiant_id = $item['id']; 
-                                                    $count_query = "SELECT COUNT(*) as nb_offres FROM wishlist WHERE etudiant_id = $etudiant_id";
-                                                    $count_result = $conn->query($count_query);
-                                                    $count_row = $count_result->fetch_assoc();
-                                                    $nb_offres = $count_row['nb_offres'];
-                                                
-                                                    echo $nb_offres > 0 ? $nb_offres . " offre(s) sélectionnée(s)" : "Aucune offre sélectionnée"; 
+                                                    echo isset($item['nb_offres_wishlist']) ? 
+                                                        ($item['nb_offres_wishlist'] > 0 ? $item['nb_offres_wishlist'] . " offre(s) sélectionnée(s)" : "Aucune offre sélectionnée") : 
+                                                        "Aucune offre sélectionnée"; 
                                                 ?></td>
                                                 <td class="actions">
                                                     <a href="gestion/etudiants/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>

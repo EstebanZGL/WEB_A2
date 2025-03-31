@@ -8,7 +8,8 @@ class EtudiantModel {
     }
     
     public function getEtudiants($limit = 10, $offset = 0) {
-        $query = "SELECT e.*, u.nom, u.prenom, u.email, o.titre as offre_titre 
+        $query = "SELECT e.*, u.nom, u.prenom, u.email, o.titre as offre_titre,
+                 (SELECT COUNT(*) FROM wishlist w WHERE w.etudiant_id = e.id) as nb_offres_wishlist 
                  FROM etudiant e 
                  LEFT JOIN utilisateur u ON e.utilisateur_id = u.id 
                  LEFT JOIN offre_stage o ON e.offre_id = o.id 
