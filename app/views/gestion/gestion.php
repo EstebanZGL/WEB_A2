@@ -127,7 +127,9 @@
                         <div>
                             <!-- Correction ici: ajouter un slash avant le nom de section -->
                             <a href="gestion/<?php echo $section; ?>/add" class="button button-primary">Ajouter</a>
-                            <a href="gestion/<?php echo $section; ?>/stats" class="button button-secondary">Statistiques</a>
+                            <?php if ($section !== 'pilotes'): ?>
+                                <a href="gestion/<?php echo $section; ?>/stats" class="button button-secondary">Statistiques</a>
+                            <?php endif; ?>
                         </div>
                         
                         <!-- Formulaire de recherche (à implémenter plus tard) -->
