@@ -3,15 +3,17 @@
 require_once 'config/database.php';
 $conn = getDbConnection();
 
-// Vérifier si l'objet offre existe
+// Vérifier si l'offre existe
 if (!isset($offre) || empty($offre)) {
     header('Location: offres');
     exit();
 }
 
+// Déterminer le chemin de base pour les ressources statiques
+$basePath = '../../..'; // Remonte de 3 niveaux: offres/details/ID -> racine du projet
+
 // Récupérer les compétences associées à l'offre si nécessaire
-// Cette partie peut être déplacée vers le contrôleur plus tard
-$offre_id = $offre->id;
+$offre_id = is_array($offre) ? $offre['id'] : $offre->id;
 $competences = [];
 
 try {
@@ -23,28 +25,21 @@ try {
     $stmt_comp->execute([$offre_id]);
     $competences = $stmt_comp->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Gérer l'erreur silencieusement pour ne pas bloquer l'affichage
-    // echo "Erreur: " . $e->getMessage();
+    // Gérer l'erreur silencieusement
 }
 
 // Variables pour les messages
 $message = '';
 $messageType = '';
 
-// Déterminer le chemin de base pour les ressources statiques
-// Si nous sommes dans un sous-répertoire, ajuster en conséquence
-$basePath = '../../..'; // Remonte de 3 niveaux: offres/details/ID -> racine du projet
-
-// Traitement du formulaire de candidature
-if (isset($_POST['submit_candidature'])) {
-    // Code de traitement de candidature...
-    // À implémenter si nécessaire
-}
-
-// Ajouter à la wishlist
-if (isset($_POST['add_wishlist'])) {
-    // Ce code sera géré par le contrôleur WishlistController
-    // via le formulaire qui pointe vers wishlist/add
+// Helper function pour accéder aux propriétés/indices de manière sécurisée
+function getValue($object, $key) {
+    if (is_array($object)) {
+        return isset($object[$key]) ? $object[$key] : '';
+    } elseif (is_object($object)) {
+        return isset($object->$key) ? $object->$key : '';
+    }
+    return '';
 }
 ?>
 
@@ -53,7 +48,7 @@ if (isset($_POST['add_wishlist'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($offre->titre); ?> - LeBonPlan</title>
+    <title><?php echo htmlspecialchars(getValue($offre, 'titre')); ?> - LeBonPlan</title>
     
     <!-- Utilisation de chemins absolus pour les ressources statiques -->
     <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/style.css">
@@ -61,28 +56,28 @@ if (isset($_POST['add_wishlist'])) {
     <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/wishlist.css">
     <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <style>
-        /* Styles spécifiques pour la page de détails */
+        /* Styles spécifiques pour la page de détails - avec bleu au lieu de vert */
         .offre-details {
             background-color: #1e1e1e;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             margin-bottom: 2rem;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            border: 1px solid rgba(0, 123, 255, 0.3);
         }
         
         .offre-header {
             background-color: #2d2d2d;
             padding: 1.5rem;
-            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+            border-bottom: 1px solid rgba(0, 123, 255, 0.3);
             position: relative;
         }
         
         .offre-title {
             font-size: 1.8rem;
             margin-bottom: 0.5rem;
-            color: #00ff88;
-            text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+            color: #007bff; /* Bleu au lieu de vert */
+            text-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
         }
         
         .offre-entreprise {
@@ -100,9 +95,9 @@ if (isset($_POST['add_wishlist'])) {
         }
         
         .offre-section h3 {
-            color: #00ff88;
+            color: #007bff; /* Bleu au lieu de vert */
             margin-bottom: 1rem;
-            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+            border-bottom: 1px solid rgba(0, 123, 255, 0.3);
             padding-bottom: 0.5rem;
         }
         
@@ -127,12 +122,12 @@ if (isset($_POST['add_wishlist'])) {
         }
         
         .competence-badge {
-            background-color: rgba(0, 255, 136, 0.1);
-            color: #00ff88;
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #007bff; /* Bleu au lieu de vert */
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.9rem;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            border: 1px solid rgba(0, 123, 255, 0.3);
         }
         
         .entreprise-info {
@@ -140,7 +135,7 @@ if (isset($_POST['add_wishlist'])) {
             padding: 1.5rem;
             border-radius: 8px;
             margin-top: 1rem;
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 123, 255, 0.2);
         }
         
         .action-buttons {
@@ -155,14 +150,14 @@ if (isset($_POST['add_wishlist'])) {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 2rem;
             margin-top: 2rem;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            border: 1px solid rgba(0, 123, 255, 0.3);
         }
         
         .form-title {
-            color: #00ff88;
+            color: #007bff; /* Bleu au lieu de vert */
             margin-bottom: 1.5rem;
             text-align: center;
-            text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+            text-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
         }
         
         .form-group {
@@ -179,7 +174,7 @@ if (isset($_POST['add_wishlist'])) {
         .form-control {
             width: 100%;
             padding: 0.8rem;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            border: 1px solid rgba(0, 123, 255, 0.3);
             border-radius: 8px;
             font-size: 1rem;
             background-color: #2d2d2d;
@@ -193,9 +188,9 @@ if (isset($_POST['add_wishlist'])) {
         }
         
         .alert-success {
-            background-color: rgba(0, 255, 136, 0.1);
-            color: #00ff88;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #007bff; /* Bleu au lieu de vert */
+            border: 1px solid rgba(0, 123, 255, 0.3);
         }
         
         .alert-error {
@@ -282,14 +277,14 @@ if (isset($_POST['add_wishlist'])) {
                 
                 <div class="offre-details">
                     <div class="offre-header">
-                        <h1 class="offre-title"><?php echo htmlspecialchars($offre->titre); ?></h1>
-                        <div class="offre-entreprise"><?php echo htmlspecialchars($offre->entreprise); ?></div>
+                        <h1 class="offre-title"><?php echo htmlspecialchars(getValue($offre, 'titre')); ?></h1>
+                        <div class="offre-entreprise"><?php echo htmlspecialchars(getValue($offre, 'entreprise')); ?></div>
                     </div>
                     
                     <div class="offre-content">
                         <section class="offre-section">
                             <h3>Description du poste</h3>
-                            <p><?php echo nl2br(htmlspecialchars($offre->description)); ?></p>
+                            <p><?php echo nl2br(htmlspecialchars(getValue($offre, 'description'))); ?></p>
                         </section>
                         
                         <section class="offre-section">
@@ -297,18 +292,18 @@ if (isset($_POST['add_wishlist'])) {
                             <div class="info-grid">
                                 <div class="info-item">
                                     <span class="iconify" data-icon="mdi:currency-eur" width="24" height="24"></span>
-                                    <div><strong>Rémunération:</strong> <?php echo number_format($offre->remuneration, 0, ',', ' '); ?> €/an</div>
+                                    <div><strong>Rémunération:</strong> <?php echo number_format((float)getValue($offre, 'remuneration'), 0, ',', ' '); ?> €/an</div>
                                 </div>
                                 
                                 <div class="info-item">
                                     <span class="iconify" data-icon="mdi:calendar" width="24" height="24"></span>
-                                    <div><strong>Publication:</strong> <?php echo date('d/m/Y', strtotime($offre->date_publication)); ?></div>
+                                    <div><strong>Publication:</strong> <?php echo date('d/m/Y', strtotime(getValue($offre, 'date_publication'))); ?></div>
                                 </div>
                                 
-                                <?php if (!empty($offre->ville)): ?>
+                                <?php if (!empty(getValue($offre, 'ville'))): ?>
                                 <div class="info-item">
                                     <span class="iconify" data-icon="mdi:map-marker" width="24" height="24"></span>
-                                    <div><strong>Lieu:</strong> <?php echo htmlspecialchars($offre->ville); ?></div>
+                                    <div><strong>Lieu:</strong> <?php echo htmlspecialchars(getValue($offre, 'ville')); ?></div>
                                 </div>
                                 <?php endif; ?>
                             </div>
@@ -337,7 +332,7 @@ if (isset($_POST['add_wishlist'])) {
                         
                         <div class="action-buttons">
                             <form method="post" action="<?php echo $basePath; ?>/wishlist/add">
-                                <input type="hidden" name="item_id" value="<?php echo $offre->id; ?>">
+                                <input type="hidden" name="item_id" value="<?php echo $offre_id; ?>">
                                 <button type="submit" class="button button-secondary">
                                     <span class="iconify" data-icon="mdi:heart-outline" width="20" height="20"></span> Ajouter aux favoris
                                 </button>
