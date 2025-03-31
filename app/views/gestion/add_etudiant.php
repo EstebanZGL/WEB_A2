@@ -69,10 +69,10 @@
                                     <label for="formation">Formation</label>
                                     <select id="formation" name="formation" required>
                                         <option value="">Sélectionner une formation</option>
-                                        <option value="Formation 1">Formation 1</option>
-                                        <option value="Formation 2">Formation 2</option>
-                                        <option value="Formation 3">Formation 3</option>
-                                        <option value="Formation 4">Formation 4</option>
+                                        <option value="Informatique">Informatique</option>
+                                        <option value="BTP">BTP</option>
+                                        <option value="Généraliste">Généraliste</option>
+                                        <option value="Systèmes Embarqués">Systèmes Embarqués</option>
                                     </select>
                                 </div>
                             </div>
