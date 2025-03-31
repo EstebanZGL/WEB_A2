@@ -138,48 +138,48 @@ class EtudiantModel {
         }
     }
     
-    public function getEtudiantStats() {
-        $stats = [];
-        
-        // Nombre total d'étudiants
-        $query = "SELECT COUNT(*) as total FROM etudiant";
-        $stmt = $this->db->query($query);
-        $stats['total'] = $stmt->fetchColumn();
-        
-        // Répartition par promotion
-        $query = "SELECT promotion, COUNT(*) as count 
-                 FROM etudiant 
-                 GROUP BY promotion 
-                 ORDER BY count DESC";
-        $stmt = $this->db->query($query);
-        $stats['par_promotion'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Répartition par formation
-        $query = "SELECT formation, COUNT(*) as count 
-                 FROM etudiant 
-                 GROUP BY formation 
-                 ORDER BY count DESC";
-        $stmt = $this->db->query($query);
-        $stats['par_formation'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Nombre d'étudiants avec une offre assignée
-        $query = "SELECT COUNT(*) as count FROM etudiant WHERE offre_id IS NOT NULL";
-        $stmt = $this->db->query($query);
-        $stats['avec_offre'] = $stmt->fetchColumn();
-        
-        // Nombre de candidatures par étudiant - REQUÊTE CORRIGÉE
-        $query = "SELECT u.nom, u.prenom, COUNT(c.id) as nb_candidatures 
-                 FROM etudiant e 
-                 JOIN utilisateur u ON e.utilisateur_id = u.id 
-                 JOIN candidature c ON e.id = c.etudiant_id 
-                 GROUP BY e.id, u.nom, u.prenom 
-                 ORDER BY nb_candidatures DESC 
-                 LIMIT 10";
-        $stmt = $this->db->query($query);
-        $stats['candidatures'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        return $stats;
-    }
+   public function getEtudiantStats() {
+    $stats = [];
+    
+    // Nombre total d'étudiants
+    $query = "SELECT COUNT(*) as total FROM etudiant";
+    $stmt = $this->db->query($query);
+    $stats['total'] = $stmt->fetchColumn();
+    
+    // Répartition par promotion
+    $query = "SELECT promotion, COUNT(*) as count 
+             FROM etudiant 
+             GROUP BY promotion 
+             ORDER BY count DESC";
+    $stmt = $this->db->query($query);
+    $stats['par_promotion'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Répartition par formation
+    $query = "SELECT formation, COUNT(*) as count 
+             FROM etudiant 
+             GROUP BY formation 
+             ORDER BY count DESC";
+    $stmt = $this->db->query($query);
+    $stats['par_formation'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Nombre d'étudiants avec une offre assignée
+    $query = "SELECT COUNT(*) as count FROM etudiant WHERE offre_id IS NOT NULL";
+    $stmt = $this->db->query($query);
+    $stats['avec_offre'] = $stmt->fetchColumn();
+    
+    // Nombre de candidatures par étudiant - REQUÊTE CORRIGÉE
+    $query = "SELECT u.nom, u.prenom, COUNT(c.id) as nb_candidatures 
+             FROM etudiant e 
+             JOIN utilisateur u ON e.utilisateur_id = u.id 
+             JOIN candidature c ON e.id = c.etudiant_id 
+             GROUP BY e.id, u.nom, u.prenom 
+             ORDER BY nb_candidatures DESC 
+             LIMIT 10";
+    $stmt = $this->db->query($query);
+    $stats['candidatures'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    return $stats;
+}
         /**
      * Met à jour un étudiant par son ID utilisateur
      */

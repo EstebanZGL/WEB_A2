@@ -79,7 +79,11 @@
                                         <tr>
                                             <td><?php echo htmlspecialchars($etudiant['nom']); ?></td>
                                             <td><?php echo htmlspecialchars($etudiant['prenom']); ?></td>
-                                            <td><?php echo $etudiant['nb_candidatures']; ?></td>
+                                            <td><?php 
+                                                    echo isset($item['nb_offres_wishlist']) ? 
+                                                        ($item['nb_offres_wishlist'] > 0 ? $item['nb_offres_wishlist'] . " offre(s) sélectionnée(s)" : "Aucune offre sélectionnée") : 
+                                                        "Aucune offre sélectionnée"; 
+                                                ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
