@@ -1,186 +1,147 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LeBonPlan | Administrateur</title>
-    <meta name="description" content="Recherchez et postulez à des milliers d'offres d'emploi dans la technologie, le design, le marketing et plus encore." />
-    <link rel="stylesheet" href="public/css/style.css" />
-    <link rel="stylesheet" href="public/css/responsive-complete.css">
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-</head>
-<body>
-    <div id="app">
-        <!-- Menu Mobile Overlay -->
-        <div class="mobile-menu-overlay"></div>
-        
-        <!-- Menu Mobile -->
-        <div class="mobile-menu">
-            <div class="mobile-menu-header">
-                <img src="public/images/logo.png" alt="D" width="100" height="113">
-                <button class="mobile-menu-close">&times;</button>
+<?php
+// Vérifier si l'utilisateur est connecté et a les droits d'administrateur
+if (!isset($_SESSION['logged_in']) || $_SESSION['utilisateur'] != 2) {
+    header("Location: login");
+    exit;
+}
+
+// Inclure l'en-tête
+require_once 'app/views/header.php';
+?>
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Tableau de bord administrateur</h1>
+            <p class="lead">Gérez les utilisateurs, les offres et les paramètres du système.</p>
+        </div>
+    </div>
+
+    <!-- Cartes de statistiques -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Utilisateurs</h5>
+                    <p class="card-text display-4"><?= $stats['totalUsers'] ?></p>
+                    <a href="admin/manage" class="btn btn-light">Gérer</a>
+                </div>
             </div>
-            <nav class="mobile-nav">
-                <a href="home" class="mobile-nav-link">Accueil</a>
-                <a href="offres" class="mobile-nav-link">Emplois</a>
-                <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion">Gestion</a>
-                <a href="admin" class="mobile-nav-link active" id="mobile-page-admin">Administrateur</a>
-            </nav>
-            <div class="mobile-menu-footer">
-                <div class="mobile-menu-buttons">
-                    <a href="login" id="mobile-login-Bouton" class="button button-primary button-glow">Connexion</a>
-                    <a href="logout" id="mobile-logout-Bouton" class="button button-primary button-glow" style="display:none;">Déconnexion</a>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Offres</h5>
+                    <p class="card-text display-4"><?= $stats['totalOffres'] ?></p>
+                    <a href="gestion?section=offres" class="btn btn-light">Gérer</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Pilotes</h5>
+                    <p class="card-text display-4"><?= $stats['totalPilotes'] ?></p>
+                    <a href="admin/pilotes" class="btn btn-light">Gérer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modules de gestion -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Gestion des utilisateurs</h5>
+                </div>
+                <div class="card-body">
+                    <p>Gérez les comptes utilisateurs, les rôles et les permissions.</p>
+                    <div class="list-group">
+                        <a href="admin/manage" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Tous les utilisateurs
+                            <span class="badge bg-primary rounded-pill"><?= $stats['totalUsers'] ?></span>
+                        </a>
+                        <a href="admin/pilotes" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Pilotes
+                            <span class="badge bg-primary rounded-pill"><?= $stats['totalPilotes'] ?></span>
+                        </a>
+                        <a href="gestion?section=etudiants" class="list-group-item list-group-item-action">Étudiants</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="admin/manage" class="btn btn-primary">Gérer les utilisateurs</a>
                 </div>
             </div>
         </div>
         
-        <header class="navbar">
-            <div class="container">
-                <img src="public/images/logo.png" alt="D" width="150" height="170">
-                
-                <!-- Bouton Menu Mobile -->
-                <button class="mobile-menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-
-                <nav class="navbar-nav">
-                    <a href="home" class="nav-link">Accueil</a>
-                    <a href="offres" class="nav-link">Emplois</a>
-                    <a href="gestion" class="nav-link" id="page-gestion">Gestion</a>
-                    <a href="admin" class="nav-link active" id="page-admin">Administrateur</a>
-                </nav>
-                <div id="user-status">
-                    <a href="login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
-                    <a href="logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Gestion du contenu</h5>
                 </div>
-            
-                <script src="public/js/app.js"></script>
-            </div>
-            <span id="welcome-message" class="welcome-message"></span>
-        </header>
-        
-        <main>
-            <section class="hero">
-                <div class="hero-overlay"></div>
-                <div class="container">
-                    <h1 class="hero-title">Bienvenue dans la <span class="gradient-text">Page Administrateur</span></h1>
-                    <p class="hero-subtitle">Gérez les offres d'emploi, les utilisateurs et plus encore.</p>
-                    <form class="search-form" id="search-form">
-                        <input type="text" placeholder="Titre du poste, mot-clé ou entreprise" id="job-search" class="search-input" />
-                        <input type="text" placeholder="Lieu" id="location-search" class="search-input" />
-                        <button type="submit" class="button button-primary button-glow">Rechercher</button>
-                    </form>
-                    <div class="popular-searches">
-                        <span>Recherches populaires:</span>
-                        <a href="jobs?q=developer" class="popular-link">Développeur</a>
-                        <a href="jobs?q=designer" class="popular-link">Designer</a>
-                        <a href="jobs?q=marketing" class="popular-link">Marketing</a>
-                        <a href="jobs?q=remote" class="popular-link">Télétravail</a>
-                    </div>
-                </div>
-            </section>
-
-            <section class="section">
-                <div class="container">
-                    <h2 class="section-title">Offres <span class="accent-text">Mises en Avant</span></h2>
-                    <div class="jobs-grid" id="featured-jobs">
-                        <!-- Jobs will be loaded here via JavaScript -->
-                    </div>
-                </div>
-            </section>
-
-            <section class="section section-dark">
-                <div class="container">
-                    <h2 class="section-title section-title-center">Parcourir par <span class="accent-text-pink">Catégorie</span></h2>
-                    <div class="categories-grid">
-                        <a href="jobs?q=technology" class="category-card">Technologie</a>
-                        <a href="jobs?q=design" class="category-card">Design</a>
-                        <a href="jobs?q=marketing" class="category-card">Marketing</a>
-                        <a href="jobs?q=finance" class="category-card">Finance</a>
-                    </div>
-                </div>
-            </section>
-
-            <section class="section">
-                <div class="container">
-                    <div class="cta-card">
-                        <h2 class="cta-title">Prêt à faire le prochain pas dans votre carrière ?</h2>
-                        <p class="cta-text">Rejoignez des milliers de chercheurs d'emploi qui ont trouvé leur emploi de rêve grâce à notre plateforme.</p>
-                        <a href="jobs" class="button button-primary button-glow">Trouver des Emplois Maintenant</a>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer class="footer">
-            <div class="container">
-                <div class="footer-grid">
-                    <div class="footer-brand">
-                        <a href="home" class="footer-logo">
-                            <img src="public/images/logo.png" alt="D" width="150" height="170">
+                <div class="card-body">
+                    <p>Gérez les offres, les entreprises et autres contenus du site.</p>
+                    <div class="list-group">
+                        <a href="gestion?section=offres" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Offres de stage
+                            <span class="badge bg-success rounded-pill"><?= $stats['totalOffres'] ?></span>
                         </a>
-                        <p class="footer-tagline">Votre passerelle vers des opportunités de carrière.</p>
-                    </div>
-                    <div class="footer-links">
-                        <h3 class="footer-heading">Pour les Chercheurs d'Emploi</h3>
-                        <ul>
-                            <li><a href="jobs" class="footer-link">Parcourir les Emplois</a></li>
-                            <li><a href="#" class="footer-link">Ressources de Carrière</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links">
-                        <h3 class="footer-heading">Entreprise</h3>
-                        <ul>
-                            <li><a href="#" class="footer-link">À Propos de Nous</a></li>
-                            <li><a href="#" class="footer-link">Contact</a></li>
-                        </ul>
+                        <a href="gestion?section=entreprises" class="list-group-item list-group-item-action">Entreprises</a>
                     </div>
                 </div>
-                <div class="footer-bottom">
-                    <p class="copyright">© <span id="current-year">2025</span> LeBonPlan. Tous droits réservés.</p>
+                <div class="card-footer">
+                    <a href="gestion" class="btn btn-success">Accéder à la gestion</a>
                 </div>
             </div>
-        </footer>
+        </div>
     </div>
-    <script src="public/js/mobile-menu.js"></script>
-    <script>
-        // Synchroniser les états de connexion entre le menu mobile et le menu normal
-        document.addEventListener('DOMContentLoaded', function() {
-            // Vérifier si l'utilisateur est connecté et mettre à jour le menu mobile
-            function updateMobileMenuVisibility() {
-                // Synchroniser les liens de gestion et admin
-                const pageGestion = document.getElementById('page-gestion');
-                const mobilePageGestion = document.getElementById('mobile-page-gestion');
-                const pageAdmin = document.getElementById('page-admin');
-                const mobilePageAdmin = document.getElementById('mobile-page-admin');
-            
-                // Vérifier si les éléments existent avant de manipuler leur style
-                if (pageGestion && mobilePageGestion) {
-                    mobilePageGestion.style.display = pageGestion.style.display;
-                }
-                if (pageAdmin && mobilePageAdmin) {
-                    mobilePageAdmin.style.display = pageAdmin.style.display;
-                }
-                // Synchroniser les boutons de connexion/déconnexion
-                const loginBtn = document.getElementById('login-Bouton');
-                const mobileLoginBtn = document.getElementById('mobile-login-Bouton');
-                const logoutBtn = document.getElementById('logout-Bouton');
-                const mobileLogoutBtn = document.getElementById('mobile-logout-Bouton');
-            
-                if (loginBtn && mobileLoginBtn) {
-                    mobileLoginBtn.style.display = loginBtn.style.display;
-                }
-                if (logoutBtn && mobileLogoutBtn) {
-                    mobileLogoutBtn.style.display = logoutBtn.style.display;
-                }
-            }
-            
-            // Exécuter après un court délai pour s'assurer que app.js a terminé
-            setTimeout(updateMobileMenuVisibility, 100);
-        });
-    </script>
-</body>
-</html>
+    
+    <!-- Statistiques et rapports -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Statistiques et rapports</h5>
+                </div>
+                <div class="card-body">
+                    <p>Accédez aux statistiques et rapports du système.</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Statistiques des offres</h5>
+                                    <p class="card-text">Consultez les statistiques des offres de stage.</p>
+                                    <a href="gestion/offres/stats" class="btn btn-outline-primary btn-sm">Voir les statistiques</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Statistiques des étudiants</h5>
+                                    <p class="card-text">Consultez les statistiques des étudiants.</p>
+                                    <a href="gestion/etudiants/stats" class="btn btn-outline-primary btn-sm">Voir les statistiques</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Statistiques des pilotes</h5>
+                                    <p class="card-text">Consultez les statistiques des pilotes.</p>
+                                    <a href="admin/statsPilotes" class="btn btn-outline-primary btn-sm">Voir les statistiques</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+// Inclure le pied de page
+require_once 'app/views/footer.php';
+?>
