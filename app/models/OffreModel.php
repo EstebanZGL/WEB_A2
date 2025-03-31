@@ -20,8 +20,14 @@ class OffreModel {
         }
     }
 
-    public function searchOffres($jobTitle = '', $location = '') {
+    // Méthode modifiée pour accepter un tableau de paramètres de recherche
+    public function searchOffres($searchParams = []) {
         try {
+            // Extraire les paramètres du tableau
+            $jobTitle = isset($searchParams['jobTitle']) ? $searchParams['jobTitle'] : '';
+            $location = isset($searchParams['location']) ? $searchParams['location'] : '';
+            $filters = isset($searchParams['filters']) ? $searchParams['filters'] : [];
+
             $query = "SELECT o.*, e.nom as entreprise FROM offre_stage o 
                       LEFT JOIN entreprise e ON o.entreprise_id = e.id
                       WHERE 1=1";
@@ -38,8 +44,28 @@ class OffreModel {
                 $params[':location'] = "%$location%";
             }
 
+            // Ajouter des filtres supplémentaires si nécessaire
+            if (!empty($filters) && is_array($filters)) {
+                // Exemple de traitement des filtres de salaire
+                if (isset($filters['salary']) && is_array($filters['salary'])) {
+                    foreach ($filters['salary'] as $range) {
+                        if ($range === '0-50000') {
+                            $query .= " AND o.remuneration BETWEEN 0 AND 50000";
+                        } elseif ($range === '50000-100000') {
+                            $query .= " AND o.remuneration BETWEEN 50000 AND 100000";
+                        } elseif ($range === '100000+') {
+                            $query .= " AND o.remuneration >= 100000";
+                        }
+                    }
+                }
+            }
+
             // Trier par date décroissante
             $query .= " ORDER BY o.date_publication DESC";
+
+            // Déboguer la requête SQL
+            error_log("Requête SQL: " . $query);
+            error_log("Paramètres: " . print_r($params, true));
 
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
