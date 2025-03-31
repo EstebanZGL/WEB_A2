@@ -70,6 +70,9 @@
                         <a href="gestion?section=offres" class="tab <?php echo $section === 'offres' ? 'active' : ''; ?>">Offres</a>
                         <a href="gestion?section=entreprises" class="tab <?php echo $section === 'entreprises' ? 'active' : ''; ?>">Entreprises</a>
                         <a href="gestion?section=etudiants" class="tab <?php echo $section === 'etudiants' ? 'active' : ''; ?>">Étudiants</a>
+                        <?php if (isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 2): ?>
+                        <a href="gestion?section=pilotes" class="tab <?php echo $section === 'pilotes' ? 'active' : ''; ?>">Pilotes</a>
+                        <?php endif; ?>
                     </div>
                     
                     <!-- Messages d'alerte -->
@@ -266,6 +269,42 @@
                                                 <td class="actions">
                                                     <a href="gestion/etudiants/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>
                                                     <button onclick="confirmDelete('etudiants', <?php echo $item['id']; ?>)" class="btn-supprimer">Supprimer</button>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        <?php elseif ($section === 'pilotes'): ?>
+                            <table class="gestion-table gestion-table-pilotes">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Email</th>
+                                        <th>Département</th>
+                                        <th>Spécialité</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($items)): ?>
+                                        <tr>
+                                            <td colspan="7" class="text-center">Aucun pilote trouvé</td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php foreach ($items as $item): ?>
+                                            <tr>
+                                                <td><?php echo $item['id']; ?></td>
+                                                <td><?php echo htmlspecialchars($item['nom'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['prenom'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['email'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['departement'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['specialite'] ?? ''); ?></td>
+                                                <td class="actions">
+                                                    <a href="gestion/pilotes/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>
+                                                    <button onclick="confirmDelete('pilotes', <?php echo $item['id']; ?>)" class="btn-supprimer">Supprimer</button>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
