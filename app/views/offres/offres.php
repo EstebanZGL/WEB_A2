@@ -26,7 +26,7 @@
                 <a href="home" class="mobile-nav-link">Accueil</a>
                 <a href="offres" class="mobile-nav-link active">Emplois</a>
                 <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
-                <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                
                 <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
                 <a href="wishlist" class="mobile-nav-link" id="mobile-wishlist-link" style="display:none;">Ma Wishlist</a>
             </nav>
