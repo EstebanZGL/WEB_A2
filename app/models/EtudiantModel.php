@@ -167,12 +167,12 @@ class EtudiantModel {
         $stmt = $this->db->query($query);
         $stats['avec_offre'] = $stmt->fetchColumn();
         
-        // Nombre de candidatures par étudiant
+        // Nombre de candidatures par étudiant - REQUÊTE CORRIGÉE
         $query = "SELECT u.nom, u.prenom, COUNT(c.id) as nb_candidatures 
                  FROM etudiant e 
                  JOIN utilisateur u ON e.utilisateur_id = u.id 
-                 LEFT JOIN candidature c ON e.id = c.etudiant_id 
-                 GROUP BY e.id 
+                 JOIN candidature c ON e.id = c.etudiant_id 
+                 GROUP BY e.id, u.nom, u.prenom 
                  ORDER BY nb_candidatures DESC 
                  LIMIT 10";
         $stmt = $this->db->query($query);
