@@ -25,9 +25,19 @@ class OffresController {
         
         // Effectuer la recherche
         $offres = $this->offreModel->searchOffres($searchParams);
+        
         // Retourner les résultats au format JSON
         header('Content-Type: application/json');
         echo json_encode($offres);
+    }
+    
+    public function cities() {
+        // Récupérer la liste des villes disponibles
+        $cities = $this->offreModel->getAvailableCities();
+        
+        // Retourner les résultats au format JSON
+        header('Content-Type: application/json');
+        echo json_encode($cities);
     }
     
     public function details($id = null) {
