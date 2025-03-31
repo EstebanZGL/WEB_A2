@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="public/css/responsive-complete.css">
     <!-- Ajout du fichier CSS pour la wishlist -->
     <link rel="stylesheet" href="public/css/wishlist.css">
-    <!-- Ajout d'Iconify pour les icônes -->
-    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
 </head>
 <body>
@@ -58,7 +56,9 @@
                     <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
                     <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
                     <a href="wishlist" class="nav-link wishlist-icon-link" id="wishlist-link" style="display:none;" title="Ma Wishlist">
-                        <span class="iconify" data-icon="mdi:heart" width="20" height="20"></span>
+                        <svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
                     </a>
                 </nav>
 
@@ -97,7 +97,9 @@
                         <div class="filter-group">
                             <div class="filter-heading" data-toggle="salary-filters">
                                 <h3>Rémunération</h3>
-                                <span class="iconify" data-icon="mdi:chevron-down" width="16" height="16"></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                    <path d="m6 9 6 6 6-6"></path>
+                                </svg>
                             </div>
                             <div class="filter-options" id="salary-filters">
                                 <label class="filter-option"><input type="checkbox" data-filter="salary" value="0-50000" class="filter-checkbox" /> 0€ - 50 000€</label>
@@ -123,7 +125,10 @@
                             <!-- Les offres d'emploi seront chargées ici -->
                         </div>
                         <div id="no-jobs-found" class="no-jobs-found hide">
-                            <span class="iconify" data-icon="mdi:magnify" width="48" height="48"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.3-4.3"></path>
+                            </svg>
                             <h3>Aucun emploi trouvé</h3>
                             <p>Nous n'avons pas trouvé d'emplois correspondant à vos critères de recherche.</p>
                             <button id="reset-filters" class="button button-secondary">Effacer les filtres</button>
@@ -264,49 +269,29 @@
                 const jobCard = document.createElement('div');
                 jobCard.className = 'job-card';
                 
-                // Formater la date de publication
-                const datePublication = new Date(job.date_publication);
-                const formattedDate = datePublication.toLocaleDateString('fr-FR', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
+                // Calculer la durée du stage
+                const dateDebut = new Date(job.date_debut);
+                const dateFin = new Date(job.date_fin);
+                const dureeMois = job.duree_stage;
                 
-                // Créer la carte avec la nouvelle structure
                 jobCard.innerHTML = `
-                    <div class="job-card-header">
+                    <div class="job-header">
+                        <h3 class="job-title">${job.titre}</h3>
                         <button class="wishlist-button" data-job-id="${job.id}" title="Ajouter à ma wishlist">
-                            <span class="iconify" data-icon="mdi:heart-outline" width="24" height="24"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
                         </button>
                     </div>
-                    <div class="job-card-image">
-                        <img src="public/images/job-placeholder.png" alt="${job.titre}" class="job-image">
+                    <div class="job-company">${job.entreprise}</div>
+                    <div class="job-details">
+                        <div class="job-salary">${job.remuneration}€/an</div>
+                        <div class="job-date">Du ${dateDebut.toLocaleDateString()} au ${dateFin.toLocaleDateString()} (${dureeMois} mois)</div>
                     </div>
-                    <div class="job-card-content">
-                        <h3 class="job-title">${job.titre}</h3>
-                        <div class="job-location">
-                            <span class="iconify" data-icon="mdi:map-marker" width="16" height="16"></span>
-                            <span>${job.ville || 'Non spécifiée'}</span>
-                        </div>
-                        <div class="job-company">
-                            <span class="iconify" data-icon="mdi:office-building" width="16" height="16"></span>
-                            <span>${job.entreprise}</span>
-                        </div>
-                        <div class="job-salary">
-                            <span class="iconify" data-icon="mdi:currency-eur" width="16" height="16"></span>
-                            <span>${job.remuneration}€/an</span>
-                        </div>
-                    </div>
-                    <div class="job-card-actions">
-                        <a href="offres/details/${job.id}" class="job-details-link">
-                            <span class="iconify" data-icon="mdi:arrow-right" width="20" height="20"></span>
-                        </a>
-                    </div>
-                    <div class="job-card-footer">
-                        <div class="job-date">
-                            <span class="iconify" data-icon="mdi:calendar" width="16" height="16"></span>
-                            <span>${formattedDate}</span>
-                        </div>
+                    <div class="job-skills">${job.competences || 'Aucune compétence spécifiée'}</div>
+                    <div class="job-footer">
+                        <a href="offres/details/${job.id}" class="button button-secondary">Voir détails</a>
+                        <div class="job-applicants">${job.nb_postulants || 0} candidat(s)</div>
                     </div>
                 `;
                 
@@ -331,45 +316,24 @@
                 const jobCard = document.createElement('div');
                 jobCard.className = 'job-card';
                 
-                // Formater la date de publication
-                const datePublication = new Date(job.date_publication);
-                const formattedDate = datePublication.toLocaleDateString('fr-FR', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
+                // Calculer la durée du stage
+                const dateDebut = new Date(job.date_debut);
+                const dateFin = new Date(job.date_fin);
+                const dureeMois = job.duree_stage;
                 
-                // Créer la carte avec la nouvelle structure mais sans bouton wishlist
                 jobCard.innerHTML = `
-                    <div class="job-card-header"></div>
-                    <div class="job-card-image">
-                        <img src="public/images/job-placeholder.png" alt="${job.titre}" class="job-image">
-                    </div>
-                    <div class="job-card-content">
+                    <div class="job-header">
                         <h3 class="job-title">${job.titre}</h3>
-                        <div class="job-location">
-                            <span class="iconify" data-icon="mdi:map-marker" width="16" height="16"></span>
-                            <span>${job.ville || 'Non spécifiée'}</span>
-                        </div>
-                        <div class="job-company">
-                            <span class="iconify" data-icon="mdi:office-building" width="16" height="16"></span>
-                            <span>${job.entreprise}</span>
-                        </div>
-                        <div class="job-salary">
-                            <span class="iconify" data-icon="mdi:currency-eur" width="16" height="16"></span>
-                            <span>${job.remuneration}€/an</span>
-                        </div>
                     </div>
-                    <div class="job-card-actions">
-                        <a href="offres/details/${job.id}" class="job-details-link">
-                            <span class="iconify" data-icon="mdi:arrow-right" width="20" height="20"></span>
-                        </a>
+                    <div class="job-company">${job.entreprise}</div>
+                    <div class="job-details">
+                        <div class="job-salary">${job.remuneration}€/an</div>
+                        <div class="job-date">Du ${dateDebut.toLocaleDateString()} au ${dateFin.toLocaleDateString()} (${dureeMois} mois)</div>
                     </div>
-                    <div class="job-card-footer">
-                        <div class="job-date">
-                            <span class="iconify" data-icon="mdi:calendar" width="16" height="16"></span>
-                            <span>${formattedDate}</span>
-                        </div>
+                    <div class="job-skills">${job.competences || 'Aucune compétence spécifiée'}</div>
+                    <div class="job-footer">
+                        <a href="offres/details/${job.id}" class="button button-secondary">Voir détails</a>
+                        <div class="job-applicants">${job.nb_postulants || 0} candidat(s)</div>
                     </div>
                 `;
                 
@@ -392,8 +356,6 @@
                     // Changer l'apparence du bouton pour indiquer que l'offre a été ajoutée
                     button.classList.add('added');
                     button.title = "Ajouté à votre wishlist";
-                    // Changer l'icône pour indiquer que c'est ajouté
-                    button.querySelector('.iconify').setAttribute('data-icon', 'mdi:heart');
                     
                     // Afficher un message de confirmation
                     alert(data.message);
@@ -540,7 +502,5 @@
     
     <!-- Charger le script app.js à la fin du body -->
     <script src="public/js/app.js"></script>
-    <!-- Charger le script wishlist.js pour gérer les fonctionnalités de wishlist -->
-    <script src="public/js/wishlist.js"></script>
 </body>
 </html>
