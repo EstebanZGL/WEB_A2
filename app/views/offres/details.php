@@ -31,6 +31,10 @@ try {
 $message = '';
 $messageType = '';
 
+// Déterminer le chemin de base pour les ressources statiques
+// Si nous sommes dans un sous-répertoire, ajuster en conséquence
+$basePath = '../../..'; // Remonte de 3 niveaux: offres/details/ID -> racine du projet
+
 // Traitement du formulaire de candidature
 if (isset($_POST['submit_candidature'])) {
     // Code de traitement de candidature...
@@ -50,37 +54,41 @@ if (isset($_POST['add_wishlist'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($offre->titre); ?> - LeBonPlan</title>
-    <link rel="stylesheet" href="public/css/style.css">
-    <link rel="stylesheet" href="public/css/responsive-complete.css">
-    <!-- Ajout du fichier CSS pour la wishlist -->
-    <link rel="stylesheet" href="public/css/wishlist.css">
-    <!-- Ajout d'Iconify pour les icônes -->
+    
+    <!-- Utilisation de chemins absolus pour les ressources statiques -->
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/style.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/responsive-complete.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/wishlist.css">
     <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <style>
         /* Styles spécifiques pour la page de détails */
         .offre-details {
-            background-color: var(--bg-card);
+            background-color: #1e1e1e;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             margin-bottom: 2rem;
+            border: 1px solid rgba(0, 255, 136, 0.3);
         }
         
         .offre-header {
+            background-color: #2d2d2d;
             padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
             position: relative;
         }
         
         .offre-title {
             font-size: 1.8rem;
             margin-bottom: 0.5rem;
-            color: var(--primary-color);
+            color: #00ff88;
+            text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
         }
         
         .offre-entreprise {
             font-size: 1.2rem;
             opacity: 0.9;
+            color: #cccccc;
         }
         
         .offre-content {
@@ -92,9 +100,9 @@ if (isset($_POST['add_wishlist'])) {
         }
         
         .offre-section h3 {
-            color: var(--primary-color);
+            color: #00ff88;
             margin-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
             padding-bottom: 0.5rem;
         }
         
@@ -120,7 +128,7 @@ if (isset($_POST['add_wishlist'])) {
         
         .competence-badge {
             background-color: rgba(0, 255, 136, 0.1);
-            color: var(--primary-color);
+            color: #00ff88;
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.9rem;
@@ -128,10 +136,11 @@ if (isset($_POST['add_wishlist'])) {
         }
         
         .entreprise-info {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: #2d2d2d;
             padding: 1.5rem;
             border-radius: 8px;
             margin-top: 1rem;
+            border: 1px solid rgba(0, 255, 136, 0.2);
         }
         
         .action-buttons {
@@ -141,17 +150,19 @@ if (isset($_POST['add_wishlist'])) {
         }
         
         .candidature-form {
-            background-color: var(--bg-card);
+            background-color: #1e1e1e;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 2rem;
             margin-top: 2rem;
+            border: 1px solid rgba(0, 255, 136, 0.3);
         }
         
         .form-title {
-            color: var(--primary-color);
+            color: #00ff88;
             margin-bottom: 1.5rem;
             text-align: center;
+            text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
         }
         
         .form-group {
@@ -162,16 +173,17 @@ if (isset($_POST['add_wishlist'])) {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
+            color: #cccccc;
         }
         
         .form-control {
             width: 100%;
             padding: 0.8rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
             border-radius: 8px;
             font-size: 1rem;
-            background-color: rgba(0, 0, 0, 0.1);
-            color: var(--text-light);
+            background-color: #2d2d2d;
+            color: #ffffff;
         }
         
         .alert {
@@ -182,7 +194,7 @@ if (isset($_POST['add_wishlist'])) {
         
         .alert-success {
             background-color: rgba(0, 255, 136, 0.1);
-            color: var(--primary-color);
+            color: #00ff88;
             border: 1px solid rgba(0, 255, 136, 0.3);
         }
         
@@ -211,28 +223,28 @@ if (isset($_POST['add_wishlist'])) {
         <!-- Menu Mobile -->
         <div class="mobile-menu">
             <div class="mobile-menu-header">
-                <img src="/public/images/logo.png" alt="D" width="100" height="113">
+                <img src="<?php echo $basePath; ?>/public/images/logo.png" alt="D" width="100" height="113">
                 <button class="mobile-menu-close">&times;</button>
             </div>
             <nav class="mobile-nav">
-                <a href="/home" class="mobile-nav-link">Accueil</a>
-                <a href="/offres" class="mobile-nav-link active">Emplois</a>
-                <a href="/gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
-                <a href="/admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                <a href="<?php echo $basePath; ?>/home" class="mobile-nav-link">Accueil</a>
+                <a href="<?php echo $basePath; ?>/offres" class="mobile-nav-link active">Emplois</a>
+                <a href="<?php echo $basePath; ?>/gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
+                <a href="<?php echo $basePath; ?>/admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
                 <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
-                <a href="/wishlist" class="mobile-nav-link" id="mobile-wishlist-link" style="display:none;">Ma Wishlist</a>
+                <a href="<?php echo $basePath; ?>/wishlist" class="mobile-nav-link" id="mobile-wishlist-link" style="display:none;">Ma Wishlist</a>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
-                    <a href="/login" id="mobile-login-Bouton" class="button button-primary button-glow">Connexion</a>
-                    <a href="/logout" id="mobile-logout-Bouton" class="button button-primary button-glow" style="display:none;">Déconnexion</a>
+                    <a href="<?php echo $basePath; ?>/login" id="mobile-login-Bouton" class="button button-primary button-glow">Connexion</a>
+                    <a href="<?php echo $basePath; ?>/logout" id="mobile-logout-Bouton" class="button button-primary button-glow" style="display:none;">Déconnexion</a>
                 </div>
             </div>
         </div>
         
         <header class="navbar">
             <div class="container">
-                <img src="/public/images/logo.png" alt="D" width="150" height="170">
+                <img src="<?php echo $basePath; ?>/public/images/logo.png" alt="D" width="150" height="170">
 
                 <!-- Bouton Menu Mobile -->
                 <button class="mobile-menu-toggle">
@@ -242,19 +254,19 @@ if (isset($_POST['add_wishlist'])) {
                     <span></span>
                 </button>
                 <nav class="navbar-nav">
-                    <a href="/home" class="nav-link">Accueil</a>
-                    <a href="/offres" class="nav-link active">Emplois</a>
-                    <a href="/gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
-                    <a href="/admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
+                    <a href="<?php echo $basePath; ?>/home" class="nav-link">Accueil</a>
+                    <a href="<?php echo $basePath; ?>/offres" class="nav-link active">Emplois</a>
+                    <a href="<?php echo $basePath; ?>/gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
+                    <a href="<?php echo $basePath; ?>/admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
                     <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
-                    <a href="/wishlist" class="nav-link wishlist-icon-link" id="wishlist-link" style="display:none;" title="Ma Wishlist">
+                    <a href="<?php echo $basePath; ?>/wishlist" class="nav-link wishlist-icon-link" id="wishlist-link" style="display:none;" title="Ma Wishlist">
                         <span class="iconify" data-icon="mdi:heart" width="20" height="20"></span>
                     </a>
                 </nav>
 
                 <div id="user-status">
-                    <a href="/login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
-                    <a href="/logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
+                    <a href="<?php echo $basePath; ?>/login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
+                    <a href="<?php echo $basePath; ?>/logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
                 </div>
             </div>
             <span id="welcome-message" class="welcome-message"></span>
@@ -324,7 +336,7 @@ if (isset($_POST['add_wishlist'])) {
                         </section>
                         
                         <div class="action-buttons">
-                            <form method="post" action="/wishlist/add">
+                            <form method="post" action="<?php echo $basePath; ?>/wishlist/add">
                                 <input type="hidden" name="item_id" value="<?php echo $offre->id; ?>">
                                 <button type="submit" class="button button-secondary">
                                     <span class="iconify" data-icon="mdi:heart-outline" width="20" height="20"></span> Ajouter aux favoris
@@ -363,15 +375,15 @@ if (isset($_POST['add_wishlist'])) {
             <div class="container">
                 <div class="footer-grid">
                     <div class="footer-brand">
-                        <a href="/home" class="footer-logo">
-                            <img src="/public/images/logo.png" alt="D" width="150" height="170">
+                        <a href="<?php echo $basePath; ?>/home" class="footer-logo">
+                            <img src="<?php echo $basePath; ?>/public/images/logo.png" alt="D" width="150" height="170">
                         </a>
                         <p class="footer-tagline">Votre passerelle vers des opportunités de carrière.</p>
                     </div>
                     <div class="footer-links">
                         <h3 class="footer-heading">Pour les Chercheurs d'Emploi</h3>
                         <ul>
-                            <li><a href="/offres" class="footer-link">Parcourir les Emplois</a></li>
+                            <li><a href="<?php echo $basePath; ?>/offres" class="footer-link">Parcourir les Emplois</a></li>
                             <li><a href="#" class="footer-link">Ressources de Carrière</a></li>
                         </ul>
                     </div>
@@ -384,12 +396,12 @@ if (isset($_POST['add_wishlist'])) {
     </div>
 
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
-    <script src="/public/js/mobile-menu.js"></script>
-    <script src="/public/js/app.js"></script>
+    <script src="<?php echo $basePath; ?>/public/js/mobile-menu.js"></script>
+    <script src="<?php echo $basePath; ?>/public/js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Vérifier si l'utilisateur est un étudiant pour afficher la section wishlist
-            fetch("app/views/login/session.php")
+            fetch("<?php echo $basePath; ?>/app/views/login/session.php")
                 .then(response => response.json())
                 .then(data => {
                     if (data.logged_in && parseInt(data.utilisateur) === 0) {
