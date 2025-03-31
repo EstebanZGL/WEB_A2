@@ -13,29 +13,39 @@
 
 .stat-card {
     flex: 1;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--white-10);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     text-align: center;
+    transition: var(--transition-normal);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset, 
+                0 0 15px var(--primary-glow);
+    border-color: var(--white-20);
 }
 
 .stat-card h3 {
     margin-top: 0;
     font-size: 1rem;
-    color: #555;
+    color: var(--foreground-muted);
     margin-bottom: 1rem;
 }
 
 .stat-value {
     font-size: 2rem;
     font-weight: 700;
-    color: #333;
     margin: 0;
-    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 5px var(--primary-glow);
 }
 
 .stats-row {
@@ -46,32 +56,86 @@
 
 .stats-chart {
     flex: 1;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--white-10);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
+    transition: var(--transition-normal);
+}
+
+.stats-chart:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset, 
+                0 0 15px var(--primary-glow);
+    border-color: var(--white-20);
 }
 
 .stats-chart h3 {
     margin-top: 0;
     font-size: 1.1rem;
-    color: #333;
+    color: var(--foreground);
     margin-bottom: 1.5rem;
     text-align: center;
 }
 
 .stats-table {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--white-10);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
+    transition: var(--transition-normal);
+}
+
+.stats-table:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset, 
+                0 0 15px var(--primary-glow);
+    border-color: var(--white-20);
 }
 
 .stats-table h3 {
     margin-top: 0;
     font-size: 1.1rem;
-    color: #333;
+    color: var(--foreground);
     margin-bottom: 1.5rem;
+}
+
+/* Styles pour les tableaux */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--white-10);
+}
+
+.table th {
+    color: var(--foreground);
+    font-weight: 600;
+}
+
+.table td {
+    color: var(--foreground-muted);
+}
+
+.table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--foreground);
+}
+
+/* Ajustements pour Chart.js */
+canvas {
+    max-width: 100%;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-md);
 }
 
 /* Responsive */
