@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
     <link rel="stylesheet" href="public/css/gestion.css">
-</head>
+    <link rel="stylesheet" href="public/css/gestion-mobile-menu-fix.css">
 <body>
     <div id="app">
         <header class="navbar">
@@ -363,6 +363,6 @@
     </script>
     
     <!-- Script pour le menu mobile -->
-    <script src="public/js/mobile-menu.js"></script>
+    <script src="public/js/gestion-mobile-menu.js"></script>
 </body>
 </html>

@@ -1,0 +1,117 @@
+/* Styles spécifiques pour corriger le menu mobile dans les pages de gestion */
+
+/* Réinitialisation complète des styles du menu mobile pour la page de gestion */
+.mobile-menu {
+  position: fixed !important;
+  top: 0 !important;
+  right: -300px !important; /* Position initiale hors écran */
+  width: 280px !important;
+  height: 100% !important;
+  background: linear-gradient(to bottom, var(--background), var(--background-darker)) !important;
+  z-index: 95 !important;
+  padding: var(--spacing-2xl) var(--spacing-lg) !important;
+  overflow-y: auto !important;
+  transition: transform 0.3s ease !important; /* Utilisation de transform au lieu de right */
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3) !important;
+  transform: translateX(0) !important;
+}
+
+.mobile-menu.open {
+  right: 0 !important;
+  transform: translateX(-300px) !important; /* Déplace le menu de 300px vers la gauche */
+}
+
+.mobile-menu-overlay {
+  display: block !important; 
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  z-index: 90 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  pointer-events: none !important;
+}
+
+.mobile-menu-overlay.open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* S'assurer que le bouton burger est correctement positionné */
+@media (max-width: 767px) {
+  .mobile-menu-toggle {
+    display: block !important;
+    position: absolute !important;
+    right: var(--spacing-md) !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 100 !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+  }
+  
+  /* Masquer la navigation principale sur mobile */
+  .navbar-nav {
+    display: none !important;
+  }
+}
+
+/* Styles pour le contenu du menu mobile */
+.mobile-menu-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: var(--spacing-xl) !important;
+  padding-bottom: var(--spacing-md) !important;
+  border-bottom: 1px solid var(--white-10) !important;
+}
+
+.mobile-menu-close {
+  background: none !important;
+  border: none !important;
+  color: var(--foreground) !important;
+  font-size: 1.5rem !important;
+  cursor: pointer !important;
+}
+
+.mobile-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--spacing-md) !important;
+}
+
+.mobile-nav-link {
+  display: block !important;
+  padding: var(--spacing-md) !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  color: var(--foreground) !important;
+  border-radius: var(--radius-md) !important;
+  transition: var(--transition-fast) !important;
+  text-decoration: none !important;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  background-color: var(--white-10) !important;
+  color: var(--primary) !important;
+}
+
+.mobile-menu-footer {
+  margin-top: var(--spacing-xl) !important;
+  padding-top: var(--spacing-md) !important;
+  border-top: 1px solid var(--white-10) !important;
+}
+
+.mobile-menu-buttons {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--spacing-md) !important;
+  margin-top: var(--spacing-md) !important;
+}
