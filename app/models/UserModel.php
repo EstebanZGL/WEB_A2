@@ -225,67 +225,63 @@ class UserModel {
         }
     }
 
- /**
- * Crée un pilote (utilisateur + entrée dans la table pilote)
- */
-public function createPilote($email, $password, $nom, $prenom, $departement = '', $specialite = '') {
-    try {
-        // Vérifier si l'email existe déjà
-        $stmt = $this->pdo->prepare("SELECT id FROM utilisateur WHERE email = :email");
-        $stmt->execute([':email' => $email]);
-        $existingUser = $stmt->fetch();
-        
-        if ($existingUser) {
-            error_log("Erreur: L'email $email existe déjà dans la base de données (ID: {$existingUser['id']})");
+    public function createPilote($email, $password, $nom, $prenom, $departement = '', $specialite = '') {
+        try {
+            // Vérifier si l'email existe déjà
+            $stmt = $this->pdo->prepare("SELECT id FROM utilisateur WHERE email = :email");
+            $stmt->execute([':email' => $email]);
+            $existingUser = $stmt->fetch();
+            
+            if ($existingUser) {
+                error_log("Erreur: L'email $email existe déjà dans la base de données (ID: {$existingUser['id']})");
+                return false;
+            }
+            
+            $this->pdo->beginTransaction();
+            
+            // Créer l'utilisateur de base
+            $stmt = $this->pdo->prepare("
+                INSERT INTO utilisateur (email, mot_de_passe, nom, prenom)
+                VALUES (:email, :mot_de_passe, :nom, :prenom)
+            ");
+            
+            $stmt->execute([
+                ':email' => $email,
+                ':mot_de_passe' => $password,
+                ':nom' => $nom,
+                ':prenom' => $prenom
+            ]);
+            
+            $userId = $this->pdo->lastInsertId();
+            
+            if (!$userId) {
+                $this->pdo->rollBack();
+                error_log("Erreur: Impossible d'obtenir l'ID de l'utilisateur après insertion");
+                return false;
+            }
+            
+            // Créer l'entrée dans la table pilote
+            $stmt = $this->pdo->prepare("
+                INSERT INTO pilote (utilisateur_id, departement, specialite)
+                VALUES (:utilisateur_id, :departement, :specialite)
+            ");
+            
+            $stmt->execute([
+                ':utilisateur_id' => $userId,
+                ':departement' => $departement ?: 'Département',
+                ':specialite' => $specialite ?: 'Spécialité'
+            ]);
+            
+            $this->pdo->commit();
+            return $userId;
+        } catch (PDOException $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            error_log("Erreur lors de la création du pilote: " . $e->getMessage());
             return false;
         }
-        
-        $this->pdo->beginTransaction();
-        
-        // Créer l'utilisateur de base
-        $stmt = $this->pdo->prepare("
-            INSERT INTO utilisateur (email, mot_de_passe, nom, prenom)
-            VALUES (:email, :mot_de_passe, :nom, :prenom)
-        ");
-        
-        $stmt->execute([
-            ':email' => $email,
-            ':mot_de_passe' => $password,
-            ':nom' => $nom,
-            ':prenom' => $prenom
-        ]);
-        
-        $userId = $this->pdo->lastInsertId();
-        
-        if (!$userId) {
-            $this->pdo->rollBack();
-            error_log("Erreur: Impossible d'obtenir l'ID de l'utilisateur après insertion");
-            return false;
-        }
-        
-        // Créer l'entrée dans la table pilote
-        $stmt = $this->pdo->prepare("
-            INSERT INTO pilote (utilisateur_id, departement, specialite)
-            VALUES (:utilisateur_id, :departement, :specialite)
-        ");
-        
-        $stmt->execute([
-            ':utilisateur_id' => $userId,
-            ':departement' => $departement ?: 'Département 1',
-            ':specialite' => $specialite ?: 'Spécialité 1'
-        ]);
-        
-        $this->pdo->commit();
-        error_log("Pilote créé avec succès: ID utilisateur=$userId");
-        return $userId;
-    } catch (PDOException $e) {
-        if ($this->pdo->inTransaction()) {
-            $this->pdo->rollBack();
-        }
-        error_log("Erreur lors de la création du pilote: " . $e->getMessage());
-        return false;
     }
-}
 
     /**
      * Crée un administrateur (utilisateur + entrée dans la table administrateur)
