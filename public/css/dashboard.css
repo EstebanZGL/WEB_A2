@@ -1,0 +1,107 @@
+.dashboard-header {
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--white-10);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: var(--transition-normal);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset, 
+                0 0 15px var(--primary-glow);
+    border-color: var(--white-20);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(to bottom right, var(--primary), var(--accent));
+    color: white;
+    font-size: 1.5rem;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: white;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--foreground-muted);
+    margin: 0;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+}
+
+@media (min-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.dashboard-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--white-10);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+}
+
+.dashboard-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+    color: white;
+}
+
+.activity-list {
+    color: var(--foreground-muted);
+}
+
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+@media (min-width: 640px) {
+    .quick-actions {
+        flex-direction: row;
+    }
+}
+
+.text-muted {
+    color: var(--foreground-muted);
+}

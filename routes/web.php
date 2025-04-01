@@ -8,8 +8,9 @@ require_once 'app/controllers/AdminController.php';
 require_once 'app/controllers/GestionController.php';
 require_once 'app/controllers/LogoutController.php';
 require_once 'app/controllers/WishlistController.php';
+require_once 'app/controllers/DashboardController.php';
 
-function route($uri) {
+function route($uri, $action) {
     // Initialisation des contrôleurs
     $homeController = new HomeController();
     $loginController = new LoginController();
@@ -18,6 +19,7 @@ function route($uri) {
     $gestionController = new GestionController();
     $logoutController = new LogoutController();
     $wishlistController = new WishlistController();
+    $dashboardController = new DashboardController();
 
     if (strpos($uri, 'cesi-lebonplan/') === 0) {
         $uri = substr($uri, strlen('cesi-lebonplan/'));
@@ -27,192 +29,203 @@ function route($uri) {
     //echo "URI reçue par le routeur: '" . $uri . "'<br>";
 
     // Gestion des différentes routes
-    switch ($uri) {
-        case '':
+    switch ($action) {
+        case 'HomeController@index':
             // Afficher la page d'accueil
             $homeController->index();
             break;
 
-        case 'home':
-            // Afficher la page d'accueil
-            $homeController->index();
-            break;
-
-        case 'login':
+        case 'LoginController@index':
             // Afficher la page de connexion
             $loginController->index();
             break;
 
-        case 'login/authenticate':
+        case 'LoginController@authenticate':
             // Traiter la connexion
             $loginController->authenticate();
             break;
 
-        case 'offres':
+        case 'OffresController@index':
             // Afficher la page des offres
             $offresController->index();
             break;
 
-        case 'offres/search':
+        case 'OffresController@search':
             // Traiter la recherche et les filtres pour les offres
             $offresController->search();
             break;
 
-        case 'gestion':
+        case 'GestionController@index':
             // Afficher la page de gestion
             $gestionController->index();
             break;
 
         // Routes pour les offres
-        case 'gestion/offres/add':
+        case 'GestionController@addOffre':
             // Ajouter une nouvelle offre
             $gestionController->addOffre();
             break;
 
-        case 'gestion/offres/edit':
+        case 'GestionController@editOffre':
             // Modifier une offre existante
             $gestionController->editOffre();
             break;
 
-        case 'gestion/offres/delete':
+        case 'GestionController@deleteOffre':
             // Supprimer une offre
             $gestionController->deleteOffre();
             break;
 
-        case 'gestion/offres/stats':
+        case 'GestionController@statsOffres':
             // Consulter les statistiques des offres
             $gestionController->statsOffres();
             break;
 
         // Routes pour les entreprises
-        case 'gestion/entreprises/add':
+        case 'GestionController@addEntreprise':
             // Ajouter une nouvelle entreprise
             $gestionController->addEntreprise();
             break;
 
-        case 'gestion/entreprises/edit':
+        case 'GestionController@editEntreprise':
             // Modifier une entreprise existante
             $gestionController->editEntreprise();
             break;
 
-        case 'gestion/entreprises/delete':
+        case 'GestionController@deleteEntreprise':
             // Supprimer une entreprise
             $gestionController->deleteEntreprise();
             break;
 
-        case 'gestion/entreprises/stats':
+        case 'GestionController@statsEntreprises':
             // Consulter les statistiques des entreprises
             $gestionController->statsEntreprises();
             break;
 
         // Routes pour les étudiants
-        case 'gestion/etudiants/add':
+        case 'GestionController@addEtudiant':
             // Ajouter un nouvel étudiant
             $gestionController->addEtudiant();
             break;
 
-        case 'gestion/etudiants/edit':
+        case 'GestionController@editEtudiant':
             // Modifier un étudiant existant
             $gestionController->editEtudiant();
             break;
 
-        case 'gestion/etudiants/delete':
+        case 'GestionController@deleteEtudiant':
             // Supprimer un étudiant
             $gestionController->deleteEtudiant();
             break;
 
-        case 'gestion/etudiants/stats':
+        case 'GestionController@statsEtudiants':
             // Consulter les statistiques des étudiants
             $gestionController->statsEtudiants();
             break;
             
         // Routes pour les pilotes dans la section gestion
-        case 'gestion/pilotes/add':
+        case 'GestionController@addPilote':
             // Ajouter un nouveau pilote
             $gestionController->addPilote();
             break;
 
-        case 'gestion/pilotes/edit':
+        case 'GestionController@editPilote':
             // Modifier un pilote existant
             $gestionController->editPilote();
             break;
 
-        case 'gestion/pilotes/delete':
+        case 'GestionController@deletePilote':
             // Supprimer un pilote
             $gestionController->deletePilote();
             break;
 
-        case 'gestion/pilotes/stats':
+        case 'GestionController@statsPilotes':
             // Consulter les statistiques des pilotes
             $gestionController->statsPilotes();
             break;
 
-        case 'admin':
+        case 'AdminController@index':
             // Afficher la page administrateur
             $adminController->index();
             break;
 
-        case 'admin/manage':
+        case 'AdminController@manage':
             // Gérer les tâches administratives (exemple)
             $adminController->manage();
             break;
 
         // Nouvelles routes pour la gestion des pilotes
-        case 'admin/pilotes':
+        case 'AdminController@pilotes':
             // Afficher la liste des pilotes
             $adminController->pilotes();
             break;
 
-        case 'admin/addPilote':
+        case 'AdminController@addPilote':
             // Ajouter un nouveau pilote
             $adminController->addPilote();
             break;
             
-        case 'admin/editPilote':
+        case 'AdminController@editPilote':
             // Modifier un pilote existant
             $adminController->editPilote();
             break;
             
-        case 'admin/deletePilote':
+        case 'AdminController@deletePilote':
             // Supprimer un pilote
             $adminController->deletePilote();
             break;
 
-        case 'admin/statsPilotes':
+        case 'AdminController@statsPilotes':
             // Consulter les statistiques des pilotes
             $adminController->statsPilotes();
             break;
 
-        case 'logout':
+        case 'LogoutController@logout':
             // Utiliser le contrôleur de déconnexion
             $logoutController->logout();
             break;
 
-        case 'wishlist':
+        case 'WishlistController@index':
             // Afficher la wishlist de l'utilisateur
             $wishlistController->index();
             break;
 
-        case 'wishlist/add':
+        case 'WishlistController@add':
             // Ajouter un élément à la wishlist
             $wishlistController->add();
             break;
 
-        case 'wishlist/remove':
+        case 'WishlistController@remove':
             // Supprimer un élément de la wishlist
             $wishlistController->remove();
             break;
 
+        case 'DashboardController@index':
+            // Afficher le dashboard
+            $dashboardController->index();
+            break;
+
         default:
-        http_response_code(404);
-        echo "Page non trouvée pour l'URI: '" . $uri . "'";
-        echo "URI traitée: '" . $uri . "'<br>";
-        break;
+            http_response_code(404);
+            echo "Page non trouvée pour l'URI: '" . $uri . "'";
+            echo "URI traitée: '" . $uri . "'<br>";
+            break;
     }
 }
 
-// Ne pas appeler la fonction route ici car elle est déjà appelée dans index.php
-// La ligne ci-dessous a été supprimée:
-// route($uri);
+// Routes existantes
+route('/', 'HomeController@index');
+route('/login', 'LoginController@index');
+route('/logout', 'LogoutController@logout');
+route('/offres', 'OffresController@index');
+route('/wishlist', 'WishlistController@index');
 
-?>
+// Nouvelle route pour le dashboard
+route('/dashboard', 'DashboardController@index');
+
+// Routes admin
+route('/admin', 'AdminController@index');
+route('/admin/pilotes', 'AdminController@pilotes');
+
+// Routes gestion
+route('/gestion', 'GestionController@index');
