@@ -572,3 +572,45 @@ html, body {
   }
 }
 
+/* Centrer les titres des colonnes */
+.gestion-table th {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* Centrer le contenu des cellules */
+.gestion-table td {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* Améliorer l'affichage des boutons d'action */
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  min-width: 180px; /* Assure un espace suffisant pour les deux boutons */
+}
+
+.btn-modifier, .btn-supprimer {
+  white-space: nowrap; /* Empêche le retour à la ligne du texte */
+  min-width: 80px; /* Largeur minimale pour chaque bouton */
+  padding: 6px 12px; /* Taille de padding fixe */
+  text-align: center;
+}
+
+/* Ajuster la dernière colonne (actions) pour qu'elle soit suffisamment large */
+.gestion-table-offres th:last-child,
+.gestion-table-offres td:last-child {
+  width: 200px !important; /* Largeur fixe pour la colonne d'actions */
+}
+
+/* Assurer que les dates ne passent pas à la ligne */
+.gestion-table-offres td:nth-child(5) {
+  white-space: nowrap;
+}
+
+/* Assurer que le tableau utilise une mise en page fixe */
+.gestion-table {
+  table-layout: fixed;
+}
