@@ -253,9 +253,14 @@
   width: 15%;
 }
 
+/* Ajout de styles pour la colonne des offres sélectionnées */
 .gestion-table-etudiants th:nth-child(6),
 .gestion-table-etudiants td:nth-child(6) {
   width: 15%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
 }
 
 .gestion-table-etudiants th:nth-child(7),
