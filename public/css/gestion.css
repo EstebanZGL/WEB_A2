@@ -16,19 +16,15 @@
   background-color: var(--background-darker);
   color: var(--foreground);
   font-weight: 600;
-  text-align: center;
+  text-align: left;
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--white-20);
-  vertical-align: middle;
 }
 
 .gestion-table td {
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--white-10);
   color: var(--foreground);
-  text-align: center;
-  vertical-align: middle;
-  white-space: normal;
 }
 
 .gestion-table tr:last-child td {
@@ -73,9 +69,6 @@
   display: inline-block;
   text-decoration: none;
   font-size: 0.875rem;
-  min-width: 80px;
-  text-align: center;
-  white-space: nowrap;
 }
 
 .btn-modifier:hover {
@@ -91,9 +84,6 @@
   cursor: pointer;
   transition: var(--transition-fast);
   font-size: 0.875rem;
-  min-width: 80px;
-  text-align: center;
-  white-space: nowrap;
 }
 
 .btn-supprimer:hover {
@@ -287,48 +277,26 @@
 
 .gestion-table-offres th:nth-child(1),
 .gestion-table-offres td:nth-child(1) {
-  width: 12%;
+  width: 5%;
 }
 
 .gestion-table-offres th:nth-child(2),
 .gestion-table-offres td:nth-child(2) {
-  width: 12%;
+  width: 25%;
 }
 
 .gestion-table-offres th:nth-child(3),
 .gestion-table-offres td:nth-child(3) {
-  width: 12%;
+  width: 20%;
 }
 
 .gestion-table-offres th:nth-child(4),
-.gestion-table-offres td:nth-child(4) {
-  width: 10%;
-}
-
+.gestion-table-offres td:nth-child(4),
 .gestion-table-offres th:nth-child(5),
-.gestion-table-offres td:nth-child(5) {
-  width: 12%;
-  white-space: nowrap;
-}
-
+.gestion-table-offres td:nth-child(5),
 .gestion-table-offres th:nth-child(6),
 .gestion-table-offres td:nth-child(6) {
-  width: 8%;
-}
-
-.gestion-table-offres th:nth-child(7),
-.gestion-table-offres td:nth-child(7) {
-  width: 12%;
-}
-
-.gestion-table-offres th:nth-child(8),
-.gestion-table-offres td:nth-child(8) {
-  width: 10%;
-}
-
-.gestion-table-offres th:last-child,
-.gestion-table-offres td:last-child {
-  width: 200px;
+  width: 15%;
 }
 
 /* Onglets */
@@ -391,12 +359,10 @@
 /* Badges */
 .badge {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 12px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
   font-size: 0.75rem;
   font-weight: 500;
-  min-width: 70px;
-  text-align: center;
 }
 
 .badge-active {
@@ -423,9 +389,8 @@
 /* Actions column */
 .actions {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
   justify-content: center;
-  min-width: 180px;
 }
 
 /* Styles pour les tables */
@@ -607,36 +572,3 @@ html, body {
   }
 }
 
-/* Assurer que le tableau utilise une mise en page fixe */
-.gestion-table {
-  table-layout: fixed;
-}
-
-/* Assurer que les cellules s'affichent correctement */
-.gestion-table-offres td {
-  white-space: normal;
-  overflow: visible;
-  word-wrap: break-word;
-  height: auto;
-  min-height: 60px;
-}
-
-/* Assurer que les boutons sont bien visibles */
-.gestion-table-offres .actions {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Assurer que le survol est uniforme pour toute la ligne */
-.gestion-table-offres tr:hover td {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Assurer que la première colonne peut afficher du texte sur plusieurs lignes */
-.gestion-table-offres td:first-child {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
