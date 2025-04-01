@@ -68,45 +68,63 @@
                         <a href="../../gestion?section=pilotes">Gestion des pilotes</a> &gt; Ajouter un pilote
                     </div>
                     
-                    <form action="../../gestion/pilotes/add" method="post" class="form">
-                        <div class="form-group">
-                            <label for="nom">Nom:</label>
-                            <input type="text" id="nom" name="nom" class="form-control" required>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Informations du pilote</h2>
+                        </div>
+                        <div class="card-body">
+                            <form action="../../gestion/pilotes/add" method="post" class="form">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="nom">Nom:</label>
+                                        <input type="text" id="nom" name="nom" class="form-control" required onkeyup="generateEmail()">
                         </div>
                         
-                        <div class="form-group">
-                            <label for="prenom">Prénom:</label>
-                            <input type="text" id="prenom" name="prenom" class="form-control" required>
+                                    <div class="form-group col-md-6">
+                                        <label for="prenom">Prénom:</label>
+                                        <input type="text" id="prenom" name="prenom" class="form-control" required onkeyup="generateEmail()">
+                        </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="email">Email:</label>
+                                        <input type="email" id="email" name="email" class="form-control" required readonly>
+                                        <small class="form-text text-muted">Format: premièreLettrePrénom+nom@cesi.fr</small>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" class="form-control" required pattern="[a-z]+\.[a-z]+@cesi\.fr" title="Format requis: prenom.nom@cesi.fr">
-                            <small class="form-text text-muted">Format requis: prenom.nom@cesi.fr</small>
+                                    <div class="form-group col-md-6">
+                                        <label for="password">Mot de passe:</label>
+                                        <input type="password" id="password" name="password" class="form-control">
+                                        <small class="form-text text-muted">Laissez vide pour "changeme"</small>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="password">Mot de passe (laissez vide pour générer un mot de passe par défaut):</label>
-                            <input type="password" id="password" name="password" class="form-control">
-                            <small class="form-text text-muted">Si laissé vide, le mot de passe sera "changeme"</small>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="departement">Département:</label>
+                                        <select id="departement" name="departement" class="form-control" required>
+                                            <option value="">Sélectionnez un département</option>
+                                            <option value="Informatique">Informatique</option>
+                                            <option value="BTP">BTP</option>
+                                            <option value="Ressources Humaines">Ressources Humaines</option>
+                                            <option value="Généraliste">Généraliste</option>
+                                            <option value="Marketing">Marketing</option>
+                                            <option value="Qualité">Qualité</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="specialite">Spécialité:</label>
+                                        <input type="text" id="specialite" name="specialite" class="form-control" required>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="departement">Département:</label>
-                            <input type="text" id="departement" name="departement" class="form-control" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="specialite">Spécialité:</label>
-                            <input type="text" id="specialite" name="specialite" class="form-control" required>
-                        </div>
-                        
-                        <div class="form-buttons">
-                            <button type="submit" class="button button-primary">Ajouter</button>
-                            <a href="../../gestion?section=pilotes" class="button button-secondary">Annuler</a>
-                        </div>
-                    </form>
+                                </div>
+                                
+                                <div class="form-buttons">
+                                    <button type="submit" class="button button-primary">Ajouter le pilote</button>
+                                    <a href="../../gestion?section=pilotes" class="button button-secondary">Annuler</a>
                 </div>
+                            </form>
+                </div>
+            </div>
+    </div>
             </section>
         </main>
 
@@ -129,7 +147,29 @@
             document.getElementById('page-admin').style.display = 'block';
             document.getElementById('mobile-page-admin').style.display = 'block';
             <?php endif; ?>
+            
+            // Générer l'email au chargement de la page si nom et prénom sont déjà remplis
+            generateEmail();
         });
+        
+        // Fonction pour générer l'email automatiquement
+        function generateEmail() {
+            const nom = document.getElementById('nom').value.trim().toLowerCase();
+            const prenom = document.getElementById('prenom').value.trim().toLowerCase();
+            
+            if (nom && prenom) {
+                // Prendre la première lettre du prénom + nom complet
+                const premiereLettrePrenom = prenom.charAt(0);
+                const email = premiereLettrePrenom + nom + '@cesi.fr';
+                
+                // Remplacer les caractères spéciaux et espaces
+                const emailSanitized = email
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
+                    .replace(/[^a-z0-9@\.]/g, ''); // Garder seulement les lettres, chiffres, @ et .
+                
+                document.getElementById('email').value = emailSanitized;
+            }
+        }
     </script>
     
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
