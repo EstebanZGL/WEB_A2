@@ -571,3 +571,97 @@ html, body {
     justify-content: center;
   }
 }
+
+/* Modification pour centrer les titres des colonnes */
+.gestion-table th {
+  background-color: var(--background-darker);
+  color: var(--foreground);
+  font-weight: 600;
+  text-align: center; /* Changé de 'left' à 'center' */
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--white-20);
+}
+
+/* Uniformisation des cellules du tableau */
+.gestion-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--white-10);
+  color: var(--foreground);
+  text-align: center; /* Ajout de cette ligne pour centrer le contenu */
+  vertical-align: middle; /* Ajout pour aligner verticalement au milieu */
+}
+
+/* Correction pour les boutons d'action */
+.actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  white-space: nowrap; /* Empêche le retour à la ligne des boutons */
+  min-width: 160px; /* Largeur minimale pour contenir les deux boutons */
+}
+
+/* S'assurer que les boutons ne sont pas coupés */
+.btn-modifier, .btn-supprimer {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: 0.875rem;
+  white-space: nowrap; /* Empêche le retour à la ligne du texte */
+  display: inline-block; /* Assure un affichage en ligne */
+  min-width: 70px; /* Largeur minimale pour chaque bouton */
+}
+
+/* Correction pour les largeurs des colonnes dans le tableau des offres */
+.gestion-table-offres th,
+.gestion-table-offres td {
+  width: auto; /* Remplace les largeurs fixes */
+}
+
+/* Ajout d'une largeur spécifique pour la colonne d'actions */
+.gestion-table-offres th:last-child,
+.gestion-table-offres td:last-child {
+  width: 160px; /* Largeur fixe pour la colonne d'actions */
+}
+
+/* Amélioration de la responsivité du tableau */
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
+}
+
+/* S'assurer que le tableau prend toute la largeur disponible */
+.gestion-table {
+  width: 100%;
+  table-layout: fixed; /* Aide à maintenir des largeurs de colonnes cohérentes */
+}
+
+/* Ajustement pour les colonnes de statut et autres colonnes courtes */
+.gestion-table-offres th:nth-child(3), /* Type */
+.gestion-table-offres td:nth-child(3),
+.gestion-table-offres th:nth-child(4), /* Lieu */
+.gestion-table-offres td:nth-child(4),
+.gestion-table-offres th:nth-child(6), /* Durée */
+.gestion-table-offres td:nth-child(6),
+.gestion-table-offres th:nth-child(8), /* Statut */
+.gestion-table-offres td:nth-child(8) {
+  width: 10%; /* Largeur réduite pour ces colonnes */
+}
+
+/* Ajustement pour les colonnes de titre et entreprise */
+.gestion-table-offres th:nth-child(1), /* Titre */
+.gestion-table-offres td:nth-child(1),
+.gestion-table-offres th:nth-child(2), /* Entreprise */
+.gestion-table-offres td:nth-child(2) {
+  width: 15%; /* Plus d'espace pour ces colonnes */
+}
+
+/* Ajustement pour les colonnes de date et rémunération */
+.gestion-table-offres th:nth-child(5), /* Date de début */
+.gestion-table-offres td:nth-child(5),
+.gestion-table-offres th:nth-child(7), /* Rémunération */
+.gestion-table-offres td:nth-child(7) {
+  width: 12%; /* Largeur moyenne pour ces colonnes */
+}
