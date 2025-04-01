@@ -3,7 +3,8 @@
 /* Tableaux */
 .gestion-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate; /* Changé de collapse à separate pour mieux gérer les bordures */
+  border-spacing: 0;
   background-color: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(4px);
   border: 1px solid var(--white-10);
@@ -22,6 +23,7 @@
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--white-20);
   vertical-align: middle !important;
+  height: 50px; /* Hauteur fixe pour les en-têtes */
 }
 
 /* Cellules du tableau - IMPORTANT: redéfini pour avoir priorité */
@@ -31,6 +33,9 @@
   color: var(--foreground);
   text-align: center !important; /* Force le centrage */
   vertical-align: middle !important;
+  height: 60px; /* Hauteur fixe pour les cellules */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .gestion-table tr:last-child td {
@@ -67,7 +72,7 @@
 .btn-modifier {
   background-color: var(--primary);
   color: white;
-  padding: var(--spacing-xs) var(--spacing-md);
+  padding: 6px 12px; /* Taille fixe */
   border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
@@ -76,7 +81,9 @@
   text-decoration: none;
   font-size: 0.875rem;
   white-space: nowrap; /* Empêche le retour à la ligne */
-  min-width: 70px; /* Largeur minimale */
+  min-width: 80px; /* Largeur minimale */
+  text-align: center;
+  margin: 2px; /* Marge entre les boutons */
 }
 
 .btn-modifier:hover {
@@ -86,14 +93,16 @@
 .btn-supprimer {
   background-color: var(--accent);
   color: white;
-  padding: var(--spacing-xs) var(--spacing-md);
+  padding: 6px 12px; /* Taille fixe */
   border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
   transition: var(--transition-fast);
   font-size: 0.875rem;
   white-space: nowrap; /* Empêche le retour à la ligne */
-  min-width: 70px; /* Largeur minimale */
+  min-width: 80px; /* Largeur minimale */
+  text-align: center;
+  margin: 2px; /* Marge entre les boutons */
 }
 
 .btn-supprimer:hover {
@@ -331,6 +340,7 @@
   display: flex !important;
   gap: var(--spacing-sm) !important;
   justify-content: center !important;
+  align-items: center !important;
   white-space: nowrap !important; /* Empêche le retour à la ligne des boutons */
   min-width: 180px !important; /* Largeur minimale pour contenir les deux boutons */
 }
@@ -492,7 +502,13 @@ html, body {
 
 .gestion-table-offres th:nth-child(9), /* Actions */
 .gestion-table-offres td:nth-child(9) {
-  width: 180px !important; /* Largeur fixe pour la colonne d'actions */
+  width: 14% !important; /* Largeur fixe pour la colonne d'actions */
+  min-width: 180px !important;
+}
+
+/* Style spécifique pour les dates */
+.gestion-table-offres td:nth-child(5) {
+  white-space: nowrap; /* Empêche le retour à la ligne des dates */
 }
 
 /* Ajustements pour les tableaux sur mobile */
