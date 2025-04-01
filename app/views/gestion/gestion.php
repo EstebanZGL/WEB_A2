@@ -164,6 +164,8 @@
                                         <th>ID</th>
                                         <th>Titre</th>
                                         <th>Entreprise</th>
+                                        <th>Type</th>
+                                        <th>Lieu</th>
                                         <th>Date de début</th>
                                         <th>Durée</th>
                                         <th>Rémunération</th>
@@ -174,7 +176,7 @@
                                 <tbody>
                                     <?php if (empty($items)): ?>
                                         <tr>
-                                            <td colspan="8" class="text-center">Aucune offre trouvée</td>
+                                            <td colspan="10" class="text-center">Aucune offre trouvée</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
@@ -182,6 +184,8 @@
                                                 <td><?php echo $item['id']; ?></td>
                                                 <td><?php echo htmlspecialchars($item['titre']); ?></td>
                                                 <td><?php echo htmlspecialchars($item['nom_entreprise'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['type'] ?? 'Non spécifié'); ?></td>
+                                                <td><?php echo htmlspecialchars($item['lieu'] ?? 'Non spécifié'); ?></td>
                                                 <td><?php echo isset($item['date_debut']) ? date('d/m/Y', strtotime($item['date_debut'])) : ''; ?></td>
                                                 <td><?php echo $item['duree_stage']; ?> mois</td>
                                                 <td><?php echo number_format((float)$item['remuneration'], 2, ',', ' '); ?> €</td>
