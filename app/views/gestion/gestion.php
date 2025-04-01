@@ -161,7 +161,6 @@
                             <table class="gestion-table gestion-table-offres">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
                                         <th>Titre</th>
                                         <th>Entreprise</th>
                                         <th>Type</th>
@@ -181,7 +180,6 @@
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
                                             <tr>
-                                                <td><?php echo $item['id']; ?></td>
                                                 <td><?php echo htmlspecialchars($item['titre']); ?></td>
                                                 <td><?php echo htmlspecialchars($item['nom_entreprise'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['type'] ?? 'Non spécifié'); ?></td>
@@ -207,7 +205,6 @@
                             <table class="gestion-table gestion-table-entreprises">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
                                         <th>Nom</th>
                                         <th>Email</th>
                                         <th>Téléphone</th>
@@ -224,7 +221,6 @@
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
                                             <tr>
-                                                <td><?php echo $item['id']; ?></td>
                                                 <td><?php echo htmlspecialchars($item['nom']); ?></td>
                                                 <td><?php echo htmlspecialchars($item['email_contact']); ?></td>
                                                 <td><?php echo htmlspecialchars($item['telephone_contact']); ?></td>
@@ -243,7 +239,6 @@
                             <table class="gestion-table gestion-table-etudiants">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
                                         <th>Nom</th>
                                         <th>Prénom</th>
                                         <th>Email</th>
@@ -261,7 +256,6 @@
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
                                             <tr>
-                                                <td><?php echo $item['id']; ?></td>
                                                 <td><?php echo htmlspecialchars($item['nom'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['prenom'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['email'] ?? ''); ?></td>
@@ -285,7 +279,6 @@
                             <table class="gestion-table gestion-table-pilotes">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
                                         <th>Nom</th>
                                         <th>Prénom</th>
                                         <th>Email</th>
@@ -302,7 +295,6 @@
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
                                             <tr>
-                                                <td><?php echo $item['id']; ?></td>
                                                 <td><?php echo htmlspecialchars($item['nom'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['prenom'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['email'] ?? ''); ?></td>
