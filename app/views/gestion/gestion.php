@@ -255,9 +255,17 @@
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
-                                            <tr>
-                                                <td><?php echo htmlspecialchars($item['nom'] ?? ''); ?></td>
-                                                <td><?php echo htmlspecialchars($item['prenom'] ?? ''); ?></td>
+                                            <tr class="etudiant-row" data-id="<?php echo $item['id']; ?>">
+                                                <td>
+                                                    <a href="gestion/etudiants/candidatures?id=<?php echo $item['id']; ?>" class="etudiant-link">
+                                                        <?php echo htmlspecialchars($item['nom'] ?? ''); ?>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="gestion/etudiants/candidatures?id=<?php echo $item['id']; ?>" class="etudiant-link">
+                                                        <?php echo htmlspecialchars($item['prenom'] ?? ''); ?>
+                                                    </a>
+                                                </td>
                                                 <td><?php echo htmlspecialchars($item['email'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['promotion'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['formation'] ?? ''); ?></td>
