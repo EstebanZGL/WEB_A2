@@ -52,7 +52,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="password">Mot de passe</label>
-                                <input type="text" id="password" name="password" placeholder="Laissez vide pour 'changeme'">
+                                <input type="text" id="password" name="password" placeholder="Insérez le nouveau mot de passe" required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group half">
