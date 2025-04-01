@@ -614,3 +614,67 @@ html, body {
 .gestion-table {
   table-layout: fixed;
 }
+
+/* Ajustements supplémentaires pour résoudre les problèmes restants */
+
+/* Corriger l'alignement de la colonne Rémunération */
+.gestion-table-offres th:nth-child(7),
+.gestion-table-offres td:nth-child(7) {
+  width: 12% !important;
+  text-align: center !important;
+}
+
+/* S'assurer que toutes les dates sont visibles */
+.gestion-table-offres th:nth-child(5),
+.gestion-table-offres td:nth-child(5) {
+  width: 12% !important;
+  white-space: nowrap !important;
+}
+
+/* Améliorer l'affichage des badges de statut */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: 70px;
+  text-align: center;
+}
+
+/* Ajuster la largeur des colonnes pour une meilleure répartition */
+.gestion-table-offres th:nth-child(1), /* Titre */
+.gestion-table-offres td:nth-child(1) {
+  width: 12% !important;
+}
+
+.gestion-table-offres th:nth-child(2), /* Entreprise */
+.gestion-table-offres td:nth-child(2) {
+  width: 12% !important;
+}
+
+.gestion-table-offres th:nth-child(3), /* Type */
+.gestion-table-offres td:nth-child(3) {
+  width: 12% !important;
+}
+
+.gestion-table-offres th:nth-child(4), /* Lieu */
+.gestion-table-offres td:nth-child(4) {
+  width: 10% !important;
+}
+
+.gestion-table-offres th:nth-child(6), /* Durée */
+.gestion-table-offres td:nth-child(6) {
+  width: 8% !important;
+}
+
+.gestion-table-offres th:nth-child(8), /* Statut */
+.gestion-table-offres td:nth-child(8) {
+  width: 10% !important;
+}
+
+/* Assurer que les cellules ne dépassent pas leur contenu */
+.gestion-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
