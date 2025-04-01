@@ -16,15 +16,19 @@
   background-color: var(--background-darker);
   color: var(--foreground);
   font-weight: 600;
-  text-align: left;
+  text-align: center;
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--white-20);
+  vertical-align: middle;
 }
 
 .gestion-table td {
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--white-10);
   color: var(--foreground);
+  text-align: center;
+  vertical-align: middle;
+  white-space: normal;
 }
 
 .gestion-table tr:last-child td {
@@ -69,6 +73,9 @@
   display: inline-block;
   text-decoration: none;
   font-size: 0.875rem;
+  min-width: 80px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .btn-modifier:hover {
@@ -84,6 +91,9 @@
   cursor: pointer;
   transition: var(--transition-fast);
   font-size: 0.875rem;
+  min-width: 80px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .btn-supprimer:hover {
@@ -277,26 +287,48 @@
 
 .gestion-table-offres th:nth-child(1),
 .gestion-table-offres td:nth-child(1) {
-  width: 5%;
+  width: 12%;
 }
 
 .gestion-table-offres th:nth-child(2),
 .gestion-table-offres td:nth-child(2) {
-  width: 25%;
+  width: 12%;
 }
 
 .gestion-table-offres th:nth-child(3),
 .gestion-table-offres td:nth-child(3) {
-  width: 20%;
+  width: 12%;
 }
 
 .gestion-table-offres th:nth-child(4),
-.gestion-table-offres td:nth-child(4),
+.gestion-table-offres td:nth-child(4) {
+  width: 10%;
+}
+
 .gestion-table-offres th:nth-child(5),
-.gestion-table-offres td:nth-child(5),
+.gestion-table-offres td:nth-child(5) {
+  width: 12%;
+  white-space: nowrap;
+}
+
 .gestion-table-offres th:nth-child(6),
 .gestion-table-offres td:nth-child(6) {
-  width: 15%;
+  width: 8%;
+}
+
+.gestion-table-offres th:nth-child(7),
+.gestion-table-offres td:nth-child(7) {
+  width: 12%;
+}
+
+.gestion-table-offres th:nth-child(8),
+.gestion-table-offres td:nth-child(8) {
+  width: 10%;
+}
+
+.gestion-table-offres th:last-child,
+.gestion-table-offres td:last-child {
+  width: 200px;
 }
 
 /* Onglets */
@@ -359,10 +391,12 @@
 /* Badges */
 .badge {
   display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-full);
+  padding: 4px 8px;
+  border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 500;
+  min-width: 70px;
+  text-align: center;
 }
 
 .badge-active {
@@ -389,8 +423,9 @@
 /* Actions column */
 .actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 8px;
   justify-content: center;
+  min-width: 180px;
 }
 
 /* Styles pour les tables */
@@ -572,109 +607,36 @@ html, body {
   }
 }
 
-/* Centrer les titres des colonnes */
-.gestion-table th {
-  text-align: center !important;
-  vertical-align: middle !important;
-}
-
-/* Centrer le contenu des cellules */
-.gestion-table td {
-  text-align: center !important;
-  vertical-align: middle !important;
-}
-
-/* Améliorer l'affichage des boutons d'action */
-.actions {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  min-width: 180px; /* Assure un espace suffisant pour les deux boutons */
-}
-
-.btn-modifier, .btn-supprimer {
-  white-space: nowrap; /* Empêche le retour à la ligne du texte */
-  min-width: 80px; /* Largeur minimale pour chaque bouton */
-  padding: 6px 12px; /* Taille de padding fixe */
-  text-align: center;
-}
-
-/* Ajuster la dernière colonne (actions) pour qu'elle soit suffisamment large */
-.gestion-table-offres th:last-child,
-.gestion-table-offres td:last-child {
-  width: 200px !important; /* Largeur fixe pour la colonne d'actions */
-}
-
-/* Assurer que les dates ne passent pas à la ligne */
-.gestion-table-offres td:nth-child(5) {
-  white-space: nowrap;
-}
-
 /* Assurer que le tableau utilise une mise en page fixe */
 .gestion-table {
   table-layout: fixed;
 }
 
-/* Ajustements supplémentaires pour résoudre les problèmes restants */
-
-/* Corriger l'alignement de la colonne Rémunération */
-.gestion-table-offres th:nth-child(7),
-.gestion-table-offres td:nth-child(7) {
-  width: 12% !important;
-  text-align: center !important;
+/* Assurer que les cellules s'affichent correctement */
+.gestion-table-offres td {
+  white-space: normal;
+  overflow: visible;
+  word-wrap: break-word;
+  height: auto;
+  min-height: 60px;
 }
 
-/* S'assurer que toutes les dates sont visibles */
-.gestion-table-offres th:nth-child(5),
-.gestion-table-offres td:nth-child(5) {
-  width: 12% !important;
-  white-space: nowrap !important;
+/* Assurer que les boutons sont bien visibles */
+.gestion-table-offres .actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Améliorer l'affichage des badges de statut */
-.badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  min-width: 70px;
-  text-align: center;
+/* Assurer que le survol est uniforme pour toute la ligne */
+.gestion-table-offres tr:hover td {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Ajuster la largeur des colonnes pour une meilleure répartition */
-.gestion-table-offres th:nth-child(1), /* Titre */
-.gestion-table-offres td:nth-child(1) {
-  width: 12% !important;
-}
-
-.gestion-table-offres th:nth-child(2), /* Entreprise */
-.gestion-table-offres td:nth-child(2) {
-  width: 12% !important;
-}
-
-.gestion-table-offres th:nth-child(3), /* Type */
-.gestion-table-offres td:nth-child(3) {
-  width: 12% !important;
-}
-
-.gestion-table-offres th:nth-child(4), /* Lieu */
-.gestion-table-offres td:nth-child(4) {
-  width: 10% !important;
-}
-
-.gestion-table-offres th:nth-child(6), /* Durée */
-.gestion-table-offres td:nth-child(6) {
-  width: 8% !important;
-}
-
-.gestion-table-offres th:nth-child(8), /* Statut */
-.gestion-table-offres td:nth-child(8) {
-  width: 10% !important;
-}
-
-/* Assurer que les cellules ne dépassent pas leur contenu */
-.gestion-table td {
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Assurer que la première colonne peut afficher du texte sur plusieurs lignes */
+.gestion-table-offres td:first-child {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
