@@ -226,42 +226,53 @@ class UserModel {
     }
 
     /**
-     * Crée un pilote (utilisateur + entrée dans la table pilote)
-     */
-    public function createPilote($email, $password, $nom, $prenom, $departement = '', $specialite = '') {
-        try {
-            $this->pdo->beginTransaction();
-            
-            // Créer l'utilisateur de base
-            $userId = $this->createBaseUser($email, $password, $nom, $prenom);
-            
-            if (!$userId) {
-                $this->pdo->rollBack();
-                return false;
-            }
-            
-            // Créer l'entrée dans la table pilote
-            $stmt = $this->pdo->prepare("
-                INSERT INTO pilote (utilisateur_id, departement, specialite)
-                VALUES (:utilisateur_id, :departement, :specialite)
-            ");
-            
-            $stmt->execute([
-                ':utilisateur_id' => $userId,
-                ':departement' => $departement ?: 'Département 1',
-                ':specialite' => $specialite ?: 'Spécialité 1'
-            ]);
-            
-            $this->pdo->commit();
-            return $userId;
-        } catch (PDOException $e) {
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-            error_log("Erreur lors de la création du pilote: " . $e->getMessage());
+ * Crée un pilote (utilisateur + entrée dans la table pilote)
+ */
+/**
+ * Crée un pilote (utilisateur + entrée dans la table pilote)
+ */
+public function createPilote($email, $password, $nom, $prenom, $departement = '', $specialite = '') {
+    try {
+        // Vérifier si l'email existe déjà
+        $stmt = $this->pdo->prepare("SELECT id FROM utilisateur WHERE email = :email");
+        $stmt->execute([':email' => $email]);
+        if ($stmt->fetch()) {
+            error_log("Erreur: L'email $email existe déjà dans la base de données");
             return false;
         }
+        
+        $this->pdo->beginTransaction();
+        
+        // Créer l'utilisateur de base
+        $userId = $this->createBaseUser($email, $password, $nom, $prenom);
+        
+        if (!$userId) {
+            $this->pdo->rollBack();
+            return false;
+        }
+        
+        // Créer l'entrée dans la table pilote
+        $stmt = $this->pdo->prepare("
+            INSERT INTO pilote (utilisateur_id, departement, specialite)
+            VALUES (:utilisateur_id, :departement, :specialite)
+        ");
+        
+        $stmt->execute([
+            ':utilisateur_id' => $userId,
+            ':departement' => $departement ?: 'Département 1',
+            ':specialite' => $specialite ?: 'Spécialité 1'
+        ]);
+        
+        $this->pdo->commit();
+        return $userId;
+    } catch (PDOException $e) {
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }
+        error_log("Erreur lors de la création du pilote: " . $e->getMessage());
+        return false;
     }
+}
 
     /**
      * Crée un administrateur (utilisateur + entrée dans la table administrateur)
