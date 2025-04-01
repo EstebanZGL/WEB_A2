@@ -1325,8 +1325,8 @@
   }
   
   .job-image {
-    width: 20%;
-    height: 20%;
+    width: 65%;
+    height: 65%;
     object-fit: cover;
   }
   
