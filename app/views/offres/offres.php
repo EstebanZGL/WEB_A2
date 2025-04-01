@@ -283,6 +283,27 @@
         let allJobs = []; // Stocke toutes les offres récupérées
         const jobsPerPage = 4; // Nombre d'offres par page
         
+        // Fonction pour déterminer quelle image utiliser en fonction du type de l'offre
+        function getJobImage(job) {
+            // Vérifier si le job a un type défini
+            const jobType = job.type ? job.type.toLowerCase() : '';
+            // Déterminer l'image en fonction du type d'offre
+            if (jobType.includes('informatique') || jobType.includes('tech')) {
+                return 'public/images/info-img.png';
+            } else if (jobType.includes('btp') || jobType.includes('construction')) {
+                return 'public/images/btp-img.png';
+            } else if (jobType.includes('santé') || jobType.includes('médical') || jobType.includes('sante')) {
+                return 'public/images/sante-img.png';
+            } else if (jobType.includes('finance') || jobType.includes('comptabilité')) {
+                return 'public/images/fin-img.png';
+            } else if (jobType.includes('marketing') || jobType.includes('communication')) {
+                return 'public/images/mark-img.png';
+            } else {
+                // Pour "Autre" ou si le type n'est pas reconnu
+                return 'public/images/gen-img.png';
+            }
+        }
+        
         // Vérifier si l'utilisateur est un étudiant pour afficher la section wishlist
         fetch("app/views/login/session.php")
             .then(response => response.json())
@@ -580,7 +601,7 @@
                 jobCard.innerHTML = `
                     <a href="offres/details/${job.id}" class="job-card-link" aria-label="Voir les détails de ${job.titre}"></a>
                     <div class="job-card-image">
-                        <img src="public/images/job-placeholder.png" alt="${job.titre}" class="job-image">
+                        <img src="${getJobImage(job)}" alt="${job.titre}" class="job-image">
                     </div>
                     <div class="job-card-content">
                         <h3 class="job-title">${job.titre}</h3>
@@ -643,7 +664,7 @@
                 jobCard.innerHTML = `
                     <a href="offres/details/${job.id}" class="job-card-link" aria-label="Voir les détails de ${job.titre}"></a>
                     <div class="job-card-image">
-                        <img src="public/images/job-placeholder.png" alt="${job.titre}" class="job-image">
+                        <img src="${getJobImage(job)}" alt="${job.titre}" class="job-image">
                     </div>
                     <div class="job-card-content">
                         <h3 class="job-title">${job.titre}</h3>
