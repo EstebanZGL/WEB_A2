@@ -125,6 +125,27 @@ function route($uri) {
             // Consulter les statistiques des étudiants
             $gestionController->statsEtudiants();
             break;
+            
+        // Routes pour les pilotes dans la section gestion
+        case 'gestion/pilotes/add':
+            // Ajouter un nouveau pilote
+            $gestionController->addPilote();
+            break;
+
+        case 'gestion/pilotes/edit':
+            // Modifier un pilote existant
+            $gestionController->editPilote();
+            break;
+
+        case 'gestion/pilotes/delete':
+            // Supprimer un pilote
+            $gestionController->deletePilote();
+            break;
+
+        case 'gestion/pilotes/stats':
+            // Consulter les statistiques des pilotes
+            $gestionController->statsPilotes();
+            break;
 
         case 'admin':
             // Afficher la page administrateur
@@ -136,6 +157,32 @@ function route($uri) {
             $adminController->manage();
             break;
 
+        // Nouvelles routes pour la gestion des pilotes
+        case 'admin/pilotes':
+            // Afficher la liste des pilotes
+            $adminController->pilotes();
+            break;
+
+        case 'admin/addPilote':
+            // Ajouter un nouveau pilote
+            $adminController->addPilote();
+            break;
+            
+        case 'admin/editPilote':
+            // Modifier un pilote existant
+            $adminController->editPilote();
+            break;
+            
+        case 'admin/deletePilote':
+            // Supprimer un pilote
+            $adminController->deletePilote();
+            break;
+
+        case 'admin/statsPilotes':
+            // Consulter les statistiques des pilotes
+            $adminController->statsPilotes();
+            break;
+
         case 'logout':
             // Utiliser le contrôleur de déconnexion
             $logoutController->logout();
@@ -145,12 +192,12 @@ function route($uri) {
             // Afficher la wishlist de l'utilisateur
             $wishlistController->index();
             break;
-            
+
         case 'wishlist/add':
             // Ajouter un élément à la wishlist
             $wishlistController->add();
             break;
-            
+
         case 'wishlist/remove':
             // Supprimer un élément de la wishlist
             $wishlistController->remove();

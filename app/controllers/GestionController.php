@@ -2,11 +2,13 @@
 require_once 'app/models/OffreModel.php';
 require_once 'app/models/EntrepriseModel.php';
 require_once 'app/models/EtudiantModel.php';
+require_once 'app/models/PiloteModel.php';
 
 class GestionController {
     private $offreModel;
     private $entrepriseModel;
     private $etudiantModel;
+    private $piloteModel;
     private $itemsPerPage = 10; // Nombre d'éléments par page
     
     public function __construct() {
@@ -34,6 +36,24 @@ class GestionController {
         }
         if (!isset($this->etudiantModel)) {
             $this->etudiantModel = new EtudiantModel();
+        }
+        if (!isset($this->piloteModel)) {
+            $this->piloteModel = new PiloteModel();
+        }
+    }
+    
+    // Méthode privée pour vérifier les autorisations d'administrateur
+    private function checkAdminAuth() {
+        // Vérifier si l'utilisateur est connecté et a les droits d'administrateur
+        if (!isset($_SESSION['logged_in']) || $_SESSION['utilisateur'] != 2) {
+            // Utiliser un chemin absolu pour la redirection
+            header("Location: login");
+            exit;
+        }
+        
+        // Initialiser les modèles seulement quand on en a besoin
+        if (!isset($this->piloteModel)) {
+            $this->piloteModel = new PiloteModel();
         }
     }
     
@@ -70,6 +90,16 @@ class GestionController {
                 $totalItems = $this->etudiantModel->countEtudiants();
                 break;
                 
+            case 'pilotes':
+                // Vérifier si l'utilisateur est administrateur pour cette section
+                if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur'] != 2) {
+                    header("Location: gestion?section=offres");
+                    exit;
+                }
+                $items = $this->piloteModel->getPilotes($this->itemsPerPage, $offset);
+                $totalItems = $this->piloteModel->countPilotes();
+                break;
+                
             case 'offres':
             default:
                 $items = $this->offreModel->getOffres($this->itemsPerPage, $offset);
@@ -77,7 +107,7 @@ class GestionController {
                 $section = 'offres'; // Assurer que la section est définie correctement
                 break;
         }
-        
+            
         // Calculer le nombre total de pages
         $totalPages = ceil($totalItems / $this->itemsPerPage);
         
@@ -88,33 +118,34 @@ class GestionController {
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalItems' => $totalItems,
-            'itemsPerPage' => $this->itemsPerPage
+            'itemsPerPage' => $this->itemsPerPage,
+            'isAdmin' => isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 2
         ];
         
         // Charger la vue de la page Gestion
         require 'app/views/gestion/gestion.php';
     }
     
-    // Méthodes pour les offres
     public function addOffre() {
         $this->checkGestionAuth();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Récupérer les données du formulaire
             $offreData = [
-                'entreprise_id' => $_POST['entreprise_id'] ?? 0,
-                'createur_id' => $_SESSION['user_id'] ?? 0, // Utiliser l'ID de l'utilisateur connecté
                 'titre' => $_POST['titre'] ?? '',
                 'description' => $_POST['description'] ?? '',
-                'remuneration' => $_POST['remuneration'] ?? 0,
+                'entreprise_id' => $_POST['entreprise_id'] ?? null,
                 'date_debut' => $_POST['date_debut'] ?? null,
                 'date_fin' => $_POST['date_fin'] ?? null,
-                'date_publication' => date('Y-m-d'),
+                'duree_stage' => $_POST['duree_stage'] ?? 0,
+                'remuneration' => $_POST['remuneration'] ?? 0,
                 'statut' => $_POST['statut'] ?? 'ACTIVE',
-                'duree_stage' => $_POST['duree_stage'] ?? 0
+                'type' => $_POST['type'] ?? null,
+                'lieu' => $_POST['lieu'] ?? null,
+                'date_publication' => date('Y-m-d H:i:s')
             ];
             
-            // Ajouter l'offre dans la base de données
+            // Créer l'offre dans la base de données
             $result = $this->offreModel->createOffre($offreData);
             
             if ($result) {
@@ -140,14 +171,16 @@ class GestionController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Récupérer les données du formulaire
             $offreData = [
-                'entreprise_id' => $_POST['entreprise_id'] ?? 0,
                 'titre' => $_POST['titre'] ?? '',
                 'description' => $_POST['description'] ?? '',
-                'remuneration' => $_POST['remuneration'] ?? 0,
+                'entreprise_id' => $_POST['entreprise_id'] ?? null,
                 'date_debut' => $_POST['date_debut'] ?? null,
                 'date_fin' => $_POST['date_fin'] ?? null,
+                'duree_stage' => $_POST['duree_stage'] ?? 0,
+                'remuneration' => $_POST['remuneration'] ?? 0,
                 'statut' => $_POST['statut'] ?? 'ACTIVE',
-                'duree_stage' => $_POST['duree_stage'] ?? 0
+                'type' => $_POST['type'] ?? null,
+                'lieu' => $_POST['lieu'] ?? null
             ];
             
             // Mettre à jour l'offre dans la base de données
@@ -209,17 +242,20 @@ class GestionController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Récupérer les données du formulaire
             $entrepriseData = [
-                'createur_id' => $_SESSION['user_id'] ?? 0,
                 'nom' => $_POST['nom'] ?? '',
                 'description' => $_POST['description'] ?? '',
-                'email_contact' => $_POST['email_contact'] ?? '',
-                'telephone_contact' => $_POST['telephone_contact'] ?? '',
+                'secteur_activite' => $_POST['secteur_activite'] ?? '',
                 'adresse' => $_POST['adresse'] ?? '',
-                'lien_site' => $_POST['lien_site'] ?? '',
-                'date_creation' => date('Y-m-d H:i:s')
+                'code_postal' => $_POST['code_postal'] ?? '',
+                'ville' => $_POST['ville'] ?? '',
+                'pays' => $_POST['pays'] ?? 'France',
+                'telephone_contact' => $_POST['telephone_contact'] ?? '',
+                'email_contact' => $_POST['email_contact'] ?? '',
+                'site_web' => $_POST['site_web'] ?? '',
+                'date_creation' => date('Y-m-d')
             ];
             
-            // Ajouter l'entreprise dans la base de données
+            // Créer l'entreprise dans la base de données
             $result = $this->entrepriseModel->createEntreprise($entrepriseData);
             
             if ($result) {
@@ -244,10 +280,14 @@ class GestionController {
             $entrepriseData = [
                 'nom' => $_POST['nom'] ?? '',
                 'description' => $_POST['description'] ?? '',
-                'email_contact' => $_POST['email_contact'] ?? '',
-                'telephone_contact' => $_POST['telephone_contact'] ?? '',
+                'secteur_activite' => $_POST['secteur_activite'] ?? '',
                 'adresse' => $_POST['adresse'] ?? '',
-                'lien_site' => $_POST['lien_site'] ?? ''
+                'code_postal' => $_POST['code_postal'] ?? '',
+                'ville' => $_POST['ville'] ?? '',
+                'pays' => $_POST['pays'] ?? 'France',
+                'telephone_contact' => $_POST['telephone_contact'] ?? '',
+                'email_contact' => $_POST['email_contact'] ?? '',
+                'site_web' => $_POST['site_web'] ?? ''
             ];
             
             // Mettre à jour l'entreprise dans la base de données
@@ -299,6 +339,7 @@ class GestionController {
         require 'app/views/gestion/stats_entreprises.php';
     }
     
+    // Méthodes pour les étudiants
     public function addEtudiant() {
         $this->checkGestionAuth();
         
@@ -325,38 +366,17 @@ class GestionController {
                     $password = password_hash($password, PASSWORD_DEFAULT);
                 }
                 
-                // Ajouter un log pour diagnostiquer le problème
-                error_log("Tentative de création d'étudiant avec les données: " . 
-                          "email=$email, nom=$nom, prenom=$prenom, promotion=$promotion, formation=$formation, offre_id=" . 
-                          ($offre_id === null ? "NULL" : $offre_id));
-                
-                // Créer l'étudiant directement avec tous ses attributs
-                $utilisateur_id = $userModel->createEtudiant(
-                    $email,
-                    $password,
-                    $nom,
-                    $prenom,
-                    $promotion,
-                    $formation,
-                    $offre_id
-                );
+                // Utiliser directement createEtudiant au lieu de createUser pour éviter la duplication
+                $utilisateur_id = $userModel->createEtudiant($email, $password, $nom, $prenom, $promotion, $formation, $offre_id);
                 
                 if ($utilisateur_id) {
                     header("Location: ../../gestion?section=etudiants&success=1");
                     exit;
                 } else {
-                    // Ajouter un log pour diagnostiquer le problème
-                    error_log("Erreur lors de la création de l'étudiant: " . print_r($_POST, true));
                     header("Location: ../../gestion?section=etudiants&error=1");
                     exit;
                 }
             } else {
-                $missing = [];
-                if (empty($nom)) $missing[] = "nom";
-                if (empty($prenom)) $missing[] = "prenom";
-                if (empty($email)) $missing[] = "email";
-                
-                error_log("Données d'étudiant incomplètes. Champs manquants: " . implode(", ", $missing));
                 header("Location: ../../gestion?section=etudiants&error=1");
                 exit;
             }
@@ -379,7 +399,7 @@ class GestionController {
             $etudiantData = [
                 'promotion' => $_POST['promotion'] ?? '',
                 'formation' => $_POST['formation'] ?? '',
-                'offre_id' => $_POST['offre_id'] ?? null
+                'offre_id' => !empty($_POST['offre_id']) ? $_POST['offre_id'] : null
             ];
             
             // Mettre à jour l'étudiant dans la base de données
@@ -432,6 +452,125 @@ class GestionController {
         
         // Afficher la page de statistiques
         require 'app/views/gestion/stats_etudiants.php';
+    }
+    
+    // Méthodes pour les pilotes
+    public function addPilote() {
+        $this->checkAdminAuth();
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Récupérer les données du formulaire pour créer un nouvel utilisateur
+            $nom = trim($_POST['nom'] ?? '');
+            $prenom = trim($_POST['prenom'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $ville = trim($_POST['departement'] ?? '');
+            $specialite = trim($_POST['specialite'] ?? '');
+            
+            error_log("Tentative de création d'un pilote: $nom $prenom, $email, ville: $ville, specialité: $specialite");
+            
+            // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
+            if (!empty($nom) && !empty($prenom) && !empty($email)) {
+                // Inclure le modèle utilisateur
+                require_once 'app/models/UserModel.php';
+                $userModel = new UserModel();
+                
+                // Vérifier d'abord si l'email existe déjà
+                $existingUser = $userModel->getUserByEmail($email);
+                if ($existingUser) {
+                    error_log("Email déjà utilisé: $email");
+                    $error = "L'email $email est déjà utilisé. Veuillez en choisir un autre.";
+                    require 'app/views/gestion/add_pilote.php';
+                    exit;
+                }
+                
+                $password = password_hash($password, PASSWORD_DEFAULT);
+                                
+                // Créer directement le pilote avec la méthode createPilote
+                $utilisateur_id = $userModel->createPilote($email, $password, $nom, $prenom, $ville, $specialite);
+                
+                if ($utilisateur_id) {
+                    error_log("Pilote créé avec succès: ID=$utilisateur_id");
+                    header("Location: ../../gestion?section=pilotes&success=1");
+                    exit;
+                } else {
+                    error_log("Échec de la création du pilote");
+                    // Afficher le formulaire avec un message d'erreur
+                    $error = "Impossible de créer le pilote. Veuillez vérifier les informations saisies.";
+                    require 'app/views/gestion/add_pilote.php';
+                    exit;
+                }
+            } else {
+                error_log("Données de formulaire incomplètes pour la création du pilote");
+                $error = "Veuillez remplir tous les champs obligatoires.";
+                require 'app/views/gestion/add_pilote.php';
+                exit;
+            }
+        } else {
+            // Afficher le formulaire d'ajout de pilote
+            require 'app/views/gestion/add_pilote.php';
+        }
+    }
+    
+    public function editPilote() {
+        $this->checkAdminAuth();
+        
+        $id = $_GET['id'] ?? 0;
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Récupérer les données du formulaire
+            $piloteData = [
+                'departement' => $_POST['departement'] ?? '',
+                'specialite' => $_POST['specialite'] ?? ''
+            ];
+            
+            // Mettre à jour le pilote dans la base de données
+            $result = $this->piloteModel->updatePilote($id, $piloteData);
+            
+            if ($result) {
+                header("Location: ../../gestion?section=pilotes&success=2");
+            } else {
+                header("Location: ../../gestion?section=pilotes&error=2");
+            }
+            exit;
+        } else {
+            // Récupérer le pilote à modifier
+            $pilote = $this->piloteModel->getPiloteById($id);
+            
+            if (!$pilote) {
+                header("Location: ../../gestion?section=pilotes&error=3");
+                exit;
+            }
+            
+            // Afficher le formulaire de modification avec les données du pilote
+            require 'app/views/gestion/edit_pilote.php';
+        }
+    }
+    
+    public function deletePilote() {
+        $this->checkAdminAuth();
+        
+        $id = $_GET['id'] ?? 0;
+        
+        // Supprimer le pilote de la base de données
+        $result = $this->piloteModel->deletePilote($id);
+        
+        if ($result) {
+            header("Location: ../../gestion?section=pilotes&success=3");
+        } else {
+            header("Location: ../../gestion?section=pilotes&error=4");
+        }
+        exit;
+    }
+    
+    public function statsPilotes() {
+        $this->checkAdminAuth();
+        
+        // Récupérer les statistiques des pilotes
+        $stats = $this->piloteModel->getPiloteStats();
+        
+        // Afficher la page de statistiques
+        require 'app/views/gestion/stats_pilotes.php';
     }
 }
 ?>

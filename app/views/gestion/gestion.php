@@ -70,6 +70,9 @@
                         <a href="gestion?section=offres" class="tab <?php echo $section === 'offres' ? 'active' : ''; ?>">Offres</a>
                         <a href="gestion?section=entreprises" class="tab <?php echo $section === 'entreprises' ? 'active' : ''; ?>">Entreprises</a>
                         <a href="gestion?section=etudiants" class="tab <?php echo $section === 'etudiants' ? 'active' : ''; ?>">Étudiants</a>
+                        <?php if (isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 2): ?>
+                        <a href="gestion?section=pilotes" class="tab <?php echo $section === 'pilotes' ? 'active' : ''; ?>">Pilotes</a>
+                        <?php endif; ?>
                     </div>
                     
                     <!-- Messages d'alerte -->
@@ -124,7 +127,9 @@
                         <div>
                             <!-- Correction ici: ajouter un slash avant le nom de section -->
                             <a href="gestion/<?php echo $section; ?>/add" class="button button-primary">Ajouter</a>
-                            <a href="gestion/<?php echo $section; ?>/stats" class="button button-secondary">Statistiques</a>
+                            <?php if ($section !== 'pilotes'): ?>
+                                <a href="gestion/<?php echo $section; ?>/stats" class="button button-secondary">Statistiques</a>
+                            <?php endif; ?>
                         </div>
                         
                         <!-- Formulaire de recherche (à implémenter plus tard) -->
@@ -159,6 +164,8 @@
                                         <th>ID</th>
                                         <th>Titre</th>
                                         <th>Entreprise</th>
+                                        <th>Type</th>
+                                        <th>Lieu</th>
                                         <th>Date de début</th>
                                         <th>Durée</th>
                                         <th>Rémunération</th>
@@ -169,7 +176,7 @@
                                 <tbody>
                                     <?php if (empty($items)): ?>
                                         <tr>
-                                            <td colspan="8" class="text-center">Aucune offre trouvée</td>
+                                            <td colspan="10" class="text-center">Aucune offre trouvée</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
@@ -177,6 +184,8 @@
                                                 <td><?php echo $item['id']; ?></td>
                                                 <td><?php echo htmlspecialchars($item['titre']); ?></td>
                                                 <td><?php echo htmlspecialchars($item['nom_entreprise'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['type'] ?? 'Non spécifié'); ?></td>
+                                                <td><?php echo htmlspecialchars($item['lieu'] ?? 'Non spécifié'); ?></td>
                                                 <td><?php echo isset($item['date_debut']) ? date('d/m/Y', strtotime($item['date_debut'])) : ''; ?></td>
                                                 <td><?php echo $item['duree_stage']; ?> mois</td>
                                                 <td><?php echo number_format((float)$item['remuneration'], 2, ',', ' '); ?> €</td>
@@ -266,6 +275,42 @@
                                                 <td class="actions">
                                                     <a href="gestion/etudiants/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>
                                                     <button onclick="confirmDelete('etudiants', <?php echo $item['id']; ?>)" class="btn-supprimer">Supprimer</button>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        <?php elseif ($section === 'pilotes'): ?>
+                            <table class="gestion-table gestion-table-pilotes">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Email</th>
+                                        <th>Département</th>
+                                        <th>Spécialité</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($items)): ?>
+                                        <tr>
+                                            <td colspan="7" class="text-center">Aucun pilote trouvé</td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php foreach ($items as $item): ?>
+                                            <tr>
+                                                <td><?php echo $item['id']; ?></td>
+                                                <td><?php echo htmlspecialchars($item['nom'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['prenom'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['email'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['departement'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($item['specialite'] ?? ''); ?></td>
+                                                <td class="actions">
+                                                    <a href="gestion/pilotes/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>
+                                                    <button onclick="confirmDelete('pilotes', <?php echo $item['id']; ?>)" class="btn-supprimer">Supprimer</button>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

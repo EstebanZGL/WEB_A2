@@ -128,25 +128,27 @@ class OffreModel {
                 INSERT INTO offre_stage (
                     entreprise_id, createur_id, titre, description, 
                     remuneration, date_debut, date_fin, date_publication, 
-                    statut, duree_stage
+                    statut, duree_stage, type, lieu
                 ) VALUES (
                     :entreprise_id, :createur_id, :titre, :description, 
                     :remuneration, :date_debut, :date_fin, :date_publication, 
-                    :statut, :duree_stage
+                    :statut, :duree_stage, :type, :lieu
                 )
             ");
             
             $stmt->execute([
                 ':entreprise_id' => $data['entreprise_id'],
-                ':createur_id' => $data['createur_id'],
+                ':createur_id' => $data['createur_id'] ?? 1, // Valeur par défaut si non fournie
                 ':titre' => $data['titre'],
                 ':description' => $data['description'],
                 ':remuneration' => $data['remuneration'],
                 ':date_debut' => $data['date_debut'],
-                ':date_fin' => $data['date_fin'],
+                ':date_fin' => $data['date_fin'] ?? null,
                 ':date_publication' => $data['date_publication'],
                 ':statut' => $data['statut'],
-                ':duree_stage' => $data['duree_stage']
+                ':duree_stage' => $data['duree_stage'],
+                ':type' => $data['type'] ?? null,
+                ':lieu' => $data['lieu'] ?? null
             ]);
             
             return $this->pdo->lastInsertId();
@@ -155,7 +157,7 @@ class OffreModel {
             return false;
         }
     }
-
+    
     public function updateOffre($id, $data) {
         try {
             $stmt = $this->pdo->prepare("
@@ -167,7 +169,9 @@ class OffreModel {
                 date_debut = :date_debut,
                 date_fin = :date_fin,
                 statut = :statut,
-                duree_stage = :duree_stage
+                duree_stage = :duree_stage,
+                type = :type,
+                lieu = :lieu
                 WHERE id = :id
             ");
             
@@ -178,9 +182,11 @@ class OffreModel {
                 ':description' => $data['description'],
                 ':remuneration' => $data['remuneration'],
                 ':date_debut' => $data['date_debut'],
-                ':date_fin' => $data['date_fin'],
+                ':date_fin' => $data['date_fin'] ?? null,
                 ':statut' => $data['statut'],
-                ':duree_stage' => $data['duree_stage']
+                ':duree_stage' => $data['duree_stage'],
+                ':type' => $data['type'] ?? null,
+                ':lieu' => $data['lieu'] ?? null
             ]);
             
             return $stmt->rowCount() > 0;

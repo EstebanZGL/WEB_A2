@@ -25,7 +25,7 @@
                 <a href="home" class="mobile-nav-link active">Accueil</a>
                 <a href="offres" class="mobile-nav-link">Emplois</a>
                 <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
-                <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                
                 <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
                 <a href="wishlist" class="mobile-nav-link" id="mobile-wishlist-link" style="display:none;">Ma Wishlist</a>
             </nav>
@@ -52,7 +52,7 @@
                     <a href="home" class="nav-link active">Accueil</a>
                     <a href="offres" class="nav-link">Emplois</a>
                     <a href="gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
-                    <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
+                    
                     <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
                     <a href="wishlist" class="nav-link wishlist-icon-link" id="wishlist-link" style="display:none;" title="Ma Wishlist">
                         <svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

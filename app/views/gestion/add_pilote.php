@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LeBonPlan | Ajouter un étudiant</title>
-    <meta name="description" content="Ajouter un nouvel étudiant sur la plateforme LeBonPlan." />
+    <title>LeBonPlan | Ajouter un pilote</title>
+    <meta name="description" content="Ajouter un nouveau pilote sur la plateforme LeBonPlan." />
     <link rel="stylesheet" href="../../public/css/style.css" />
     <link rel="stylesheet" href="../../public/css/responsive-complete.css">
     <link rel="stylesheet" href="../../public/css/gestion.css">
@@ -32,62 +32,62 @@
             <section class="section">
                 <div class="container">
                     <div class="form-container">
-                        <h1 class="section-title">Ajouter un nouvel étudiant</h1>
-                        <a href="../../gestion?section=etudiants" class="button button-secondary">Retour à la liste</a>
-                        <form action="../../gestion/etudiants/add" method="post" class="form" id="add-etudiant-form">
+                        <h1 class="section-title">Ajouter un pilote</h1>
+                        <?php if (isset($error)): ?>
+                            <div class="alert alert-danger">
+                                <?php echo $error; ?>
+                            </div>
+                        <?php endif; ?>
+                        <a href="../../gestion?section=pilotes" class="button button-secondary">Retour à la liste</a>
+                        <form action="../../gestion/pilotes/add" method="post" class="form" id="add-pilote-form">
                             <div class="form-row">
                                 <div class="form-group half">
                                     <label for="nom">Nom</label>
-                                    <input type="text" id="nom" name="nom" required placeholder="Nom de l'étudiant" oninput="generateEmail()">
+                                    <input type="text" id="nom" name="nom" required placeholder="Nom du pilote" oninput="generateEmail()">
                                 </div>
                                 <div class="form-group half">
                                     <label for="prenom">Prénom</label>
-                                    <input type="text" id="prenom" name="prenom" required placeholder="Prénom de l'étudiant" oninput="generateEmail()">
+                                    <input type="text" id="prenom" name="prenom" required placeholder="Prénom du pilote" oninput="generateEmail()">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" id="email" name="email" required>
-                                <small>L'email sera généré automatiquement au format prenom.nom@viacesi.fr</small>
+                                <input type="email" id="email" name="email" required readonly>
+                                <small>L'email sera généré automatiquement au format pnom@cesi.fr</small>
                             </div>
                             <div class="form-group">
                                 <label for="password">Mot de passe</label>
-                                <input type="text" id="password" name="password" placeholder="Mot de passe" required>
+                                <input type="text" id="password" name="password" placeholder="Insérez le nouveau mot de passe" required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group half">
-                                    <label for="promotion">Promotion</label>
-                                    <select id="promotion" name="promotion" required>
-                                        <option value="">Sélectionner une promotion</option>
-                                        <option value="Promotion 2021">Promotion 2021</option>
-                                        <option value="Promotion 2022">Promotion 2022</option>
-                                        <option value="Promotion 2023">Promotion 2023</option>
-                                        <option value="Promotion 2024">Promotion 2024</option>
-                                        <option value="Promotion 2025">Promotion 2025</option>
-                                    </select>
+                                    <label for="departement">Ville</label>
+                                    <input type="text" id="departement" name="departement" required placeholder="Ville du pilote">
                                 </div>
                                 <div class="form-group half">
-                                    <label for="formation">Formation</label>
-                                    <select id="formation" name="formation" required>
-                                        <option value="">Sélectionner une formation</option>
+                                    <label for="specialite">Spécialité</label>
+                                    <select id="specialite" name="specialite" required>
+                                        <option value="">Sélectionner une spécialité</option>
                                         <option value="Informatique">Informatique</option>
                                         <option value="BTP">BTP</option>
+                                        <option value="Ressources Humaines">Ressources Humaines</option>
                                         <option value="Généraliste">Généraliste</option>
-                                        <option value="Systèmes Embarqués">Systèmes Embarqués</option>
+                                        <option value="Marketing">Marketing</option>
+                                        <option value="Qualité">Qualité</option>
                                     </select>
                                 </div>
                             </div>
-                            
+                                
                             <div class="form-actions">
-                                <button type="submit" class="button button-primary">Ajouter l'étudiant</button>
-                                <a href="../../gestion?section=etudiants" class="button button-outline">Annuler</a>
+                                <button type="submit" class="button button-primary">Ajouter le pilote</button>
+                                <a href="../../gestion?section=pilotes" class="button button-outline">Annuler</a>
                             </div>
                         </form>
                     </div>
                 </div>
             </section>
         </main>
-    
+
         <footer class="footer">
             <div class="container">
                 <div class="footer-bottom">
@@ -100,17 +100,21 @@
         // Mettre à jour l'année actuelle dans le footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
         
-        // Générer automatiquement l'email au format prenom.nom@viacesi.fr
+        // Générer automatiquement l'email au format premièreLettrePrenom+nom@cesi.fr
         function generateEmail() {
-            const prenom = document.getElementById('prenom').value.trim().toLowerCase();
+            const prenom = document.getElementById('prenom').value.trim();
             const nom = document.getElementById('nom').value.trim().toLowerCase();
             
             if (prenom && nom) {
-                // Remplacer les caractères accentués et les espaces
-                const prenomNormalise = prenom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-");
-                const nomNormalise = nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-");
+                // Prendre la première lettre du prénom + nom complet
+                const premiereLettrePrenom = prenom.charAt(0).toLowerCase();
                 
-                const email = `${prenomNormalise}.${nomNormalise}@viacesi.fr`;
+                // Normaliser le nom (supprimer les accents et les espaces)
+                const nomNormalise = nom.normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")  // Supprimer les accents
+                    .replace(/\s+/g, "");             // Supprimer les espaces
+                
+                const email = `${premiereLettrePrenom}${nomNormalise}@cesi.fr`;
                 document.getElementById('email').value = email;
             } else {
                 document.getElementById('email').value = '';

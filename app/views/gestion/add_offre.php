@@ -75,6 +75,7 @@
                                 </div>
                             </div>
                             <div class="form-row">
+                                
                                 <div class="form-group half">
                                     <label for="duree_stage">Durée du stage (mois)</label>
                                     <input type="number" id="duree_stage" name="duree_stage" min="1" max="12" required>
@@ -88,6 +89,28 @@
                                         <option value="EXPIREE">Expirée</option>
                                     </select>
                                 </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group half">
+                                    <label for="type">Type d'offre</label>
+                                    <select id="type" name="type" required>
+                                        <option value="">Sélectionner un type</option>
+                                        <option value="Informatique & Tech">Informatique & Tech</option>
+                                        <option value="BTP & Construction">BTP & Construction</option>
+                                        <option value="Marketing & Communication">Marketing & Communication</option>
+                                        <option value="Finance & Comptabilité">Finance & Comptabilité</option>
+                                        <option value="Autre">Autre</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group half">
+                                    <label for="lieu">Lieu</label>
+                                    <input type="text" id="lieu" name="lieu" placeholder="Ex: Paris, Lyon, Marseille..." required>
+                                </div>
+                            </div>
+
+
                             </div>
                             <div class="form-actions">
                                 <button type="submit" class="button button-primary">Ajouter l'offre</button>
