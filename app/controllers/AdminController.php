@@ -159,7 +159,7 @@ class AdminController {
             }
         } else {
             // Afficher le formulaire d'ajout de pilote
-            require 'app/views/admin/add_pilote.php';
+            require 'app/views/gestion/add_pilote.php';
         }
     }
     
@@ -194,7 +194,7 @@ class AdminController {
             }
             
             // Afficher le formulaire de modification avec les données du pilote
-            require 'app/views/admin/edit_pilote.php';
+            require 'app/views/gestion/edit_pilote.php';
         }
     }
     
@@ -214,14 +214,5 @@ class AdminController {
         exit;
     }
     
-    public function statsPilotes() {
-        $this->checkAdminAuth();
-        
-        // Récupérer les statistiques des pilotes
-        $stats = $this->piloteModel->getPiloteStats();
-        
-        // Afficher la page de statistiques
-        require 'app/views/admin/stats_pilotes.php';
-    }
-}
+   }
 ?>
