@@ -118,8 +118,29 @@ class AdminController {
             $departement = trim($_POST['departement'] ?? '');
             $specialite = trim($_POST['specialite'] ?? '');
             
-            // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
-            if (!empty($nom) && !empty($prenom) && !empty($email)) {
+            // Validation des données
+            $errors = [];
+            
+            if (empty($nom)) {
+                $errors[] = "Le nom est requis";
+            }
+            
+            if (empty($prenom)) {
+                $errors[] = "Le prénom est requis";
+            }
+            
+            if (empty($email)) {
+                $errors[] = "L'email est requis";
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "Format d'email invalide";
+            }
+            
+            // Vérifier si l'email existe déjà
+            if (!empty($email) && $this->userModel->getUserByEmail($email)) {
+                $errors[] = "Cet email est déjà utilisé";
+            }
+            
+            if (empty($errors)) {
                 // Créer un mot de passe - soit celui fourni, soit un par défaut
                 if (empty($password)) {
                     $password = password_hash('changeme', PASSWORD_DEFAULT);
@@ -127,34 +148,25 @@ class AdminController {
                     $password = password_hash($password, PASSWORD_DEFAULT);
                 }
                 
-                // Créer l'utilisateur
-                $utilisateur_id = $this->userModel->createUser($email, $password, $nom, $prenom);
-                
-                if ($utilisateur_id) {
-                    // Créer le pilote
-                    $piloteData = [
-                        'utilisateur_id' => $utilisateur_id,
-                        'departement' => $departement,
-                        'specialite' => $specialite
-                    ];
+                try {
+                    // Utiliser directement la méthode createPilote du UserModel
+                    $utilisateur_id = $this->userModel->createPilote($email, $password, $nom, $prenom, $departement, $specialite);
                     
-                    $result = $this->piloteModel->createPilote($piloteData);
-                    
-                    if ($result) {
+                    if ($utilisateur_id) {
                         header("Location: ../../admin/pilotes?success=1");
                         exit;
                     } else {
-                        // En cas d'échec, supprimer l'utilisateur créé
-                        $this->userModel->deleteUser($utilisateur_id);
-                        header("Location: ../../admin/pilotes?error=1");
+                        header("Location: ../../admin/pilotes?error=1&message=Erreur lors de la création du pilote");
                         exit;
                     }
-                } else {
-                    header("Location: ../../admin/pilotes?error=1");
+                } catch (Exception $e) {
+                    header("Location: ../../admin/pilotes?error=1&message=" . urlencode($e->getMessage()));
                     exit;
                 }
             } else {
-                header("Location: ../../admin/pilotes?error=1");
+                // Rediriger avec les erreurs
+                $errorMessage = implode(", ", $errors);
+                header("Location: ../../admin/pilotes?error=1&message=" . urlencode($errorMessage));
                 exit;
             }
         } else {
@@ -166,33 +178,65 @@ class AdminController {
     public function editPilote() {
         $this->checkAdminAuth();
         
-        $id = $_GET['id'] ?? 0;
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        if (!$id) {
+            header("Location: ../../admin/pilotes?error=3&message=ID du pilote non fourni");
+            exit;
+        }
+        
+        // Récupérer le pilote à modifier
+        $pilote = $this->piloteModel->getPiloteById($id);
+        
+        if (!$pilote) {
+            header("Location: ../../admin/pilotes?error=3&message=Pilote non trouvé");
+            exit;
+        }
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Récupérer les données du formulaire
-            $piloteData = [
-                'departement' => $_POST['departement'] ?? '',
-                'specialite' => $_POST['specialite'] ?? ''
-            ];
+            $departement = trim($_POST['departement'] ?? '');
+            $specialite = trim($_POST['specialite'] ?? '');
             
-            // Mettre à jour le pilote dans la base de données
-            $result = $this->piloteModel->updatePilote($id, $piloteData);
+            // Validation des données si nécessaire
+            $errors = [];
             
-            if ($result) {
-                header("Location: ../../admin/pilotes?success=2");
-            } else {
-                header("Location: ../../admin/pilotes?error=2");
+            if (empty($departement)) {
+                $errors[] = "Le département est requis";
             }
-            exit;
-        } else {
-            // Récupérer le pilote à modifier
-            $pilote = $this->piloteModel->getPiloteById($id);
             
-            if (!$pilote) {
-                header("Location: ../../admin/pilotes?error=3");
+            if (empty($specialite)) {
+                $errors[] = "La spécialité est requise";
+            }
+            
+            if (empty($errors)) {
+                try {
+                    // Préparer les données à mettre à jour
+                    $piloteData = [
+                        'departement' => $departement,
+                        'specialite' => $specialite
+                    ];
+                    
+                    // Mettre à jour le pilote dans la base de données
+                    $result = $this->piloteModel->updatePilote($id, $piloteData);
+                    
+                    if ($result) {
+                        header("Location: ../../admin/pilotes?success=2");
+                    } else {
+                        header("Location: ../../admin/pilotes?error=2&message=Aucune modification effectuée");
+                    }
+                    exit;
+                } catch (Exception $e) {
+                    header("Location: ../../admin/pilotes?error=2&message=" . urlencode($e->getMessage()));
+                    exit;
+                }
+            } else {
+                // Rediriger avec les erreurs
+                $errorMessage = implode(", ", $errors);
+                header("Location: ../../admin/editPilote?id=$id&error=1&message=" . urlencode($errorMessage));
                 exit;
             }
-            
+        } else {
             // Afficher le formulaire de modification avec les données du pilote
             require 'app/views/admin/edit_pilote.php';
         }
@@ -201,17 +245,53 @@ class AdminController {
     public function deletePilote() {
         $this->checkAdminAuth();
         
-        $id = $_GET['id'] ?? 0;
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
         
-        // Supprimer le pilote de la base de données
-        $result = $this->piloteModel->deletePilote($id);
+        if (!$id) {
+            header("Location: ../../admin/pilotes?error=4&message=ID du pilote non fourni");
+            exit;
+        }
         
-        if ($result) {
-            header("Location: ../../admin/pilotes?success=3");
-        } else {
-            header("Location: ../../admin/pilotes?error=4");
+        try {
+            // Récupérer le pilote pour vérifier son existence et récupérer l'utilisateur associé
+            $pilote = $this->piloteModel->getPiloteById($id);
+            
+            if (!$pilote) {
+                header("Location: ../../admin/pilotes?error=4&message=Pilote non trouvé");
+                exit;
+            }
+            
+            // Supprimer le pilote et l'utilisateur associé
+            $result = $this->piloteModel->deletePilote($id);
+            
+            if ($result) {
+                header("Location: ../../admin/pilotes?success=3");
+            } else {
+                header("Location: ../../admin/pilotes?error=4&message=Erreur lors de la suppression");
+            }
+        } catch (Exception $e) {
+            header("Location: ../../admin/pilotes?error=4&message=" . urlencode($e->getMessage()));
         }
         exit;
+    }
+    
+    public function getPiloteData() {
+        $this->checkAdminAuth();
+        
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'ID du pilote non fourni']);
+            return;
+        }
+        
+        $pilote = $this->piloteModel->getPiloteById($id);
+        
+        if ($pilote) {
+            echo json_encode(['success' => true, 'pilote' => $pilote]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Pilote non trouvé']);
+        }
     }
     
     public function statsPilotes() {
