@@ -33,6 +33,11 @@
                 <div class="container">
                     <div class="form-container">
                         <h1 class="section-title">Ajouter un pilote</h1>
+                        <?php if (isset($error)): ?>
+                            <div class="alert alert-danger">
+                                <?php echo $error; ?>
+                            </div>
+                        <?php endif; ?>
                         <a href="../../gestion?section=pilotes" class="button button-secondary">Retour à la liste</a>
                         <form action="../../gestion/pilotes/add" method="post" class="form" id="add-pilote-form">
                             <div class="form-row">
@@ -56,30 +61,30 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group half">
-                                    <label for="departement">Département</label>
-                                    <select id="departement" name="departement" required>
-                                        <option value="">Sélectionner un département</option>
-                                            <option value="Informatique">Informatique</option>
-                                            <option value="BTP">BTP</option>
-                                            <option value="Ressources Humaines">Ressources Humaines</option>
-                                            <option value="Généraliste">Généraliste</option>
-                                            <option value="Marketing">Marketing</option>
-                                            <option value="Qualité">Qualité</option>
-                                        </select>
-                                    </div>
+                                    <label for="departement">Ville</label>
+                                    <input type="text" id="departement" name="departement" required placeholder="Ville du pilote">
+                                </div>
                                 <div class="form-group half">
                                     <label for="specialite">Spécialité</label>
-                                    <input type="text" id="specialite" name="specialite" required placeholder="Spécialité du pilote">
-                        </div>
+                                    <select id="specialite" name="specialite" required>
+                                        <option value="">Sélectionner une spécialité</option>
+                                        <option value="Informatique">Informatique</option>
+                                        <option value="BTP">BTP</option>
+                                        <option value="Ressources Humaines">Ressources Humaines</option>
+                                        <option value="Généraliste">Généraliste</option>
+                                        <option value="Marketing">Marketing</option>
+                                        <option value="Qualité">Qualité</option>
+                                    </select>
                                 </div>
+                            </div>
                                 
                             <div class="form-actions">
-                                    <button type="submit" class="button button-primary">Ajouter le pilote</button>
+                                <button type="submit" class="button button-primary">Ajouter le pilote</button>
                                 <a href="../../gestion?section=pilotes" class="button button-outline">Annuler</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                            </form>
-                </div>
-            </div>
             </section>
         </main>
 
@@ -113,7 +118,7 @@
                 document.getElementById('email').value = email;
             } else {
                 document.getElementById('email').value = '';
-        }
+            }
         }
     </script>
 </body>

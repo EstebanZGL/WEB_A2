@@ -464,34 +464,38 @@ class GestionController {
             $prenom = trim($_POST['prenom'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
-            $departement = trim($_POST['departement'] ?? '');
+            $ville = trim($_POST['departement'] ?? ''); // Le champ departement contient maintenant la ville
             $specialite = trim($_POST['specialite'] ?? '');
+            
+            error_log("Tentative de création d'un pilote: $nom $prenom, $email, ville: $ville, specialité: $specialite");
             
             // Créer un nouvel utilisateur si les champs nom et prénom sont remplis
             if (!empty($nom) && !empty($prenom) && !empty($email)) {
                 // Inclure le modèle utilisateur
                 require_once 'app/models/UserModel.php';
                 $userModel = new UserModel();
+                                
                 
-                // Créer un mot de passe - soit celui fourni, soit un par défaut
-                if (empty($password)) {
-                    $password = password_hash('changeme', PASSWORD_DEFAULT);
-                } else {
-                    $password = password_hash($password, PASSWORD_DEFAULT);
-                }
-                
+                $password = password_hash($password, PASSWORD_DEFAULT);
+                               
                 // Créer directement le pilote avec la méthode createPilote
-                $utilisateur_id = $userModel->createPilote($email, $password, $nom, $prenom, $departement, $specialite);
+                $utilisateur_id = $userModel->createPilote($email, $password, $nom, $prenom, $ville, $specialite);
                 
                 if ($utilisateur_id) {
+                    error_log("Pilote créé avec succès: ID=$utilisateur_id");
                     header("Location: ../../gestion?section=pilotes&success=1");
                     exit;
                 } else {
-                    header("Location: ../../gestion?section=pilotes&error=1");
+                    error_log("Échec de la création du pilote");
+                    // Afficher le formulaire avec un message d'erreur
+                    $error = "Impossible de créer le pilote. L'email existe peut-être déjà.";
+                    require 'app/views/gestion/add_pilote.php';
                     exit;
                 }
             } else {
-                header("Location: ../../gestion?section=pilotes&error=1");
+                error_log("Données de formulaire incomplètes pour la création du pilote");
+                $error = "Veuillez remplir tous les champs obligatoires.";
+                require 'app/views/gestion/add_pilote.php';
                 exit;
             }
         } else {

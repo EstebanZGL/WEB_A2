@@ -88,14 +88,23 @@
                             <small class="form-text text-muted">L'email ne peut pas être modifié</small>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="departement">Département:</label>
-                            <input type="text" id="departement" name="departement" class="form-control" value="<?php echo htmlspecialchars($pilote['departement']); ?>" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="specialite">Spécialité:</label>
-                            <input type="text" id="specialite" name="specialite" class="form-control" value="<?php echo htmlspecialchars($pilote['specialite']); ?>" required>
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="departement">Ville</label>
+                                <input type="text" id="departement" name="departement" required placeholder="Ville du pilote" value="<?php echo htmlspecialchars($pilote['departement']); ?>">
+                            </div>
+                            <div class="form-group half">
+                                <label for="specialite">Spécialité</label>
+                                <select id="specialite" name="specialite" required>
+                                    <option value="">Sélectionner une spécialité</option>
+                                    <option value="Informatique" <?php echo $pilote['specialite'] === 'Informatique' ? 'selected' : ''; ?>>Informatique</option>
+                                    <option value="BTP" <?php echo $pilote['specialite'] === 'BTP' ? 'selected' : ''; ?>>BTP</option>
+                                    <option value="Ressources Humaines" <?php echo $pilote['specialite'] === 'Ressources Humaines' ? 'selected' : ''; ?>>Ressources Humaines</option>
+                                    <option value="Généraliste" <?php echo $pilote['specialite'] === 'Généraliste' ? 'selected' : ''; ?>>Généraliste</option>
+                                    <option value="Marketing" <?php echo $pilote['specialite'] === 'Marketing' ? 'selected' : ''; ?>>Marketing</option>
+                                    <option value="Qualité" <?php echo $pilote['specialite'] === 'Qualité' ? 'selected' : ''; ?>>Qualité</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <div class="form-buttons">
