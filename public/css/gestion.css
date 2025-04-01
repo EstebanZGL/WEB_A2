@@ -241,16 +241,27 @@
 
 .gestion-table-etudiants th:nth-child(4),
 .gestion-table-etudiants td:nth-child(4) {
-  width: 25%;
+  width: 20%;
 }
 
 .gestion-table-etudiants th:nth-child(5),
-.gestion-table-etudiants td:nth-child(5),
+.gestion-table-etudiants td:nth-child(5) {
+  width: 15%;
+}
+
 .gestion-table-etudiants th:nth-child(6),
-.gestion-table-etudiants td:nth-child(6),
+.gestion-table-etudiants td:nth-child(6) {
+  width: 15%;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .gestion-table-etudiants th:nth-child(7),
 .gestion-table-etudiants td:nth-child(7) {
   width: 15%;
+  min-width: 100px;
 }
 
 .gestion-table-entreprises th:nth-child(1),
@@ -570,5 +581,9 @@ html, body {
     flex-wrap: wrap;
     justify-content: center;
   }
+  
+  /* Ajustement spécifique pour le tableau des étudiants sur mobile */
+  .gestion-table-etudiants td:nth-child(6) {
+    max-width: 100px;
+  }
 }
-
