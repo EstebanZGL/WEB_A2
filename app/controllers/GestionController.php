@@ -363,27 +363,12 @@ class GestionController {
                     $password = password_hash($password, PASSWORD_DEFAULT);
                 }
                 
-                // Créer l'utilisateur
-                $utilisateur_id = $userModel->createUser($email, $password, $nom, $prenom);
+                // Utiliser directement createEtudiant au lieu de createUser pour éviter la duplication
+                $utilisateur_id = $userModel->createEtudiant($email, $password, $nom, $prenom, $promotion, $formation, $offre_id);
+                
                 if ($utilisateur_id) {
-                    // Créer l'étudiant
-                    $etudiantData = [
-                        'utilisateur_id' => $utilisateur_id,
-                        'promotion' => $promotion,
-                        'formation' => $formation,
-                        'offre_id' => $offre_id
-                    ];
-                    
-                    $result = $this->etudiantModel->createEtudiant($etudiantData);
-                    if ($result) {
-                        header("Location: ../../gestion?section=etudiants&success=1");
-                        exit;
-                    } else {
-                        // En cas d'échec, supprimer l'utilisateur créé
-                        $userModel->deleteUser($utilisateur_id);
-                        header("Location: ../../gestion?section=etudiants&error=1");
-                        exit;
-                    }
+                    header("Location: ../../gestion?section=etudiants&success=1");
+                    exit;
                 } else {
                     header("Location: ../../gestion?section=etudiants&error=1");
                     exit;
