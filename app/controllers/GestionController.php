@@ -126,7 +126,6 @@ class GestionController {
         require 'app/views/gestion/gestion.php';
     }
     
-    // Méthodes pour les offres
     public function addOffre() {
         $this->checkGestionAuth();
         
@@ -137,10 +136,12 @@ class GestionController {
                 'description' => $_POST['description'] ?? '',
                 'entreprise_id' => $_POST['entreprise_id'] ?? null,
                 'date_debut' => $_POST['date_debut'] ?? null,
+                'date_fin' => $_POST['date_fin'] ?? null,
                 'duree_stage' => $_POST['duree_stage'] ?? 0,
                 'remuneration' => $_POST['remuneration'] ?? 0,
-                'statut' => $_POST['statut'] ?? 'Disponible',
-                'competences' => $_POST['competences'] ?? '',
+                'statut' => $_POST['statut'] ?? 'ACTIVE',
+                'type' => $_POST['type'] ?? null,
+                'lieu' => $_POST['lieu'] ?? null,
                 'date_publication' => date('Y-m-d H:i:s')
             ];
             
@@ -174,10 +175,12 @@ class GestionController {
                 'description' => $_POST['description'] ?? '',
                 'entreprise_id' => $_POST['entreprise_id'] ?? null,
                 'date_debut' => $_POST['date_debut'] ?? null,
+                'date_fin' => $_POST['date_fin'] ?? null,
                 'duree_stage' => $_POST['duree_stage'] ?? 0,
                 'remuneration' => $_POST['remuneration'] ?? 0,
-                'statut' => $_POST['statut'] ?? 'Disponible',
-                'competences' => $_POST['competences'] ?? ''
+                'statut' => $_POST['statut'] ?? 'ACTIVE',
+                'type' => $_POST['type'] ?? null,
+                'lieu' => $_POST['lieu'] ?? null
             ];
             
             // Mettre à jour l'offre dans la base de données
