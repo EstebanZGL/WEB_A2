@@ -48,7 +48,7 @@
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" id="email" name="email" required readonly>
-                                <small>L'email sera généré automatiquement au format premièreLettrePrenom+nom@cesi.fr</small>
+                                <small>L'email sera généré automatiquement au format pnom@cesi.fr</small>
                             </div>
                             <div class="form-group">
                                 <label for="password">Mot de passe</label>
