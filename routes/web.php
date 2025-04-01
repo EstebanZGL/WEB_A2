@@ -126,6 +126,27 @@ function route($uri) {
             $gestionController->statsEtudiants();
             break;
             
+        // Nouvelles routes pour les candidatures d'étudiants
+        case 'gestion/etudiants/candidatures':
+            // Afficher les candidatures d'un étudiant
+            $gestionController->candidaturesEtudiant();
+            break;
+            
+        case 'gestion/etudiants/candidatures/add':
+            // Ajouter une candidature
+            $gestionController->addCandidature();
+            break;
+            
+        case 'gestion/etudiants/candidatures/update-status':
+            // Mettre à jour le statut d'une candidature
+            $gestionController->updateCandidatureStatus();
+            break;
+            
+        case 'gestion/etudiants/candidatures/delete':
+            // Supprimer une candidature
+            $gestionController->deleteCandidature();
+            break;
+            
         // Routes pour les pilotes dans la section gestion
         case 'gestion/pilotes/add':
             // Ajouter un nouveau pilote
@@ -142,46 +163,6 @@ function route($uri) {
             $gestionController->deletePilote();
             break;
 
-        case 'gestion/pilotes/stats':
-            // Consulter les statistiques des pilotes
-            $gestionController->statsPilotes();
-            break;
-
-        case 'admin':
-            // Afficher la page administrateur
-            $adminController->index();
-            break;
-
-        case 'admin/manage':
-            // Gérer les tâches administratives (exemple)
-            $adminController->manage();
-            break;
-
-        // Nouvelles routes pour la gestion des pilotes
-        case 'admin/pilotes':
-            // Afficher la liste des pilotes
-            $adminController->pilotes();
-            break;
-
-        case 'admin/addPilote':
-            // Ajouter un nouveau pilote
-            $adminController->addPilote();
-            break;
-            
-        case 'admin/editPilote':
-            // Modifier un pilote existant
-            $adminController->editPilote();
-            break;
-            
-        case 'admin/deletePilote':
-            // Supprimer un pilote
-            $adminController->deletePilote();
-            break;
-
-        case 'admin/statsPilotes':
-            // Consulter les statistiques des pilotes
-            $adminController->statsPilotes();
-            break;
 
         case 'logout':
             // Utiliser le contrôleur de déconnexion

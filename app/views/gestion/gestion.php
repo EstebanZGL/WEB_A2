@@ -255,7 +255,7 @@
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
-                                            <tr class="etudiant-row" data-id="<?php echo $item['id']; ?>" href="gestion/etudiants/candidatures?id=<?php echo $item['id']; ?>">
+                                            <tr class="etudiant-row" data-id="<?php echo $item['id']; ?>" >
                                                 <td>
                                                     <a href="gestion/etudiants/candidatures?id=<?php echo $item['id']; ?>" class="etudiant-link">
                                                         <?php echo htmlspecialchars($item['nom'] ?? ''); ?>

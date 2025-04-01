@@ -594,5 +594,129 @@ class GestionController {
         // Afficher la page de statistiques
         require 'app/views/gestion/stats_pilotes.php';
     }
+
+    // Ajoutez cette méthode à votre classe GestionController
+
+public function candidaturesEtudiant() {
+    // Vérifier si l'utilisateur est connecté et a les droits
+    $this->checkGestionAuth();
+    
+    // Récupérer l'ID de l'étudiant
+    $etudiantId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+    
+    if (!$etudiantId) {
+        // Rediriger vers la liste des étudiants si aucun ID n'est fourni
+        header('Location: /gestion?section=etudiants&error=3');
+        exit;
+    }
+    
+    // Charger les modèles nécessaires
+    require_once 'app/models/CandidatureModel.php';
+    $candidatureModel = new CandidatureModel();
+    
+    // Récupérer les informations de l'étudiant
+    $etudiant = $candidatureModel->getEtudiantInfo($etudiantId);
+    
+    if (!$etudiant) {
+        // Rediriger si l'étudiant n'existe pas
+        header('Location: /gestion?section=etudiants&error=3');
+        exit;
+    }
+    
+    // Récupérer les candidatures de l'étudiant
+    $candidatures = $candidatureModel->getCandidaturesByEtudiantId($etudiantId);
+    
+    // Récupérer les offres dans la wishlist de l'étudiant
+    $wishlist = $candidatureModel->getWishlistByEtudiantId($etudiantId);
+    
+    // Charger la vue
+    require_once 'app/views/gestion/candidatures_etudiant.php';
+}
+
+// Ajoutez cette méthode pour gérer l'ajout d'une candidature
+public function addCandidature() {
+    // Vérifier si l'utilisateur est connecté et a les droits
+    $this->checkGestionAuth();
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $etudiantId = isset($_POST['etudiant_id']) ? (int)$_POST['etudiant_id'] : 0;
+        $offreId = isset($_POST['offre_id']) ? (int)$_POST['offre_id'] : 0;
+        $statut = isset($_POST['statut']) ? $_POST['statut'] : 'En attente';
+        
+        if (!$etudiantId || !$offreId) {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=1');
+            exit;
+        }
+        
+        require_once 'app/models/CandidatureModel.php';
+        $candidatureModel = new CandidatureModel();
+        
+        if ($candidatureModel->addCandidature($etudiantId, $offreId, $statut)) {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&success=1');
+        } else {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=1');
+        }
+        exit;
+    }
+    
+    // Si ce n'est pas une requête POST, rediriger vers la liste des étudiants
+    header('Location: /gestion?section=etudiants');
+    exit;
+}
+
+// Ajoutez cette méthode pour gérer la mise à jour du statut d'une candidature
+public function updateCandidatureStatus() {
+    // Vérifier si l'utilisateur est connecté et a les droits
+    $this->checkGestionAuth();
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $candidatureId = isset($_POST['candidature_id']) ? (int)$_POST['candidature_id'] : 0;
+        $etudiantId = isset($_POST['etudiant_id']) ? (int)$_POST['etudiant_id'] : 0;
+        $statut = isset($_POST['statut']) ? $_POST['statut'] : '';
+        
+        if (!$candidatureId || !$etudiantId || !$statut) {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=2');
+            exit;
+        }
+        
+        require_once 'app/models/CandidatureModel.php';
+        $candidatureModel = new CandidatureModel();
+        
+        if ($candidatureModel->updateCandidatureStatus($candidatureId, $statut)) {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&success=2');
+        } else {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=2');
+        }
+        exit;
+    }
+    
+    // Si ce n'est pas une requête POST, rediriger vers la liste des étudiants
+    header('Location: /gestion?section=etudiants');
+    exit;
+}
+
+// Ajoutez cette méthode pour gérer la suppression d'une candidature
+public function deleteCandidature() {
+    // Vérifier si l'utilisateur est connecté et a les droits
+    $this->checkGestionAuth();
+    
+    $candidatureId = isset($_GET['candidature_id']) ? (int)$_GET['candidature_id'] : 0;
+    $etudiantId = isset($_GET['etudiant_id']) ? (int)$_GET['etudiant_id'] : 0;
+    
+    if (!$candidatureId || !$etudiantId) {
+        header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=3');
+        exit;
+    }
+    
+    require_once 'app/models/CandidatureModel.php';
+    $candidatureModel = new CandidatureModel();
+    
+    if ($candidatureModel->deleteCandidature($candidatureId)) {
+        header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&success=3');
+    } else {
+        header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=4');
+    }
+    exit;
+}
 }
 ?>
