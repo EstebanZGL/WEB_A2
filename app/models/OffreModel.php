@@ -323,5 +323,20 @@ class OffreModel {
             return [];
         }
     }
+
+    // Ajouter cette nouvelle méthode à votre classe OffreModel
+    public function countCandidatures($statut) {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT COUNT(*) 
+                FROM candidature 
+                WHERE statut = :statut
+            ");
+            $stmt->execute([':statut' => $statut]);
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Erreur lors du comptage des candidatures: " . $e->getMessage());
+            return 0;
+        }
+    }
 }
-?>
