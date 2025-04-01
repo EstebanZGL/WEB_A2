@@ -3,39 +3,28 @@
 /* Tableaux */
 .gestion-table {
   width: 100%;
-  border-collapse: separate; /* Changé de collapse à separate pour mieux gérer les bordures */
-  border-spacing: 0;
+  border-collapse: collapse;
   background-color: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(4px);
   border: 1px solid var(--white-10);
   border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: var(--spacing-xl);
-  table-layout: fixed; /* Assure une largeur constante des colonnes */
 }
 
-/* En-tête du tableau - IMPORTANT: redéfini pour avoir priorité */
 .gestion-table th {
   background-color: var(--background-darker);
   color: var(--foreground);
   font-weight: 600;
-  text-align: center !important; /* Force le centrage */
+  text-align: left;
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--white-20);
-  vertical-align: middle !important;
-  height: 50px; /* Hauteur fixe pour les en-têtes */
 }
 
-/* Cellules du tableau - IMPORTANT: redéfini pour avoir priorité */
 .gestion-table td {
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--white-10);
   color: var(--foreground);
-  text-align: center !important; /* Force le centrage */
-  vertical-align: middle !important;
-  height: 60px; /* Hauteur fixe pour les cellules */
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .gestion-table tr:last-child td {
@@ -72,7 +61,7 @@
 .btn-modifier {
   background-color: var(--primary);
   color: white;
-  padding: 6px 12px; /* Taille fixe */
+  padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
@@ -80,10 +69,6 @@
   display: inline-block;
   text-decoration: none;
   font-size: 0.875rem;
-  white-space: nowrap; /* Empêche le retour à la ligne */
-  min-width: 80px; /* Largeur minimale */
-  text-align: center;
-  margin: 2px; /* Marge entre les boutons */
 }
 
 .btn-modifier:hover {
@@ -93,16 +78,12 @@
 .btn-supprimer {
   background-color: var(--accent);
   color: white;
-  padding: 6px 12px; /* Taille fixe */
+  padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
   transition: var(--transition-fast);
   font-size: 0.875rem;
-  white-space: nowrap; /* Empêche le retour à la ligne */
-  min-width: 80px; /* Largeur minimale */
-  text-align: center;
-  margin: 2px; /* Marge entre les boutons */
 }
 
 .btn-supprimer:hover {
@@ -245,6 +226,79 @@
   color: white;
 }
 
+/* Styles spécifiques pour les tableaux des étudiants, entreprises et offres */
+.gestion-table-etudiants th:nth-child(1),
+.gestion-table-etudiants td:nth-child(1) {
+  width: 5%;
+}
+
+.gestion-table-etudiants th:nth-child(2),
+.gestion-table-etudiants td:nth-child(2),
+.gestion-table-etudiants th:nth-child(3),
+.gestion-table-etudiants td:nth-child(3) {
+  width: 15%;
+}
+
+.gestion-table-etudiants th:nth-child(4),
+.gestion-table-etudiants td:nth-child(4) {
+  width: 25%;
+}
+
+.gestion-table-etudiants th:nth-child(5),
+.gestion-table-etudiants td:nth-child(5),
+.gestion-table-etudiants th:nth-child(6),
+.gestion-table-etudiants td:nth-child(6),
+.gestion-table-etudiants th:nth-child(7),
+.gestion-table-etudiants td:nth-child(7) {
+  width: 15%;
+}
+
+.gestion-table-entreprises th:nth-child(1),
+.gestion-table-entreprises td:nth-child(1) {
+  width: 5%;
+}
+
+.gestion-table-entreprises th:nth-child(2),
+.gestion-table-entreprises td:nth-child(2) {
+  width: 25%;
+}
+
+.gestion-table-entreprises th:nth-child(3),
+.gestion-table-entreprises td:nth-child(3) {
+  width: 40%;
+}
+
+.gestion-table-entreprises th:nth-child(4),
+.gestion-table-entreprises td:nth-child(4),
+.gestion-table-entreprises th:nth-child(5),
+.gestion-table-entreprises td:nth-child(5) {
+  width: 15%;
+}
+
+.gestion-table-offres th:nth-child(1),
+.gestion-table-offres td:nth-child(1) {
+  width: 5%;
+}
+
+.gestion-table-offres th:nth-child(2),
+.gestion-table-offres td:nth-child(2) {
+  width: 25%;
+}
+
+.gestion-table-offres th:nth-child(3),
+.gestion-table-offres td:nth-child(3) {
+  width: 20%;
+}
+
+.gestion-table-offres th:nth-child(4),
+.gestion-table-offres td:nth-child(4),
+.gestion-table-offres th:nth-child(5),
+.gestion-table-offres td:nth-child(5),
+.gestion-table-offres th:nth-child(6),
+.gestion-table-offres td:nth-child(6) {
+  width: 15%;
+}
+
 /* Onglets */
 .tabs {
   display: flex;
@@ -274,7 +328,6 @@
 .action-buttons {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Aligner verticalement */
   margin-bottom: var(--spacing-lg);
 }
 
@@ -327,22 +380,17 @@
   color: #ef4444;
 }
 
-/* Table responsive - IMPORTANT: redéfini pour avoir priorité */
+/* Table responsive */
 .table-responsive {
   overflow-x: auto;
   margin-bottom: var(--spacing-lg);
-  width: 100%;
-  max-width: 100%; /* Assure que le tableau ne dépasse pas son conteneur */
 }
 
-/* Actions column - IMPORTANT: redéfini pour avoir priorité */
+/* Actions column */
 .actions {
-  display: flex !important;
-  gap: var(--spacing-sm) !important;
-  justify-content: center !important;
-  align-items: center !important;
-  white-space: nowrap !important; /* Empêche le retour à la ligne des boutons */
-  min-width: 180px !important; /* Largeur minimale pour contenir les deux boutons */
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
 }
 
 /* Styles pour les tables */
@@ -459,58 +507,6 @@ html, body {
   position: relative;
 }
 
-/* Remplacer complètement les styles pour les colonnes du tableau des offres */
-.gestion-table-offres th:nth-child(1), /* Titre */
-.gestion-table-offres td:nth-child(1) {
-  width: 15% !important;
-}
-
-.gestion-table-offres th:nth-child(2), /* Entreprise */
-.gestion-table-offres td:nth-child(2) {
-  width: 15% !important;
-}
-
-.gestion-table-offres th:nth-child(3), /* Type */
-.gestion-table-offres td:nth-child(3) {
-  width: 10% !important;
-}
-
-.gestion-table-offres th:nth-child(4), /* Lieu */
-.gestion-table-offres td:nth-child(4) {
-  width: 10% !important;
-}
-
-.gestion-table-offres th:nth-child(5), /* Date de début */
-.gestion-table-offres td:nth-child(5) {
-  width: 10% !important;
-}
-
-.gestion-table-offres th:nth-child(6), /* Durée */
-.gestion-table-offres td:nth-child(6) {
-  width: 8% !important;
-}
-
-.gestion-table-offres th:nth-child(7), /* Rémunération */
-.gestion-table-offres td:nth-child(7) {
-  width: 10% !important;
-}
-
-.gestion-table-offres th:nth-child(8), /* Statut */
-.gestion-table-offres td:nth-child(8) {
-  width: 8% !important;
-}
-
-.gestion-table-offres th:nth-child(9), /* Actions */
-.gestion-table-offres td:nth-child(9) {
-  width: 14% !important; /* Largeur fixe pour la colonne d'actions */
-  min-width: 180px !important;
-}
-
-/* Style spécifique pour les dates */
-.gestion-table-offres td:nth-child(5) {
-  white-space: nowrap; /* Empêche le retour à la ligne des dates */
-}
-
 /* Ajustements pour les tableaux sur mobile */
 @media (max-width: 767px) {
   /* Améliorer le défilement des tableaux sur mobile */
@@ -575,3 +571,4 @@ html, body {
     justify-content: center;
   }
 }
+
