@@ -262,8 +262,8 @@
                                                 <td><?php echo htmlspecialchars($item['promotion'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['formation'] ?? ''); ?></td>
                                                 <td><?php 
-                                                    echo isset($item['nb_offres_wishlist']) ? 
-                                                        ($item['nb_offres_wishlist'] > 0 ? $item['nb_offres_wishlist'] . " offre(s) sélectionnée(s)" : "Aucune offre sélectionnée") : 
+                                                    echo isset($item['nb_candidatures']) ? 
+                                                        ($item['nb_candidatures'] > 0 ? $item['nb_candidatures'] . " offre(s)" : "Aucune offre") : 
                                                         "Aucune offre sélectionnée"; 
                                                 ?></td>
                                                 <td class="actions">
