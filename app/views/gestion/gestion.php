@@ -264,7 +264,7 @@
                                                 <td><?php 
                                                     echo isset($item['nb_candidatures']) ? 
                                                         ($item['nb_candidatures'] > 0 ? $item['nb_candidatures'] . " offre(s)" : "Aucune offre") : 
-                                                        "Aucune offre sélectionnée"; 
+                                                        "Aucune offre"; 
                                                 ?></td>
                                                 <td class="actions">
                                                     <a href="gestion/etudiants/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>
