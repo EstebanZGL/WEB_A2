@@ -136,5 +136,53 @@ class EntrepriseModel {
         
         return $stats;
     }
+
+    public function searchEntreprises($search, $limit = 10, $offset = 0) {
+        try {
+            $search = '%' . $search . '%';
+            $query = "SELECT e.*, u.nom as createur_nom, u.prenom as createur_prenom 
+                     FROM entreprise e 
+                     LEFT JOIN utilisateur u ON e.createur_id = u.id 
+                     WHERE e.nom LIKE :search 
+                        OR e.email_contact LIKE :search 
+                        OR e.telephone_contact LIKE :search 
+                        OR e.adresse LIKE :search
+                     ORDER BY e.nom ASC 
+                     LIMIT :limit OFFSET :offset";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la recherche des entreprises: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    public function countEntreprisesSearch($search) {
+        try {
+            $search = '%' . $search . '%';
+            $query = "SELECT COUNT(*) as total 
+                     FROM entreprise e
+                     WHERE e.nom LIKE :search 
+                        OR e.email_contact LIKE :search 
+                        OR e.telephone_contact LIKE :search 
+                        OR e.adresse LIKE :search";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return (int)$result['total'];
+        } catch (PDOException $e) {
+            error_log("Erreur lors du comptage des entreprises recherchées: " . $e->getMessage());
+            return 0;
+        }
+    }
 }
 ?>

@@ -67,11 +67,11 @@
                     
                     <!-- Onglets de navigation -->
                     <div class="tabs">
-                        <a href="gestion?section=offres" class="tab <?php echo $section === 'offres' ? 'active' : ''; ?>">Offres</a>
-                        <a href="gestion?section=entreprises" class="tab <?php echo $section === 'entreprises' ? 'active' : ''; ?>">Entreprises</a>
-                        <a href="gestion?section=etudiants" class="tab <?php echo $section === 'etudiants' ? 'active' : ''; ?>">Étudiants</a>
+                        <a href="gestion?section=offres<?php echo isset($_GET['search']) ? '&search='.urlencode($_GET['search']) : ''; ?>" class="tab <?php echo $section === 'offres' ? 'active' : ''; ?>">Offres</a>
+                        <a href="gestion?section=entreprises<?php echo isset($_GET['search']) ? '&search='.urlencode($_GET['search']) : ''; ?>" class="tab <?php echo $section === 'entreprises' ? 'active' : ''; ?>">Entreprises</a>
+                        <a href="gestion?section=etudiants<?php echo isset($_GET['search']) ? '&search='.urlencode($_GET['search']) : ''; ?>" class="tab <?php echo $section === 'etudiants' ? 'active' : ''; ?>">Étudiants</a>
                         <?php if (isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 2): ?>
-                        <a href="gestion?section=pilotes" class="tab <?php echo $section === 'pilotes' ? 'active' : ''; ?>">Pilotes</a>
+                        <a href="gestion?section=pilotes<?php echo isset($_GET['search']) ? '&search='.urlencode($_GET['search']) : ''; ?>" class="tab <?php echo $section === 'pilotes' ? 'active' : ''; ?>">Pilotes</a>
                         <?php endif; ?>
                     </div>
                     
@@ -132,11 +132,11 @@
                             <?php endif; ?>
                         </div>
                         
-                        <!-- Formulaire de recherche (à implémenter plus tard) -->
+                        <!-- Formulaire de recherche -->
                         <div>
                             <form action="gestion" method="get" class="search-form-inline">
                                 <input type="hidden" name="section" value="<?php echo $section; ?>">
-                                <input type="text" name="search" placeholder="Rechercher..." class="search-input-small">
+                                <input type="text" name="search" placeholder="Rechercher..." class="search-input-small" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
                                 <button type="submit" class="button button-small">Rechercher</button>
                             </form>
                         </div>
@@ -312,17 +312,20 @@
                         <?php endif; ?>
                     </div>
                     
-                    <!-- Pagination -->
+                    <!-- Pagination avec paramètre de recherche -->
                     <?php 
                     // S'assurer que les variables de pagination sont définies
                     $totalPages = isset($totalPages) ? $totalPages : 1;
                     $currentPage = isset($currentPage) ? (int)$currentPage : 1; // Conversion explicite en entier
+                    
+                    // Préparer le paramètre de recherche pour les liens de pagination
+                    $searchParam = isset($_GET['search']) && !empty($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '';
 
                     if ($totalPages > 1): 
                     ?>
                         <div class="pagination">
                             <?php if ($currentPage > 1): ?>
-                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage - 1; ?>" class="pagination-item">&laquo;</a>
+                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage - 1; ?><?php echo $searchParam; ?>" class="pagination-item">&laquo;</a>
                             <?php endif; ?>
                             
                             <?php
@@ -332,7 +335,7 @@
                             
                             // Toujours afficher la première page
                             if ($startPage > 1) {
-                                echo '<a href="gestion?section=' . $section . '&page=1" class="pagination-item ' . ($currentPage === 1 ? 'active' : '') . '">1</a>';
+                                echo '<a href="gestion?section=' . $section . '&page=1' . $searchParam . '" class="pagination-item ' . ($currentPage === 1 ? 'active' : '') . '">1</a>';
                                 if ($startPage > 2) {
                                     echo '<span class="pagination-item">...</span>';
                                 }
@@ -341,7 +344,7 @@
                             // Afficher les pages intermédiaires
                             for ($i = $startPage; $i <= $endPage; $i++) {
                                 $activeClass = ($i === $currentPage) ? 'active' : '';
-                                echo '<a href="gestion?section=' . $section . '&page=' . $i . '" class="pagination-item ' . $activeClass . '">' . $i . '</a>';
+                                echo '<a href="gestion?section=' . $section . '&page=' . $i . $searchParam . '" class="pagination-item ' . $activeClass . '">' . $i . '</a>';
                             }
                             
                             // Toujours afficher la dernière page
@@ -349,12 +352,12 @@
                                 if ($endPage < $totalPages - 1) {
                                     echo '<span class="pagination-item">...</span>';
                                 }
-                                echo '<a href="gestion?section=' . $section . '&page=' . $totalPages . '" class="pagination-item ' . ($currentPage === $totalPages ? 'active' : '') . '">' . $totalPages . '</a>';
+                                echo '<a href="gestion?section=' . $section . '&page=' . $totalPages . $searchParam . '" class="pagination-item ' . ($currentPage === $totalPages ? 'active' : '') . '">' . $totalPages . '</a>';
                             }
                             ?>
                             
                             <?php if ($currentPage < $totalPages): ?>
-                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage + 1; ?>" class="pagination-item">&raquo;</a>
+                                <a href="gestion?section=<?php echo $section; ?>&page=<?php echo $currentPage + 1; ?><?php echo $searchParam; ?>" class="pagination-item">&raquo;</a>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -394,7 +397,7 @@
             });
             
             // Ajouter la classe 'active' à l'élément correspondant à la page actuelle
-            const activePageItem = document.querySelector(`.pagination-item[href$="page=${currentPage}"]`);
+            const activePageItem = document.querySelector(`.pagination-item[href$="page=${currentPage}${urlParams.get('search') ? '&search=' + urlParams.get('search') : ''}"]:not([href*="page=${currentPage+1}"]):not([href*="page=${currentPage-1}"])`);
             if (activePageItem) {
                 activePageItem.classList.add('active');
             }

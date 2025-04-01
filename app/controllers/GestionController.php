@@ -64,6 +64,7 @@ class GestionController {
         // Récupérer les paramètres de la requête
         $section = isset($_GET['section']) ? $_GET['section'] : 'offres';
         $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
         
         // S'assurer que la page est au moins 1
         if ($page < 1) {
@@ -81,13 +82,23 @@ class GestionController {
         // Récupérer les données selon la section
         switch ($section) {
             case 'entreprises':
-                $items = $this->entrepriseModel->getEntreprises($this->itemsPerPage, $offset);
-                $totalItems = $this->entrepriseModel->countEntreprises();
+                if (!empty($search)) {
+                    $items = $this->entrepriseModel->searchEntreprises($search, $this->itemsPerPage, $offset);
+                    $totalItems = $this->entrepriseModel->countEntreprisesSearch($search);
+                } else {
+                    $items = $this->entrepriseModel->getEntreprises($this->itemsPerPage, $offset);
+                    $totalItems = $this->entrepriseModel->countEntreprises();
+                }
                 break;
                 
             case 'etudiants':
-                $items = $this->etudiantModel->getEtudiants($this->itemsPerPage, $offset);
-                $totalItems = $this->etudiantModel->countEtudiants();
+                if (!empty($search)) {
+                    $items = $this->etudiantModel->searchEtudiants($search, $this->itemsPerPage, $offset);
+                    $totalItems = $this->etudiantModel->countEtudiantsSearch($search);
+                } else {
+                    $items = $this->etudiantModel->getEtudiants($this->itemsPerPage, $offset);
+                    $totalItems = $this->etudiantModel->countEtudiants();
+                }
                 break;
                 
             case 'pilotes':
@@ -96,14 +107,24 @@ class GestionController {
                     header("Location: gestion?section=offres");
                     exit;
                 }
-                $items = $this->piloteModel->getPilotes($this->itemsPerPage, $offset);
-                $totalItems = $this->piloteModel->countPilotes();
+                if (!empty($search)) {
+                    $items = $this->piloteModel->searchPilotes($search, $this->itemsPerPage, $offset);
+                    $totalItems = $this->piloteModel->countPilotesSearch($search);
+                } else {
+                    $items = $this->piloteModel->getPilotes($this->itemsPerPage, $offset);
+                    $totalItems = $this->piloteModel->countPilotes();
+                }
                 break;
                 
             case 'offres':
             default:
-                $items = $this->offreModel->getOffres($this->itemsPerPage, $offset);
-                $totalItems = $this->offreModel->countOffres();
+                if (!empty($search)) {
+                    $items = $this->offreModel->searchOffresAdmin($search, $this->itemsPerPage, $offset);
+                    $totalItems = $this->offreModel->countOffresSearch($search);
+                } else {
+                    $items = $this->offreModel->getOffres($this->itemsPerPage, $offset);
+                    $totalItems = $this->offreModel->countOffres();
+                }
                 $section = 'offres'; // Assurer que la section est définie correctement
                 break;
         }
@@ -119,7 +140,8 @@ class GestionController {
             'totalPages' => $totalPages,
             'totalItems' => $totalItems,
             'itemsPerPage' => $this->itemsPerPage,
-            'isAdmin' => isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 2
+            'isAdmin' => isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 2,
+            'search' => $search
         ];
         
         // Charger la vue de la page Gestion
