@@ -225,10 +225,7 @@ class UserModel {
         }
     }
 
-    /**
- * Crée un pilote (utilisateur + entrée dans la table pilote)
- */
-/**
+ /**
  * Crée un pilote (utilisateur + entrée dans la table pilote)
  */
 public function createPilote($email, $password, $nom, $prenom, $departement = '', $specialite = '') {
@@ -236,18 +233,33 @@ public function createPilote($email, $password, $nom, $prenom, $departement = ''
         // Vérifier si l'email existe déjà
         $stmt = $this->pdo->prepare("SELECT id FROM utilisateur WHERE email = :email");
         $stmt->execute([':email' => $email]);
-        if ($stmt->fetch()) {
-            error_log("Erreur: L'email $email existe déjà dans la base de données");
+        $existingUser = $stmt->fetch();
+        
+        if ($existingUser) {
+            error_log("Erreur: L'email $email existe déjà dans la base de données (ID: {$existingUser['id']})");
             return false;
         }
         
         $this->pdo->beginTransaction();
         
         // Créer l'utilisateur de base
-        $userId = $this->createBaseUser($email, $password, $nom, $prenom);
+        $stmt = $this->pdo->prepare("
+            INSERT INTO utilisateur (email, mot_de_passe, nom, prenom)
+            VALUES (:email, :mot_de_passe, :nom, :prenom)
+        ");
+        
+        $stmt->execute([
+            ':email' => $email,
+            ':mot_de_passe' => $password,
+            ':nom' => $nom,
+            ':prenom' => $prenom
+        ]);
+        
+        $userId = $this->pdo->lastInsertId();
         
         if (!$userId) {
             $this->pdo->rollBack();
+            error_log("Erreur: Impossible d'obtenir l'ID de l'utilisateur après insertion");
             return false;
         }
         
@@ -264,6 +276,7 @@ public function createPilote($email, $password, $nom, $prenom, $departement = ''
         ]);
         
         $this->pdo->commit();
+        error_log("Pilote créé avec succès: ID utilisateur=$userId");
         return $userId;
     } catch (PDOException $e) {
         if ($this->pdo->inTransaction()) {
