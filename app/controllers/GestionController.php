@@ -464,7 +464,7 @@ class GestionController {
             $prenom = trim($_POST['prenom'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
-            $ville = trim($_POST['departement'] ?? ''); // Le champ departement contient maintenant la ville
+            $ville = trim($_POST['departement'] ?? '');
             $specialite = trim($_POST['specialite'] ?? '');
             
             error_log("Tentative de création d'un pilote: $nom $prenom, $email, ville: $ville, specialité: $specialite");
@@ -474,10 +474,18 @@ class GestionController {
                 // Inclure le modèle utilisateur
                 require_once 'app/models/UserModel.php';
                 $userModel = new UserModel();
-                                
+                
+                // Vérifier d'abord si l'email existe déjà
+                $existingUser = $userModel->getUserByEmail($email);
+                if ($existingUser) {
+                    error_log("Email déjà utilisé: $email");
+                    $error = "L'email $email est déjà utilisé. Veuillez en choisir un autre.";
+                    require 'app/views/gestion/add_pilote.php';
+                    exit;
+                }
                 
                 $password = password_hash($password, PASSWORD_DEFAULT);
-                               
+                                
                 // Créer directement le pilote avec la méthode createPilote
                 $utilisateur_id = $userModel->createPilote($email, $password, $nom, $prenom, $ville, $specialite);
                 
@@ -488,7 +496,7 @@ class GestionController {
                 } else {
                     error_log("Échec de la création du pilote");
                     // Afficher le formulaire avec un message d'erreur
-                    $error = "Impossible de créer le pilote. L'email existe peut-être déjà.";
+                    $error = "Impossible de créer le pilote. Veuillez vérifier les informations saisies.";
                     require 'app/views/gestion/add_pilote.php';
                     exit;
                 }
