@@ -1,46 +1,44 @@
+/**
+ * Script pour ajouter un lien vers le tableau de bord pour les étudiants
+ * Ce script vérifie si l'utilisateur est connecté en tant qu'étudiant
+ * et ajoute un lien vers le tableau de bord dans la navigation
+ */
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Vérifier si l'utilisateur est un étudiant pour afficher le lien vers le dashboard
+    // Vérifier si l'utilisateur est connecté en tant qu'étudiant
     fetch("app/views/login/session.php")
         .then(response => response.json())
         .then(data => {
-            console.log("Session data:", data); // Débogage
+            // Si l'utilisateur est connecté et est un étudiant (utilisateur = 0)
             if (data.logged_in && parseInt(data.utilisateur) === 0) {
-                // L'utilisateur est un étudiant, afficher les liens dashboard
-                
-                // Ajouter le lien dans la navigation principale
+                // Ajouter le lien vers le tableau de bord dans la navigation principale
                 const navbarNav = document.querySelector('.navbar-nav');
-                if (navbarNav) {
-                    // Créer le lien
+                const offresLink = document.querySelector('.navbar-nav a[href="offres"]');
+                
+                if (navbarNav && offresLink) {
+                    // Créer le lien vers le tableau de bord
                     const dashboardLink = document.createElement('a');
                     dashboardLink.href = 'dashboard';
                     dashboardLink.className = 'nav-link';
-                    dashboardLink.textContent = 'Tableau de bord';
+                    dashboardLink.innerHTML = '<span class="iconify" data-icon="mdi:view-dashboard" style="margin-right: 5px;"></span>Tableau de bord';
                     
-                    // Insérer après le lien "Emplois"
-                    const emploisLink = Array.from(navbarNav.querySelectorAll('.nav-link')).find(link => link.textContent === 'Emplois');
-                    if (emploisLink) {
-                        navbarNav.insertBefore(dashboardLink, emploisLink.nextSibling);
-                    } else {
-                        navbarNav.appendChild(dashboardLink);
-                    }
+                    // Insérer le lien après le lien "Emplois"
+                    navbarNav.insertBefore(dashboardLink, offresLink.nextSibling);
                 }
                 
-                // Ajouter le lien dans le menu mobile
+                // Ajouter le lien vers le tableau de bord dans le menu mobile
                 const mobileNav = document.querySelector('.mobile-nav');
-                if (mobileNav) {
-                    // Créer le lien
+                const mobileOffresLink = document.querySelector('.mobile-nav a[href="offres"]');
+                
+                if (mobileNav && mobileOffresLink) {
+                    // Créer le lien vers le tableau de bord pour le menu mobile
                     const mobileDashboardLink = document.createElement('a');
                     mobileDashboardLink.href = 'dashboard';
                     mobileDashboardLink.className = 'mobile-nav-link';
                     mobileDashboardLink.textContent = 'Tableau de bord';
                     
-                    // Insérer après le lien "Emplois"
-                    const mobileEmploisLink = Array.from(mobileNav.querySelectorAll('.mobile-nav-link')).find(link => link.textContent === 'Emplois');
-                    if (mobileEmploisLink) {
-                        mobileNav.insertBefore(mobileDashboardLink, mobileEmploisLink.nextSibling);
-                    } else {
-                        mobileNav.appendChild(mobileDashboardLink);
-                    }
+                    // Insérer le lien après le lien "Emplois" dans le menu mobile
+                    mobileNav.insertBefore(mobileDashboardLink, mobileOffresLink.nextSibling);
                 }
             }
         })

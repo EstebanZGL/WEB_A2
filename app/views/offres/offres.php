@@ -230,6 +230,19 @@
                             </div>
                         </div>
                         
+                        <!-- Section Tableau de bord pour les étudiants (sera affichée/masquée via JavaScript) -->
+                        <div class="filter-group" id="dashboard-section" style="display: none;">
+                            <div class="filter-heading">
+                                <h3>Mon Espace</h3>
+                            </div>
+                            <div class="filter-options">
+                                <a href="dashboard" class="dashboard-nav-link">
+                                    <span class="iconify" data-icon="mdi:view-dashboard" style="margin-right: 5px;"></span>
+                                    Accéder à mon tableau de bord
+                                </a>
+                            </div>
+                        </div>
+                        
                         <!-- Bouton pour réinitialiser tous les filtres -->
                         <button id="reset-all-filters" class="reset-filters-btn">
                             <span class="iconify" data-icon="mdi:refresh" width="16" height="16"></span> 
@@ -322,6 +335,7 @@
                     const wishlistSection = document.getElementById('wishlist-section');
                     const wishlistLink = document.getElementById('wishlist-link');
                     const mobileWishlistLink = document.getElementById('mobile-wishlist-link');
+                    const dashboardSection = document.getElementById('dashboard-section');
                     
                     if (wishlistSection) {
                         wishlistSection.style.display = 'block';
@@ -333,6 +347,10 @@
                     
                     if (mobileWishlistLink) {
                         mobileWishlistLink.style.display = 'block';
+                    }
+                    
+                    if (dashboardSection) {
+                        dashboardSection.style.display = 'block';
                     }
                 }
             })
@@ -961,5 +979,8 @@
     
     <!-- Charger le script app.js à la fin du body -->
     <script src="public/js/app.js"></script>
+    
+    <!-- Charger le script dashboard-link.js après les autres scripts -->
+    <script src="public/js/dashboard-link.js"></script>
 </body>
 </html>
