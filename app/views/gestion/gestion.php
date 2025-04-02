@@ -86,7 +86,6 @@
                 <a href="offres" class="mobile-nav-link">Emplois</a>
                 <a href="gestion" class="mobile-nav-link active">Gestion</a>
                 <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
-                <span id="welcome-message" style="display:none;"></span>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -113,7 +112,8 @@
                     <a href="home" class="nav-link">Accueil</a>
                     <a href="offres" class="nav-link">Emplois</a>
                     <a href="gestion" class="nav-link active" id="page-gestion">Gestion</a>
-                    <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
+                    <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>                  
+                    <span id="welcome-message" style="display:none;"></span>
                 </nav>
                 <div id="user-status">
                     <a href="login" id="login-Bouton" class="button button-outline button-glow" style="display:none;">Connexion</a>
