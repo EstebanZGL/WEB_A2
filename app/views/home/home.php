@@ -24,6 +24,7 @@
             <nav class="mobile-nav">
                 <a href="home" class="mobile-nav-link active">Accueil</a>
                 <a href="offres" class="mobile-nav-link">Emplois</a>
+                <a href="dashboard" class="mobile-nav-link" id="mobile-page-dashboard" style="display:none;">Tableau de bord</a>
                 <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
                 
                 <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
@@ -51,6 +52,7 @@
                 <nav class="navbar-nav">
                     <a href="home" class="nav-link active">Accueil</a>
                     <a href="offres" class="nav-link">Emplois</a>
+                    <a href="dashboard" class="nav-link" id="page-dashboard" style="display:none;">Tableau de bord</a>
                     <a href="gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
                     
                     <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
@@ -151,22 +153,33 @@
     <script src="public/js/mobile-menu.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Vérifier si l'utilisateur est un étudiant pour afficher la section wishlist
+        // Vérifier si l'utilisateur est connecté et son type
         fetch("app/views/login/session.php")
             .then(response => response.json())
             .then(data => {
                 console.log("Session data:", data); // Débogage
-                if (data.logged_in && parseInt(data.utilisateur) === 0) {
-                    // L'utilisateur est un étudiant, afficher les liens wishlist
-                    const wishlistLink = document.getElementById('wishlist-link');
-                    const mobileWishlistLink = document.getElementById('mobile-wishlist-link');
-                    
-                    if (wishlistLink) {
-                        wishlistLink.style.display = 'inline-flex';
+                if (data.logged_in) {
+                    // Si l'utilisateur est un étudiant (utilisateur = 0)
+                    if (parseInt(data.utilisateur) === 0) {
+                        // Afficher les liens wishlist et dashboard pour les étudiants
+                        const wishlistLink = document.getElementById('wishlist-link');
+                        const mobileWishlistLink = document.getElementById('mobile-wishlist-link');
+                        const dashboardLink = document.getElementById('page-dashboard');
+                        const mobileDashboardLink = document.getElementById('mobile-page-dashboard');
+                        
+                        if (wishlistLink) wishlistLink.style.display = 'inline-flex';
+                        if (mobileWishlistLink) mobileWishlistLink.style.display = 'block';
+                        if (dashboardLink) dashboardLink.style.display = 'inline-flex';
+                        if (mobileDashboardLink) mobileDashboardLink.style.display = 'block';
                     }
-                    
-                    if (mobileWishlistLink) {
-                        mobileWishlistLink.style.display = 'block';
+                    // Si l'utilisateur est un administrateur ou autre type d'utilisateur
+                    else {
+                        // Afficher les liens de gestion pour les administrateurs
+                        const gestionLink = document.getElementById('page-gestion');
+                        const mobileGestionLink = document.getElementById('mobile-page-gestion');
+                        
+                        if (gestionLink) gestionLink.style.display = 'inline-flex';
+                        if (mobileGestionLink) mobileGestionLink.style.display = 'block';
                     }
                 }
             })
@@ -176,9 +189,6 @@
         document.getElementById('current-year').textContent = new Date().getFullYear();
     });
     </script>
-    
-    <!-- Charger le script dashboard-link.js -->
-    <script src="public/js/dashboard-link.js"></script>
     
     <!-- Charger le script app.js à la fin du body -->
     <script src="public/js/app.js"></script>

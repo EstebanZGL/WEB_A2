@@ -19,7 +19,6 @@ class DashboardController {
      * Vérifie si l'utilisateur est connecté en tant qu'étudiant
      */
     private function checkEtudiantAuth() {
-        session_start();
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['utilisateur']) || $_SESSION['utilisateur'] != 0) {
             header('Location: login');
             exit;
