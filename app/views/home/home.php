@@ -85,7 +85,7 @@
                         <a href="offres?q=developer" class="popular-link">Développeur</a>
                         <a href="offres?q=designer" class="popular-link">Designer</a>
                         <a href="offres?q=marketing" class="popular-link">Marketing</a>
-                        <a href="offres?q=remote" class="popular-link">Télétravail</a>
+                        <a href="offres?q=audit" class="popular-link">Télétravail</a>
                     </div>
                 </div>
             </section>

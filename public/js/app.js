@@ -3,12 +3,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const queryParam = urlParams.get('q');
     
-    if (queryParam) {
-        // Si nous sommes sur la page des offres, appliquer le filtre correspondant
-        if (window.location.pathname.includes('offres')) {
-            // Ne pas mettre à jour le champ de recherche, appliquer directement le filtre de catégorie
-            
-            // Si le paramètre correspond à une famille d'emploi, cocher la case correspondante
+    if (queryParam && window.location.pathname.includes('offres')) {
+        // Liste des termes considérés comme des catégories (filtres)
+        const categoryTerms = ['technology', 'informatique', 'btp', 'marketing', 'finance'];
+        // Liste des termes considérés comme des recherches de titre
+        const titleSearchTerms = ['developer', 'développeur', 'designer', 'marketing', 'audit', 'remote', 'télétravail'];
+        
+        // Vérifier si le terme est une catégorie
+        const isCategory = categoryTerms.includes(queryParam.toLowerCase());
+        // Vérifier si le terme est une recherche de titre
+        const isTitleSearch = titleSearchTerms.includes(queryParam.toLowerCase());
+        
+        if (isCategory) {
+            // Appliquer le filtre de catégorie correspondant
             if (queryParam.toLowerCase() === 'technology' || queryParam.toLowerCase() === 'informatique') {
                 const techCheckbox = document.querySelector('input[data-filter="job-family"][value="informatique"]');
                 if (techCheckbox) {
@@ -30,25 +37,37 @@ document.addEventListener("DOMContentLoaded", function () {
                     financeCheckbox.checked = true;
                 }
             }
-            
-            // Déclencher la recherche avec les filtres appliqués
-            // Attendre un court instant pour s'assurer que les éléments sont chargés
-            setTimeout(() => {
-                // Si la fonction applyFilters existe, l'appeler
-                if (typeof applyFilters === 'function') {
-                    applyFilters();
-                } else {
-                    // Sinon, soumettre le formulaire de recherche
-                    const searchForm = document.getElementById('search-form');
-                    if (searchForm) {
-                        const submitEvent = new Event('submit');
-                        searchForm.dispatchEvent(submitEvent);
-                    }
-                }
-            }, 300);
+        } else if (isTitleSearch) {
+            // C'est une recherche par titre, remplir le champ de recherche
+            const jobSearchInput = document.getElementById('job-search');
+            if (jobSearchInput) {
+                jobSearchInput.value = queryParam;
+            }
+        } else {
+            // Si ce n'est ni une catégorie ni une recherche par titre reconnue,
+            // on considère que c'est une recherche par titre générique
+            const jobSearchInput = document.getElementById('job-search');
+            if (jobSearchInput) {
+                jobSearchInput.value = queryParam;
+            }
         }
+        
+        // Déclencher la recherche avec les filtres appliqués
+        // Attendre un court instant pour s'assurer que les éléments sont chargés
+        setTimeout(() => {
+            // Si la fonction applyFilters existe, l'appeler
+            if (typeof applyFilters === 'function') {
+                applyFilters();
+            } else {
+                // Sinon, soumettre le formulaire de recherche
+                const searchForm = document.getElementById('search-form');
+                if (searchForm) {
+                    const submitEvent = new Event('submit');
+                    searchForm.dispatchEvent(submitEvent);
+                }
+            }
+        }, 300);
     }
-
 
     fetch("app/views/login/session.php")
         .then(response => response.json())
