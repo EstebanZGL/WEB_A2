@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Afficher un message de bienvenue avec le prénom de l'utilisateur
                 let userTypeLabel;
-                let userFirstName = data.prenom || ""; // Récupérer le prénom s'il existe
+                const userFirstName = data.prenom || ""; // Le prénom est directement dans la table utilisateur
                 const userType = parseInt(data.utilisateur);
                 
                 switch (userType) {
@@ -60,9 +60,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         userTypeLabel = "Bienvenue";
                 }
                 
-                // Construire le message de bienvenue avec le prénom si disponible
-                let welcomeText = userFirstName ? `${userFirstName} (${userTypeLabel})` : userTypeLabel;
-                welcomeMessage.textContent = welcomeText; // Met à jour le message de bienvenue
+                // Construire le message de bienvenue avec le prénom
+                let welcomeText = userFirstName ? userFirstName : userTypeLabel;
+                welcomeMessage.textContent = welcomeText; // Affiche uniquement le prénom
                 welcomeMessage.style.display = "inline-block"; // Affiche le message
             } else {
                 loginBouton.style.display = "inline-block";
