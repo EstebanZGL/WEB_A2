@@ -250,7 +250,7 @@
                                 <tbody>
                                     <?php if (empty($items)): ?>
                                         <tr>
-                                            <td colspan="8" class="text-center">Aucun étudiant trouvé</td>
+                                            <td colspan="6" class="text-center">Aucun étudiant trouvé</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
