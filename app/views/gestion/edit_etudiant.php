@@ -68,18 +68,6 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="offre_id">Offre de stage (optionnel)</label>
-                                <select id="offre_id" name="offre_id">
-                                    <option value="">Aucune offre assignée</option>
-                                    <?php foreach ($offres as $offre): ?>
-                                        <option value="<?php echo $offre['id']; ?>" <?php echo $etudiant['offre_id'] == $offre['id'] ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($offre['titre_complet']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            
                             <div class="form-actions">
                                 <button type="submit" class="button button-primary">Enregistrer les modifications</button>
                                 <a href="../../gestion?section=etudiants" class="button button-outline">Annuler</a>
