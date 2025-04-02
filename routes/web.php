@@ -25,9 +25,6 @@ function route($uri) {
         $uri = substr($uri, strlen('cesi-lebonplan/'));
     }
 
-    // Pour le débogage - décommenter si nécessaire
-    //echo "URI reçue par le routeur: '" . $uri . "'<br>";
-
     // Gestion des différentes routes
     switch ($uri) {
         case '':
@@ -132,16 +129,44 @@ function route($uri) {
             // Consulter les statistiques des étudiants
             $gestionController->statsEtudiants();
             break;
-
-        case 'admin':
-            // Afficher la page administrateur
-            $adminController->index();
+            
+        // Nouvelles routes pour les candidatures d'étudiants
+        case 'gestion/etudiants/candidatures':
+            // Afficher les candidatures d'un étudiant
+            $gestionController->candidaturesEtudiant();
+            break;
+            
+        case 'gestion/etudiants/candidatures/add':
+            // Ajouter une candidature
+            $gestionController->addCandidature();
+            break;
+            
+        case 'gestion/etudiants/candidatures/update-status':
+            // Mettre à jour le statut d'une candidature
+            $gestionController->updateCandidatureStatus();
+            break;
+            
+        case 'gestion/etudiants/candidatures/delete':
+            // Supprimer une candidature
+            $gestionController->deleteCandidature();
+            break;
+            
+        // Routes pour les pilotes dans la section gestion
+        case 'gestion/pilotes/add':
+            // Ajouter un nouveau pilote
+            $gestionController->addPilote();
             break;
 
-        case 'admin/manage':
-            // Gérer les tâches administratives (exemple)
-            $adminController->manage();
+        case 'gestion/pilotes/edit':
+            // Modifier un pilote existant
+            $gestionController->editPilote();
             break;
+
+        case 'gestion/pilotes/delete':
+            // Supprimer un pilote
+            $gestionController->deletePilote();
+            break;
+
 
         case 'logout':
             // Utiliser le contrôleur de déconnexion
@@ -152,12 +177,12 @@ function route($uri) {
             // Afficher la wishlist de l'utilisateur
             $wishlistController->index();
             break;
-            
+
         case 'wishlist/add':
             // Ajouter un élément à la wishlist
             $wishlistController->add();
             break;
-            
+
         case 'wishlist/remove':
             // Supprimer un élément de la wishlist
             $wishlistController->remove();
@@ -177,6 +202,5 @@ function route($uri) {
     }
 }
 
-// Ne pas appeler la fonction route ici car elle est déjà appelée dans index.php
-// La ligne ci-dessous a été supprimée:
-// route($uri);
+?>
+

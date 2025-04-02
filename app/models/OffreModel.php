@@ -212,26 +212,29 @@ class OffreModel {
                 INSERT INTO offre_stage (
                     entreprise_id, createur_id, titre, description, 
                     remuneration, date_debut, date_fin, date_publication, 
+
                     statut, duree_stage, ville
                 ) VALUES (
                     :entreprise_id, :createur_id, :titre, :description, 
                     :remuneration, :date_debut, :date_fin, :date_publication, 
                     :statut, :duree_stage, :ville
+
                 )
             ");
             
             $stmt->execute([
                 ':entreprise_id' => $data['entreprise_id'],
-                ':createur_id' => $data['createur_id'],
+                ':createur_id' => $data['createur_id'] ?? 1, // Valeur par défaut si non fournie
                 ':titre' => $data['titre'],
                 ':description' => $data['description'],
                 ':remuneration' => $data['remuneration'],
                 ':date_debut' => $data['date_debut'],
-                ':date_fin' => $data['date_fin'],
+                ':date_fin' => $data['date_fin'] ?? null,
                 ':date_publication' => $data['date_publication'],
                 ':statut' => $data['statut'],
                 ':duree_stage' => $data['duree_stage'],
                 ':ville' => isset($data['ville']) ? $data['ville'] : null
+
             ]);
             
             return $this->pdo->lastInsertId();
@@ -240,7 +243,7 @@ class OffreModel {
             return false;
         }
     }
-
+    
     public function updateOffre($id, $data) {
         try {
             $stmt = $this->pdo->prepare("
@@ -254,6 +257,7 @@ class OffreModel {
                 statut = :statut,
                 duree_stage = :duree_stage,
                 ville = :ville
+
                 WHERE id = :id
             ");
             
@@ -264,10 +268,11 @@ class OffreModel {
                 ':description' => $data['description'],
                 ':remuneration' => $data['remuneration'],
                 ':date_debut' => $data['date_debut'],
-                ':date_fin' => $data['date_fin'],
+                ':date_fin' => $data['date_fin'] ?? null,
                 ':statut' => $data['statut'],
                 ':duree_stage' => $data['duree_stage'],
                 ':ville' => isset($data['ville']) ? $data['ville'] : null
+
             ]);
             
             return $stmt->rowCount() > 0;
@@ -410,5 +415,54 @@ class OffreModel {
             return [];
         }
     }
+
+    public function searchOffresAdmin($search, $limit = 10, $offset = 0) {
+        try {
+            $search = '%' . $search . '%';
+            $stmt = $this->pdo->prepare("
+                SELECT o.*, e.nom as nom_entreprise
+                FROM offre_stage o
+                LEFT JOIN entreprise e ON o.entreprise_id = e.id
+                WHERE o.titre LIKE :search 
+                   OR o.description LIKE :search 
+                   OR e.nom LIKE :search
+                   OR o.type LIKE :search
+                   OR o.lieu LIKE :search
+                ORDER BY o.date_publication DESC
+                LIMIT :limit OFFSET :offset
+            ");
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la recherche des offres: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    public function countOffresSearch($search) {
+        try {
+            $search = '%' . $search . '%';
+            $stmt = $this->pdo->prepare("
+                SELECT COUNT(*) 
+                FROM offre_stage o
+                LEFT JOIN entreprise e ON o.entreprise_id = e.id
+                WHERE o.titre LIKE :search 
+                   OR o.description LIKE :search 
+                   OR e.nom LIKE :search
+                   OR o.type LIKE :search
+                   OR o.lieu LIKE :search
+            ");
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->execute();
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Erreur lors du comptage des offres recherchées: " . $e->getMessage());
+            return 0;
+        }
+    }
 }
 ?>
+

@@ -259,5 +259,56 @@ class EtudiantModel {
             return false;
         }
     }
+    public function searchEtudiants($search, $limit = 10, $offset = 0) {
+        try {
+            $search = '%' . $search . '%';
+            $query = "SELECT e.*, u.nom, u.prenom, u.email,
+                     (SELECT COUNT(*) FROM wishlist w WHERE w.etudiant_id = e.id) as nb_offres_wishlist
+                     FROM etudiant e
+                     JOIN utilisateur u ON e.utilisateur_id = u.id
+                     WHERE u.nom LIKE :search 
+                        OR u.prenom LIKE :search 
+                        OR u.email LIKE :search 
+                        OR e.promotion LIKE :search
+                        OR e.formation LIKE :search
+                     ORDER BY u.nom, u.prenom ASC
+                     LIMIT :limit OFFSET :offset";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la recherche des étudiants: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    public function countEtudiantsSearch($search) {
+        try {
+            $search = '%' . $search . '%';
+            $query = "SELECT COUNT(*) as total 
+                     FROM etudiant e
+                     JOIN utilisateur u ON e.utilisateur_id = u.id
+                     WHERE u.nom LIKE :search 
+                        OR u.prenom LIKE :search 
+                        OR u.email LIKE :search 
+                        OR e.promotion LIKE :search
+                        OR e.formation LIKE :search";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return (int)$result['total'];
+        } catch (PDOException $e) {
+            error_log("Erreur lors du comptage des étudiants recherchés: " . $e->getMessage());
+            return 0;
+        }
+    }
 }
 ?>

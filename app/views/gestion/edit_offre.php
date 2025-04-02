@@ -67,18 +67,6 @@
                             
                             <div class="form-row">
                                 <div class="form-group half">
-                                    <label for="date_debut">Date de début</label>
-                                    <input type="date" id="date_debut" name="date_debut" value="<?php echo $offre['date_debut']; ?>" required>
-                                </div>
-                                
-                                <div class="form-group half">
-                                    <label for="date_fin">Date de fin</label>
-                                    <input type="date" id="date_fin" name="date_fin" value="<?php echo $offre['date_fin']; ?>" required>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group half">
                                     <label for="duree_stage">Durée du stage (mois)</label>
                                     <input type="number" id="duree_stage" name="duree_stage" min="1" max="12" value="<?php echo $offre['duree_stage']; ?>" required>
                                 </div>
@@ -90,6 +78,25 @@
                                         <option value="POURVUE" <?php echo $offre['statut'] == 'POURVUE' ? 'selected' : ''; ?>>Pourvue</option>
                                         <option value="EXPIREE" <?php echo $offre['statut'] == 'EXPIREE' ? 'selected' : ''; ?>>Expirée</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group half">
+                                    <label for="type">Type d'offre</label>
+                                    <select id="type" name="type" required>
+                                        <option value="">Sélectionner un type</option>
+                                        <option value="Informatique & Tech" <?php echo $offre['type'] == 'Informatique & Tech' ? 'selected' : ''; ?>>Informatique & Tech</option>
+                                        <option value="BTP & Construction" <?php echo $offre['type'] == 'BTP & Construction' ? 'selected' : ''; ?>>BTP & Construction</option>
+                                        <option value="Marketing & Communication" <?php echo $offre['type'] == 'Marketing & Communication' ? 'selected' : ''; ?>>Marketing & Communication</option>
+                                        <option value="Finance & Comptabilité" <?php echo $offre['type'] == 'Finance & Comptabilité' ? 'selected' : ''; ?>>Finance & Comptabilité</option>
+                                        <option value="Autre" <?php echo $offre['type'] == 'Autre' ? 'selected' : ''; ?>>Autre</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group half">
+                                    <label for="lieu">Lieu</label>
+                                    <input type="text" id="lieu" name="lieu" value="<?php echo htmlspecialchars($offre['lieu'] ?? ''); ?>" required>
                                 </div>
                             </div>
                             

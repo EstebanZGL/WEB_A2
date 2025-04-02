@@ -3,11 +3,10 @@
 class CandidatureModel {
     private $db;
 
-    public function __construct() {
+  public function __construct() {
         require_once 'config/database.php';
         $this->db = getDbConnection();
     }
-
     /**
      * Récupère l'ID de l'étudiant basé sur l'ID de l'utilisateur
      */
@@ -74,5 +73,6 @@ class CandidatureModel {
             error_log("Erreur lors de la récupération des offres disponibles: " . $e->getMessage());
             return [];
         }
+
     }
 }

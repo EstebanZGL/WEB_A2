@@ -236,21 +236,33 @@
 .gestion-table-etudiants td:nth-child(2),
 .gestion-table-etudiants th:nth-child(3),
 .gestion-table-etudiants td:nth-child(3) {
-  width: 15%;
+  width: 12%;
 }
 
 .gestion-table-etudiants th:nth-child(4),
 .gestion-table-etudiants td:nth-child(4) {
-  width: 25%;
+  width: 18%;
 }
 
 .gestion-table-etudiants th:nth-child(5),
-.gestion-table-etudiants td:nth-child(5),
+.gestion-table-etudiants td:nth-child(5) {
+  width: 12%;
+}
+
 .gestion-table-etudiants th:nth-child(6),
-.gestion-table-etudiants td:nth-child(6),
+.gestion-table-etudiants td:nth-child(6) {
+  width: 18%;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .gestion-table-etudiants th:nth-child(7),
 .gestion-table-etudiants td:nth-child(7) {
   width: 15%;
+  min-width: 120px;
+  text-align: center;
 }
 
 .gestion-table-entreprises th:nth-child(1),
@@ -570,4 +582,87 @@ html, body {
     flex-wrap: wrap;
     justify-content: center;
   }
+  
+  /* Ajustement spécifique pour le tableau des étudiants sur mobile */
+  .gestion-table-etudiants td:nth-child(6) {
+    max-width: 80px;
+    font-size: 0.8rem;
+  }
+  
+  .gestion-table-etudiants td:nth-child(7) {
+    min-width: 90px;
+  }
+}
+
+/* Ajoutez ces styles à la fin de votre fichier gestion.css */
+
+/* Styles pour la page de candidatures */
+.breadcrumbs {
+  margin-bottom: var(--spacing-lg);
+}
+
+.breadcrumbs a {
+  color: var(--foreground-muted);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.breadcrumbs a:hover {
+  color: var(--primary);
+}
+
+/* Styles pour les onglets de candidatures */
+.tab-content {
+  margin-top: var(--spacing-lg);
+}
+
+/* Styles pour le sélecteur de statut */
+.status-form {
+  margin: 0;
+}
+
+.status-select {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(51, 65, 85, 0.7);
+  border: 1px solid var(--white-10);
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  transition: var(--transition-fast);
+}
+
+.status-waiting {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.status-interview {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.status-accepted {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.status-rejected {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Styles pour les liens d'étudiant */
+.etudiant-link {
+  color: var(--foreground);
+  text-decoration: none;
+  transition: var(--transition-fast);
+  font-weight: 500;
+}
+
+.etudiant-link:hover {
+  color: var(--primary);
+}
+
+.etudiant-row:hover {
+  cursor: pointer;
 }
