@@ -75,4 +75,40 @@ class CandidatureModel {
         }
 
     }
+
+
+    public function getEtudiantInfo($id) {
+        $query = "SELECT e.*, u.nom, u.prenom, u.email
+                  FROM etudiant e
+                  JOIN utilisateur u ON e.utilisateur_id = u.id
+                  WHERE e.id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch();
+    }
+
+    // Ajouter cette méthode à votre classe CandidatureModel
+public function getCandidaturesByEtudiantId($etudiantId) {
+    $query = "SELECT c.*, o.titre as offre_titre, e.nom as entreprise_nom 
+              FROM candidature c
+              JOIN offre_stage o ON c.offre_id = o.id
+              JOIN entreprise e ON o.entreprise_id = e.id
+              WHERE c.etudiant_id = :etudiant_id";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute(['etudiant_id' => $etudiantId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Ajouter cette méthode à votre classe CandidatureModel
+public function getWishlistByEtudiantId($etudiantId) {
+    $query = "SELECT w.*, o.titre as offre_titre, e.nom as entreprise_nom 
+              FROM wishlist w
+              JOIN offre_stage o ON w.offre_id = o.id
+              JOIN entreprise e ON o.entreprise_id = e.id
+              WHERE w.etudiant_id = :etudiant_id";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute(['etudiant_id' => $etudiantId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+    
 }
