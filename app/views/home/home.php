@@ -82,7 +82,7 @@
                     </form>
                     <div class="popular-searches">
                         <span>Recherches populaires:</span>
-                        <a href="offres?q=developper" class="popular-link">Développeur</a>
+                        <a href="offres?q=developpeur" class="popular-link">Développeur</a>
                         <a href="offres?q=designer" class="popular-link">Designer</a>
                         <a href="offres?q=technicien" class="popular-link">Technicien</a>
                         <a href="offres?q=consultant" class="popular-link">Consultant</a>
