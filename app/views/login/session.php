@@ -1,4 +1,7 @@
 <?php
+// Définir l'encodage pour PHP
+mb_internal_encoding('UTF-8');
+
 // Démarrer la session si ce n'est pas déjà fait
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -15,5 +18,12 @@ $response = [
 
 // Définir l'encodage UTF-8 pour la réponse
 header('Content-Type: application/json; charset=utf-8');
+
+// Ajouter des informations de débogage
+$response['debug'] = [
+    'prenom_raw' => isset($_SESSION['prenom']) ? bin2hex($_SESSION['prenom']) : null,
+    'encoding' => 'UTF-8'
+];
+
 echo json_encode($response, JSON_UNESCAPED_UNICODE);
 ?>

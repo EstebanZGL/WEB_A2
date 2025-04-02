@@ -5,10 +5,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })
         .then(response => {
-            // S'assurer que la réponse est traitée comme UTF-8
+            // Cloner la réponse pour pouvoir la lire deux fois
+            const clone = response.clone();
+            
+            // Afficher la réponse brute pour débogage
+            clone.text().then(text => {
+                console.log("Réponse brute du serveur:", text);
+            });
+            
             return response.json();
         })
         .then(data => {
+            // Afficher les données pour débogage
+            console.log("Données parsées:", data);
+            
             const loginBouton = document.getElementById("login-Bouton");
             const logoutBouton = document.getElementById("logout-Bouton");
             const welcomeMessage = document.getElementById("welcome-message");
@@ -29,8 +39,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Afficher un message de bienvenue avec le prénom de l'utilisateur
                 let userTypeLabel;
-                // Décoder le prénom pour s'assurer que les caractères spéciaux sont correctement traités
-                const userFirstName = data.prenom ? decodeURIComponent(escape(data.prenom)) : "";
+                
+                // Afficher le prénom brut pour débogage
+                console.log("Prénom brut:", data.prenom);
+                
+                // Ne pas utiliser decodeURIComponent(escape()) car cela peut causer des problèmes
+                const userFirstName = data.prenom || "";
                 const userType = parseInt(data.utilisateur);
                 
                 switch (userType) {
@@ -71,8 +85,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Construire le message de bienvenue avec le prénom
                 let welcomeText = userFirstName ? userFirstName : userTypeLabel;
                 
-                // Utiliser innerHTML au lieu de textContent pour s'assurer que les caractères spéciaux sont correctement rendus
-                welcomeMessage.innerHTML = welcomeText;
+                // Afficher le texte final pour débogage
+                console.log("Texte de bienvenue:", welcomeText);
+                
+                welcomeMessage.textContent = welcomeText;
                 welcomeMessage.style.display = "inline-block"; // Affiche le message
             } else {
                 loginBouton.style.display = "inline-block";
