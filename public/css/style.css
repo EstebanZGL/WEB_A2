@@ -1292,3 +1292,10 @@
   #welcome-message.admin {
     color: #e8489b;
   }
+
+
+  .job-image {
+    width: 65%;
+    height: 65%;
+    object-fit: cover;
+  }
