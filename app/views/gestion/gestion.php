@@ -244,7 +244,6 @@
                                         <th>Email</th>
                                         <th>Promotion</th>
                                         <th>Formation</th>
-                                        <th>Offres sélectionnées</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
