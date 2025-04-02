@@ -1,4 +1,59 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Vérifier si nous avons un paramètre q dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryParam = urlParams.get('q');
+    
+    if (queryParam) {
+        // Si nous sommes sur la page des offres, appliquer le filtre correspondant
+        if (window.location.pathname.includes('offres')) {
+            // Mettre à jour le champ de recherche avec la valeur de q
+            const jobSearchInput = document.getElementById('job-search');
+            if (jobSearchInput) {
+                jobSearchInput.value = queryParam;
+            }
+            
+            // Si le paramètre correspond à une famille d'emploi, cocher la case correspondante
+            if (queryParam.toLowerCase() === 'technology' || queryParam.toLowerCase() === 'informatique') {
+                const techCheckbox = document.querySelector('input[data-filter="job-family"][value="informatique"]');
+                if (techCheckbox) {
+                    techCheckbox.checked = true;
+                }
+            } else if (queryParam.toLowerCase() === 'btp') {
+                const btpCheckbox = document.querySelector('input[data-filter="job-family"][value="btp"]');
+                if (btpCheckbox) {
+                    btpCheckbox.checked = true;
+                }
+            } else if (queryParam.toLowerCase() === 'marketing') {
+                const marketingCheckbox = document.querySelector('input[data-filter="job-family"][value="marketing"]');
+                if (marketingCheckbox) {
+                    marketingCheckbox.checked = true;
+                }
+            } else if (queryParam.toLowerCase() === 'finance') {
+                const financeCheckbox = document.querySelector('input[data-filter="job-family"][value="finance"]');
+                if (financeCheckbox) {
+                    financeCheckbox.checked = true;
+                }
+            }
+            
+            // Déclencher la recherche avec les filtres appliqués
+            // Attendre un court instant pour s'assurer que les éléments sont chargés
+            setTimeout(() => {
+                // Si la fonction applyFilters existe, l'appeler
+                if (typeof applyFilters === 'function') {
+                    applyFilters();
+                } else {
+                    // Sinon, soumettre le formulaire de recherche
+                    const searchForm = document.getElementById('search-form');
+                    if (searchForm) {
+                        const submitEvent = new Event('submit');
+                        searchForm.dispatchEvent(submitEvent);
+                    }
+                }
+            }, 300);
+        }
+    }
+
+
     fetch("app/views/login/session.php")
         .then(response => response.json())
         .then(data => {
