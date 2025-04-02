@@ -5,31 +5,27 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })
         .then(response => {
-            // Cloner la réponse pour pouvoir la lire deux fois
-            const clone = response.clone();
-            
-            // Afficher la réponse brute pour débogage
-            clone.text().then(text => {
-                console.log("Réponse brute du serveur:", text);
-            });
-            
             return response.json();
         })
         .then(data => {
-            // Afficher les données pour débogage
-            console.log("Données parsées:", data);
-            
+            // Récupérer les éléments du DOM avec vérification de leur existence
             const loginBouton = document.getElementById("login-Bouton");
             const logoutBouton = document.getElementById("logout-Bouton");
             const welcomeMessage = document.getElementById("welcome-message");
             const pageGestion = document.getElementById("page-gestion");
             const pageDashboard = document.getElementById("page-dashboard");
-            const pageAdmin= document.getElementById("page-admin");
+            const pageAdmin = document.getElementById("page-admin");
             const mobilePageGestion = document.getElementById("mobile-page-gestion");
             const mobilePageDashboard = document.getElementById("mobile-page-dashboard");
             const mobilePageAdmin = document.getElementById("mobile-page-admin");
             const mobileLoginBouton = document.getElementById("mobile-login-Bouton");
             const mobileLogoutBouton = document.getElementById("mobile-logout-Bouton");
+
+            // Vérifier que les éléments essentiels existent avant de les manipuler
+            if (!loginBouton || !logoutBouton || !welcomeMessage) {
+                console.error("Éléments essentiels de l'interface non trouvés dans le DOM");
+                return; // Sortir de la fonction si les éléments essentiels n'existent pas
+            }
 
             if (data.logged_in) {
                 loginBouton.style.display = "none";
@@ -39,11 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Afficher un message de bienvenue avec le prénom de l'utilisateur
                 let userTypeLabel;
-                
-                // Afficher le prénom brut pour débogage
-                console.log("Prénom brut:", data.prenom);
-                
-                // Ne pas utiliser decodeURIComponent(escape()) car cela peut causer des problèmes
                 const userFirstName = data.prenom || "";
                 const userType = parseInt(data.utilisateur);
                 
@@ -67,14 +58,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     case 1:
                         userTypeLabel = "Pilote";
                         welcomeMessage.classList.add('pilote');
-                        pageGestion.style.display = "inline-block";
+                        if (pageGestion) pageGestion.style.display = "inline-block";
                         if (mobilePageGestion) mobilePageGestion.style.display = "inline-block";
                         break;
                     case 2:
                         userTypeLabel = "Admin";
                         welcomeMessage.classList.add('admin');
-                        pageGestion.style.display = "inline-block";
-                        pageAdmin.style.display = "inline-block";
+                        if (pageGestion) pageGestion.style.display = "inline-block";
+                        if (pageAdmin) pageAdmin.style.display = "inline-block";
                         if (mobilePageGestion) mobilePageGestion.style.display = "inline-block";
                         if (mobilePageAdmin) mobilePageAdmin.style.display = "inline-block";
                         break;
@@ -85,9 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Construire le message de bienvenue avec le prénom
                 let welcomeText = userFirstName ? userFirstName : userTypeLabel;
                 
-                // Afficher le texte final pour débogage
-                console.log("Texte de bienvenue:", welcomeText);
-                
+                // Utiliser textContent pour afficher le texte (les caractères sont déjà correctement encodés)
                 welcomeMessage.textContent = welcomeText;
                 welcomeMessage.style.display = "inline-block"; // Affiche le message
             } else {
@@ -102,14 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (mobilePageGestion) mobilePageGestion.style.display = "none";
                 if (mobilePageAdmin) mobilePageAdmin.style.display = "none";
                 if (mobilePageDashboard) mobilePageDashboard.style.display = "none";
-                
-                // Masquer la section wishlist dans la barre latérale si on est sur la page des offres
-                if (window.location.pathname.includes('offres')) {
-                    const wishlistSection = document.getElementById('wishlist-section');
-                    if (wishlistSection) {
-                        wishlistSection.style.display = 'none';
-                    }
-                }
+            
             }
         })
         .catch(error => console.error("Erreur lors de la récupération de la session :", error));
