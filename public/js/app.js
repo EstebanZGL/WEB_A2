@@ -20,13 +20,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (mobileLoginBouton) mobileLoginBouton.style.display = "none";
                 if (mobileLogoutBouton) mobileLogoutBouton.style.display = "inline-block";
 
-                // Afficher un message de bienvenue en fonction du type d'utilisateur
-                let utilisateurMessage;
+                // Afficher un message de bienvenue avec le prénom de l'utilisateur
+                let userTypeLabel;
+                let userFirstName = data.prenom || ""; // Récupérer le prénom s'il existe
                 const userType = parseInt(data.utilisateur);
                 
                 switch (userType) {
                     case 0: // Étudiant
-                        utilisateurMessage = "Étudiant";
+                        userTypeLabel = "Étudiant";
                         welcomeMessage.classList.add('etudiant');
                         
                         // Afficher le lien vers le tableau de bord pour les étudiants
@@ -42,13 +43,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                         break;
                     case 1:
-                        utilisateurMessage = "Pilote";
+                        userTypeLabel = "Pilote";
                         welcomeMessage.classList.add('pilote');
                         pageGestion.style.display = "inline-block";
                         if (mobilePageGestion) mobilePageGestion.style.display = "inline-block";
                         break;
                     case 2:
-                        utilisateurMessage = "Admin";
+                        userTypeLabel = "Admin";
                         welcomeMessage.classList.add('admin');
                         pageGestion.style.display = "inline-block";
                         pageAdmin.style.display = "inline-block";
@@ -56,10 +57,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (mobilePageAdmin) mobilePageAdmin.style.display = "inline-block";
                         break;
                     default:
-                        utilisateurMessage = "Bienvenue !";
+                        userTypeLabel = "Bienvenue";
                 }
                 
-                welcomeMessage.textContent = utilisateurMessage; // Met à jour le message de bienvenue
+                // Construire le message de bienvenue avec le prénom si disponible
+                let welcomeText = userFirstName ? `${userFirstName} (${userTypeLabel})` : userTypeLabel;
+                welcomeMessage.textContent = welcomeText; // Met à jour le message de bienvenue
                 welcomeMessage.style.display = "inline-block"; // Affiche le message
             } else {
                 loginBouton.style.display = "inline-block";
