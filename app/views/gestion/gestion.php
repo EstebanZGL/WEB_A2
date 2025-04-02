@@ -112,7 +112,7 @@
                     <a href="home" class="nav-link">Accueil</a>
                     <a href="offres" class="nav-link">Emplois</a>
                     <a href="gestion" class="nav-link active" id="page-gestion">Gestion</a>
-                    <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>                  
+                    <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
                     <span id="welcome-message" style="display:none;"></span>
                 </nav>
                 <div id="user-status">
