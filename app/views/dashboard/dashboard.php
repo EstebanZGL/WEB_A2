@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="public/css/style.css">
     <link rel="stylesheet" href="public/css/stats.css">
     <link rel="stylesheet" href="public/css/responsive-complete.css">
+    <link rel="stylesheet" href="public/css/wishlist.css">
     <style>
         /* Styles spécifiques au dashboard étudiant */
         .dashboard-container {
@@ -104,7 +105,6 @@
                 <a href="home" class="mobile-nav-link">Accueil</a>
                 <a href="offres" class="mobile-nav-link">Emplois</a>
                 <a href="dashboard" class="mobile-nav-link active">Tableau de bord</a>
-                <a href="wishlist" class="mobile-nav-link">Ma Wishlist</a>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -128,9 +128,6 @@
                     <a href="home" class="nav-link">Accueil</a>
                     <a href="offres" class="nav-link">Emplois</a>
                     <a href="dashboard" class="nav-link active">Tableau de bord</a>
-                    <a href="wishlist" class="nav-link wishlist-icon-link" title="Ma Wishlist">
-                        <span class="iconify" data-icon="mdi:heart"></span>
-                    </a>
                 </nav>
 
                 <div id="user-status">

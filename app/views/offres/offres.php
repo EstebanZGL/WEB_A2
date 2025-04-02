@@ -105,10 +105,8 @@
             <nav class="mobile-nav">
                 <a href="home" class="mobile-nav-link">Accueil</a>
                 <a href="offres" class="mobile-nav-link active">Emplois</a>
+                <a href="dashboard" class="mobile-nav-link" id="mobile-page-dashboard" style="display:none;">Tableau de bord</a>
                 <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
-                
-                <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
-                <a href="wishlist" class="mobile-nav-link" id="mobile-wishlist-link" style="display:none;">Ma Wishlist</a>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -132,14 +130,8 @@
                 <nav class="navbar-nav">
                     <a href="home" class="nav-link">Accueil</a>
                     <a href="offres" class="nav-link active">Emplois</a>
+                    <a href="dashboard" class="nav-link" id="page-dashboard" style="display:none;">Tableau de bord</a>
                     <a href="gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
-                    
-                    <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
-                    <a href="wishlist" class="nav-link wishlist-icon-link" id="wishlist-link" style="display:none;" title="Ma Wishlist">
-                        <svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                    </a>
                 </nav>
 
                 <div id="user-status">
@@ -224,8 +216,8 @@
                                 <h3>Ma Wishlist</h3>
                             </div>
                             <div class="filter-options">
-                                <a href="wishlist" class="wishlist-nav-link">
-                                    Voir ma wishlist
+                                <a href="dashboard" class="wishlist-nav-link">
+                                    Voir mes favoris
                                 </a>
                             </div>
                         </div>
@@ -318,21 +310,21 @@
             .then(data => {
                 console.log("Session data:", data); // Débogage
                 if (data.logged_in && parseInt(data.utilisateur) === 0) {
-                    // L'utilisateur est un étudiant, afficher la section wishlist et les liens
+                    // L'utilisateur est un étudiant, afficher la section wishlist
                     const wishlistSection = document.getElementById('wishlist-section');
-                    const wishlistLink = document.getElementById('wishlist-link');
-                    const mobileWishlistLink = document.getElementById('mobile-wishlist-link');
+                    const dashboardLink = document.getElementById('page-dashboard');
+                    const mobileDashboardLink = document.getElementById('mobile-page-dashboard');
                     
                     if (wishlistSection) {
                         wishlistSection.style.display = 'block';
                     }
                     
-                    if (wishlistLink) {
-                        wishlistLink.style.display = 'inline-flex';
+                    if (dashboardLink) {
+                        dashboardLink.style.display = 'inline-flex';
                     }
                     
-                    if (mobileWishlistLink) {
-                        mobileWishlistLink.style.display = 'block';
+                    if (mobileDashboardLink) {
+                        mobileDashboardLink.style.display = 'block';
                     }
                 }
             })
