@@ -8,6 +8,67 @@
     <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
     <link rel="stylesheet" href="public/css/gestion.css">
+    <!-- Styles correctifs pour éliminer la colonne vide -->
+    <style>
+        /* Force le tableau à respecter strictement les largeurs définies */
+        .gestion-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+        
+        /* Règles spécifiques pour le tableau des étudiants */
+        .gestion-table-etudiants th:nth-child(1),
+        .gestion-table-etudiants td:nth-child(1) {
+            width: 16%;
+        }
+        
+        .gestion-table-etudiants th:nth-child(2),
+        .gestion-table-etudiants td:nth-child(2) {
+            width: 16%;
+        }
+        
+        .gestion-table-etudiants th:nth-child(3),
+        .gestion-table-etudiants td:nth-child(3) {
+            width: 22%;
+        }
+        
+        .gestion-table-etudiants th:nth-child(4),
+        .gestion-table-etudiants td:nth-child(4) {
+            width: 13%;
+        }
+        
+        .gestion-table-etudiants th:nth-child(5),
+        .gestion-table-etudiants td:nth-child(5) {
+            width: 18%;
+        }
+        
+        .gestion-table-etudiants th:nth-child(6),
+        .gestion-table-etudiants td:nth-child(6) {
+            width: 15%;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        /* Suppression de toutes les règles pour la 7e colonne qui n'existe pas */
+        .gestion-table-etudiants th:nth-child(7),
+        .gestion-table-etudiants td:nth-child(7) {
+            display: none;
+        }
+        
+        /* Amélioration des cellules d'action */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        /* S'assurer que le conteneur du tableau est correct */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -175,7 +236,7 @@
                                 <tbody>
                                     <?php if (empty($items)): ?>
                                         <tr>
-                                            <td colspan="10" class="text-center">Aucune offre trouvée</td>
+                                            <td colspan="9" class="text-center">Aucune offre trouvée</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
@@ -216,7 +277,7 @@
                                 <tbody>
                                     <?php if (empty($items)): ?>
                                         <tr>
-                                            <td colspan="7" class="text-center">Aucune entreprise trouvée</td>
+                                            <td colspan="6" class="text-center">Aucune entreprise trouvée</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
@@ -254,7 +315,7 @@
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
-                                            <tr class="etudiant-row" data-id="<?php echo $item['id']; ?>" >
+                                            <tr class="etudiant-row" data-id="<?php echo $item['id']; ?>">
                                                 <td>
                                                     <a href="gestion/etudiants/candidatures?id=<?php echo $item['id']; ?>" class="etudiant-link">
                                                         <?php echo htmlspecialchars($item['nom'] ?? ''); ?>
@@ -292,7 +353,7 @@
                                 <tbody>
                                     <?php if (empty($items)): ?>
                                         <tr>
-                                            <td colspan="7" class="text-center">Aucun pilote trouvé</td>
+                                            <td colspan="6" class="text-center">Aucun pilote trouvé</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($items as $item): ?>
