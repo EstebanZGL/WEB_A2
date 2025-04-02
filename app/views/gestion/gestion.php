@@ -74,10 +74,8 @@
 </head>
 <body>
     <div id="app">
-        <!-- Menu Mobile Overlay - Déplacé ici comme dans home.php -->
         <div class="mobile-menu-overlay"></div>
         
-        <!-- Menu Mobile - Déplacé ici comme dans home.php -->
         <div class="mobile-menu">
             <div class="mobile-menu-header">
                 <img src="public/images/logo.png" alt="D" width="100" height="113">
@@ -88,6 +86,7 @@
                 <a href="offres" class="mobile-nav-link">Emplois</a>
                 <a href="gestion" class="mobile-nav-link active">Gestion</a>
                 <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                <span id="welcome-message" style="display:none;"></span>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -471,5 +470,6 @@
     
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
     <script src="public/js/mobile-menu.js"></script>
+    <script src="public/js/app.js"></script>
 </body>
 </html>
