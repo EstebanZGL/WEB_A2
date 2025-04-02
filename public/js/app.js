@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("app/views/login/session.php")
-        .then(response => response.json())
+    fetch("app/views/login/session.php", {
+        headers: {
+            'Accept': 'application/json; charset=utf-8',
+        }
+    })
+        .then(response => {
+            // S'assurer que la réponse est traitée comme UTF-8
+            return response.json();
+        })
         .then(data => {
             const loginBouton = document.getElementById("login-Bouton");
             const logoutBouton = document.getElementById("logout-Bouton");
@@ -22,7 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Afficher un message de bienvenue avec le prénom de l'utilisateur
                 let userTypeLabel;
-                const userFirstName = data.prenom || ""; // Le prénom est directement dans la table utilisateur
+                // Décoder le prénom pour s'assurer que les caractères spéciaux sont correctement traités
+                const userFirstName = data.prenom ? decodeURIComponent(escape(data.prenom)) : "";
                 const userType = parseInt(data.utilisateur);
                 
                 switch (userType) {
@@ -62,7 +70,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 // Construire le message de bienvenue avec le prénom
                 let welcomeText = userFirstName ? userFirstName : userTypeLabel;
-                welcomeMessage.textContent = welcomeText; // Affiche uniquement le prénom
+                
+                // Utiliser innerHTML au lieu de textContent pour s'assurer que les caractères spéciaux sont correctement rendus
+                welcomeMessage.innerHTML = welcomeText;
                 welcomeMessage.style.display = "inline-block"; // Affiche le message
             } else {
                 loginBouton.style.display = "inline-block";
