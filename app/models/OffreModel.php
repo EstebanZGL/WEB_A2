@@ -53,7 +53,7 @@ class OffreModel {
             }
 
             if (!empty($location)) {
-                $query .= " AND (e.nom LIKE :location OR o.ville LIKE :location)";
+                $query .= " AND (e.nom LIKE :location OR o.lieu LIKE :location)";
                 $params[':location'] = "%$location%";
             }
 
