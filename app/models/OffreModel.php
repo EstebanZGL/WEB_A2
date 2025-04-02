@@ -53,13 +53,13 @@ class OffreModel {
             }
     
             if (!empty($location)) {
-                $query .= " AND (e.nom LIKE :location OR o.ville LIKE :location)";
+                $query .= " AND (e.nom LIKE :location OR o.lieu LIKE :location)";
                 $params[':location'] = "%$location%";
             }
     
             // Ajouter des filtres supplémentaires si nécessaire
             if (!empty($filters) && is_array($filters)) {
-                // Filtres de ville - Inchangé
+                // Filtres de ville - Utiliser la colonne 'lieu' au lieu de 'ville'
                 if (isset($filters['city']) && is_array($filters['city']) && !empty($filters['city'])) {
                     $cityPlaceholders = [];
                     foreach ($filters['city'] as $index => $city) {
@@ -67,39 +67,39 @@ class OffreModel {
                         $cityPlaceholders[] = $param;
                         $params[$param] = $city;
                     }
-                    $query .= " AND o.ville IN (" . implode(", ", $cityPlaceholders) . ")";
+                    $query .= " AND o.lieu IN (" . implode(", ", $cityPlaceholders) . ")";
                 }
                 
-                // Filtres de famille d'emploi - Modifié pour utiliser la colonne 'type'
+                // Filtres de famille d'emploi - Utiliser la colonne 'type' avec les bonnes valeurs
                 if (isset($filters['jobFamily']) && is_array($filters['jobFamily']) && !empty($filters['jobFamily'])) {
                     $jobFamilyConditions = [];
                     foreach ($filters['jobFamily'] as $index => $jobFamily) {
                         $param = ":jobFamily$index";
                         
-                        // Utiliser directement le type de l'offre
+                        // Utiliser les valeurs correctes du type d'offre
                         switch ($jobFamily) {
                             case 'informatique':
-                                $jobFamilyConditions[] = "o.type = $param";
-                                $params[$param] = "informatique";
+                                $jobFamilyConditions[] = "o.type LIKE $param";
+                                $params[$param] = "%Informatique%";
                                 break;
                             case 'btp':
-                                $jobFamilyConditions[] = "o.type = $param";
-                                $params[$param] = "btp";
+                                $jobFamilyConditions[] = "o.type LIKE $param";
+                                $params[$param] = "%BTP%";
                                 break;
                             case 'finance':
-                                $jobFamilyConditions[] = "o.type = $param";
-                                $params[$param] = "finance";
+                                $jobFamilyConditions[] = "o.type LIKE $param";
+                                $params[$param] = "%Finance%";
                                 break;
                             case 'marketing':
-                                $jobFamilyConditions[] = "o.type = $param";
-                                $params[$param] = "marketing";
+                                $jobFamilyConditions[] = "o.type LIKE $param";
+                                $params[$param] = "%Marketing%";
                                 break;
                             case 'sante':
-                                $jobFamilyConditions[] = "o.type = $param";
-                                $params[$param] = "sante";
+                                $jobFamilyConditions[] = "o.type LIKE $param";
+                                $params[$param] = "%Santé%";
                                 break;
                             case 'autre':
-                                $jobFamilyConditions[] = "(o.type IS NULL OR o.type NOT IN ('informatique', 'btp', 'finance', 'marketing', 'sante'))";
+                                $jobFamilyConditions[] = "(o.type IS NULL OR (o.type NOT LIKE '%Informatique%' AND o.type NOT LIKE '%BTP%' AND o.type NOT LIKE '%Finance%' AND o.type NOT LIKE '%Marketing%' AND o.type NOT LIKE '%Santé%'))";
                                 break;
                         }
                     }
@@ -142,6 +142,7 @@ class OffreModel {
             return [];
         }
     }
+    
     
 
     // Méthodes pour la gestion avec pagination
