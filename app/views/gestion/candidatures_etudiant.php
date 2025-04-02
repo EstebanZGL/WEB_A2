@@ -8,6 +8,57 @@
     <link rel="stylesheet" href="/public/css/style.css" />
     <link rel="stylesheet" href="/public/css/responsive-complete.css">
     <link rel="stylesheet" href="/public/css/gestion.css">
+    <style>
+        /* Style pour les liens de CV */
+        .cv-link {
+            display: inline-flex;
+            align-items: center;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .cv-link:hover {
+            color: #3498db;
+        }
+        
+        .cv-link svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+        }
+        
+        .cv-unavailable {
+            color: #95a5a6;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        
+        /* Style pour l'upload de CV */
+        .cv-upload-form {
+            margin-top: 10px;
+        }
+        
+        .cv-upload-btn {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background-color 0.3s;
+        }
+        
+        .cv-upload-btn:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .file-input {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -98,6 +149,42 @@
                                 <p><?php echo htmlspecialchars($etudiant['formation']); ?></p>
                             </div>
                         </div>
+                        
+                        <!-- CV général de l'étudiant -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>CV général</label>
+                                <div>
+                                    <?php if (isset($etudiant['cv_path']) && !empty($etudiant['cv_path'])): ?>
+                                        <a href="/uploads/cv/<?php echo $etudiant['cv_path']; ?>" class="cv-link" target="_blank">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                <polyline points="10 9 9 9 8 9"></polyline>
+                                            </svg>
+                                            Voir le CV
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="cv-unavailable">Pas de CV disponible</span>
+                                    <?php endif; ?>
+                                    
+                                    <!-- Formulaire d'upload de CV général -->
+                                    <form action="/gestion/etudiants/upload-cv" method="post" enctype="multipart/form-data" class="cv-upload-form">
+                                        <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
+                                        <label for="cv-general-upload" class="cv-upload-btn">
+                                            <?php if (isset($etudiant['cv_path']) && !empty($etudiant['cv_path'])): ?>
+                                                Mettre à jour le CV
+                                            <?php else: ?>
+                                                Ajouter un CV
+                                            <?php endif; ?>
+                                        </label>
+                                        <input type="file" name="cv_file" id="cv-general-upload" class="file-input" accept="application/pdf" onchange="this.form.submit()">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Messages d'alerte -->
@@ -114,6 +201,9 @@
                                         break;
                                     case 3:
                                         $successMessage = 'Candidature supprimée avec succès.';
+                                        break;
+                                    case 4:
+                                        $successMessage = 'CV téléchargé avec succès.';
                                         break;
                                 }
                                 echo $successMessage;
@@ -138,6 +228,9 @@
                                     case 4:
                                         $errorMessage = 'Erreur lors de la suppression de la candidature.';
                                         break;
+                                    case 5:
+                                        $errorMessage = 'Erreur lors du téléchargement du CV. Veuillez vérifier que le fichier est bien au format PDF et ne dépasse pas 5 Mo.';
+                                        break;
                                 }
                                 echo $errorMessage;
                             ?>
@@ -157,7 +250,7 @@
                         <!-- Formulaire d'ajout de candidature -->
                         <div class="form-container">
                             <h3>Ajouter une candidature</h3>
-                            <form action="/gestion/etudiants/candidatures/add" method="post" class="form">
+                            <form action="/gestion/etudiants/candidatures/add" method="post" class="form" enctype="multipart/form-data">
                                 <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
                                 
                                 <div class="form-row">
@@ -191,6 +284,14 @@
                                     </div>
                                 </div>
                                 
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="cv_file">CV spécifique (optionnel)</label>
+                                        <input type="file" name="cv_file" id="cv_file" accept="application/pdf">
+                                        <small>Laissez vide pour utiliser le CV général de l'étudiant</small>
+                                    </div>
+                                </div>
+                                
                                 <div class="form-actions">
                                     <button type="submit" class="button button-primary">Ajouter la candidature</button>
                                 </div>
@@ -207,6 +308,7 @@
                                         <th>Type</th>
                                         <th>Lieu</th>
                                         <th>Date de candidature</th>
+                                        <th>CV</th>
                                         <th>Statut</th>
                                         <th>Actions</th>
                                     </tr>
@@ -214,7 +316,7 @@
                                 <tbody>
                                     <?php if (empty($candidatures)): ?>
                                         <tr>
-                                            <td colspan="7" class="text-center">Aucune candidature trouvée</td>
+                                            <td colspan="8" class="text-center">Aucune candidature trouvée</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($candidatures as $candidature): ?>
@@ -224,6 +326,51 @@
                                                 <td><?php echo isset($candidature['offre_type']) ? htmlspecialchars($candidature['offre_type']) : 'Non spécifié'; ?></td>
                                                 <td><?php echo isset($candidature['offre_lieu']) ? htmlspecialchars($candidature['offre_lieu']) : 'Non spécifié'; ?></td>
                                                 <td><?php echo date('d/m/Y', strtotime($candidature['date_candidature'])); ?></td>
+                                                <td>
+                                                    <?php if (isset($candidature['cv_path']) && !empty($candidature['cv_path'])): ?>
+                                                        <a href="/uploads/cv/<?php echo $candidature['cv_path']; ?>" class="cv-link" target="_blank">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                                <polyline points="10 9 9 9 8 9"></polyline>
+                                                            </svg>
+                                                            Voir
+                                                        </a>
+                                                        <form action="/gestion/etudiants/candidatures/upload-cv" method="post" enctype="multipart/form-data" class="cv-upload-form">
+                                                            <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
+                                                            <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
+                                                            <label for="cv-upload-<?php echo $candidature['id']; ?>" class="cv-upload-btn">Mettre à jour</label>
+                                                            <input type="file" name="cv_file" id="cv-upload-<?php echo $candidature['id']; ?>" class="file-input" accept="application/pdf" onchange="this.form.submit()">
+                                                        </form>
+                                                    <?php elseif (isset($etudiant['cv_path']) && !empty($etudiant['cv_path'])): ?>
+                                                        <a href="/uploads/cv/<?php echo $etudiant['cv_path']; ?>" class="cv-link" target="_blank">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                                <polyline points="10 9 9 9 8 9"></polyline>
+                                                            </svg>
+                                                            CV général
+                                                        </a>
+                                                        <form action="/gestion/etudiants/candidatures/upload-cv" method="post" enctype="multipart/form-data" class="cv-upload-form">
+                                                            <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
+                                                            <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
+                                                            <label for="cv-upload-<?php echo $candidature['id']; ?>" class="cv-upload-btn">Ajouter spécifique</label>
+                                                            <input type="file" name="cv_file" id="cv-upload-<?php echo $candidature['id']; ?>" class="file-input" accept="application/pdf" onchange="this.form.submit()">
+                                                        </form>
+                                                    <?php else: ?>
+                                                        <span class="cv-unavailable">Non disponible</span>
+                                                        <form action="/gestion/etudiants/candidatures/upload-cv" method="post" enctype="multipart/form-data" class="cv-upload-form">
+                                                            <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
+                                                            <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
+                                                            <label for="cv-upload-<?php echo $candidature['id']; ?>" class="cv-upload-btn">Ajouter</label>
+                                                            <input type="file" name="cv_file" id="cv-upload-<?php echo $candidature['id']; ?>" class="file-input" accept="application/pdf" onchange="this.form.submit()">
+                                                        </form>
+                                                    <?php endif; ?>
+                                                </td>
                                                 <td>
                                                     <form action="/gestion/etudiants/candidatures/update-status" method="post" class="status-form">
                                                         <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
