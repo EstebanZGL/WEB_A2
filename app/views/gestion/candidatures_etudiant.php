@@ -101,6 +101,118 @@
             color: #2c3e50;
             font-size: 0.9rem;
         }
+        
+        /* Style pour la lettre de motivation */
+        .lettre-motivation-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+        
+        .lettre-motivation-preview {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            max-height: 150px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+        
+        .lettre-motivation-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .lettre-motivation-btn {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            color: #3498db;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .lettre-motivation-btn:hover {
+            background-color: #3498db;
+            color: #ffffff;
+        }
+        
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 600px;
+            z-index: 1001;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -249,7 +361,7 @@
                                         $successMessage = 'CV téléchargé avec succès.';
                                         break;
                                     case 5:
-                                        $successMessage = 'Lettre de motivation téléchargée avec succès.';
+                                        $successMessage = 'Lettre de motivation enregistrée avec succès.';
                                         break;
                                 }
                                 echo $successMessage;
@@ -278,7 +390,7 @@
                                         $errorMessage = 'Erreur lors du téléchargement du CV. Veuillez vérifier que le fichier est bien au format PDF et ne dépasse pas 5 Mo.';
                                         break;
                                     case 6:
-                                        $errorMessage = 'Erreur lors du téléchargement de la lettre de motivation. Veuillez vérifier que le fichier est bien au format PDF et ne dépasse pas 5 Mo.';
+                                        $errorMessage = 'Erreur lors de l\'enregistrement de la lettre de motivation.';
                                         break;
                                 }
                                 echo $errorMessage;
@@ -358,7 +470,7 @@
                                     <div class="form-row">
                                         <div class="form-group">
                                             <div class="document-header">Lettre de motivation</div>
-                                            <input type="file" name="lettre_motivation_file" id="lettre_motivation_file" accept="application/pdf" class="form-control">
+                                            <textarea name="lettre_motivation" id="lettre_motivation" class="lettre-motivation-textarea" placeholder="Rédigez une lettre de motivation personnalisée pour cette offre..."></textarea>
                                             <div class="file-upload-info">Une lettre de motivation personnalisée pour cette offre (optionnel)</div>
                                         </div>
                                     </div>
@@ -448,31 +560,26 @@
                                                     
                                                     <!-- Lettre de motivation -->
                                                     <div style="margin-top: 10px; border-top: 1px dashed #e0e0e0; padding-top: 10px;">
-                                                        <?php if (isset($candidature['lettre_motivation_path']) && !empty($candidature['lettre_motivation_path'])): ?>
-                                                            <a href="/<?php echo $candidature['lettre_motivation_path']; ?>" class="cv-link" target="_blank">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <path d="M21 14h-8a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2z"></path>
-                                                                    <path d="M16 2v4"></path>
-                                                                    <path d="M8 2v4"></path>
-                                                                    <path d="M3 10h18"></path>
-                                                                    <path d="M3 6h18v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"></path>
-                                                                </svg>
-                                                                Lettre de motivation
-                                                            </a>
-                                                            <form action="/gestion/etudiants/candidatures/upload-lettre" method="post" enctype="multipart/form-data" class="cv-upload-form">
-                                                                <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
-                                                                <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                                                                <label for="lettre-upload-<?php echo $candidature['id']; ?>" class="cv-upload-btn">Mettre à jour</label>
-                                                                <input type="file" name="lettre_motivation_file" id="lettre-upload-<?php echo $candidature['id']; ?>" class="file-input" accept="application/pdf" onchange="this.form.submit()">
-                                                            </form>
+                                                        <?php if (isset($candidature['lettre_motivation']) && !empty($candidature['lettre_motivation'])): ?>
+                                                            <div class="lettre-motivation-actions">
+                                                                <button type="button" class="lettre-motivation-btn" onclick="showLettreMotivation(<?php echo $candidature['id']; ?>, '<?php echo htmlspecialchars(addslashes($candidature['lettre_motivation'])); ?>')">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                                    </svg>
+                                                                    Voir la lettre
+                                                                </button>
+                                                                <button type="button" class="lettre-motivation-btn" onclick="editLettreMotivation(<?php echo $candidature['id']; ?>, '<?php echo htmlspecialchars(addslashes($candidature['lettre_motivation'])); ?>')">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                                    </svg>
+                                                                    Modifier
+                                                                </button>
+                                                            </div>
                                                         <?php else: ?>
                                                             <span class="cv-unavailable">Lettre non disponible</span>
-                                                            <form action="/gestion/etudiants/candidatures/upload-lettre" method="post" enctype="multipart/form-data" class="cv-upload-form">
-                                                                <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
-                                                                <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                                                                <label for="lettre-upload-<?php echo $candidature['id']; ?>" class="cv-upload-btn">Ajouter</label>
-                                                                <input type="file" name="lettre_motivation_file" id="lettre-upload-<?php echo $candidature['id']; ?>" class="file-input" accept="application/pdf" onchange="this.form.submit()">
-                                                            </form>
+                                                            <button type="button" class="cv-upload-btn" onclick="editLettreMotivation(<?php echo $candidature['id']; ?>, '')">Ajouter</button>
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>
@@ -556,6 +663,42 @@
             </div>
         </footer>
     </div>
+    
+    <!-- Modals pour la lettre de motivation -->
+    <div id="modal-backdrop" class="modal-backdrop"></div>
+    
+    <!-- Modal pour afficher la lettre -->
+    <div id="view-lettre-modal" class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Lettre de motivation</h3>
+            <button type="button" class="modal-close" onclick="closeModal('view-lettre-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="lettre-preview" class="lettre-motivation-preview"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="button button-outline" onclick="closeModal('view-lettre-modal')">Fermer</button>
+        </div>
+    </div>
+    
+    <!-- Modal pour éditer la lettre -->
+    <div id="edit-lettre-modal" class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Modifier la lettre de motivation</h3>
+            <button type="button" class="modal-close" onclick="closeModal('edit-lettre-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="lettre-form" action="/gestion/etudiants/candidatures/update-lettre" method="post">
+                <input type="hidden" id="edit-candidature-id" name="candidature_id">
+                <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
+                <textarea id="edit-lettre-content" name="lettre_motivation" class="lettre-motivation-textarea" rows="15"></textarea>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="button button-outline" onclick="closeModal('edit-lettre-modal')">Annuler</button>
+            <button type="button" class="button button-primary" onclick="submitLettreForm()">Enregistrer</button>
+        </div>
+    </div>
 
     <script>
         // Mettre à jour l'année actuelle dans le footer
@@ -610,6 +753,41 @@
                 // Mettre à jour la couleur lors du changement
                 select.addEventListener('change', updateSelectColor);
             });
+        });
+        
+        // Fonctions pour gérer les modals de lettre de motivation
+        function showLettreMotivation(candidatureId, lettreContent) {
+            document.getElementById('lettre-preview').textContent = lettreContent.replace(/\\'/g, "'");
+            document.getElementById('modal-backdrop').style.display = 'block';
+            document.getElementById('view-lettre-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function editLettreMotivation(candidatureId, lettreContent) {
+            document.getElementById('edit-candidature-id').value = candidatureId;
+            document.getElementById('edit-lettre-content').value = lettreContent.replace(/\\'/g, "'");
+            document.getElementById('modal-backdrop').style.display = 'block';
+            document.getElementById('edit-lettre-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.getElementById('modal-backdrop').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        function submitLettreForm() {
+            document.getElementById('lettre-form').submit();
+        }
+        
+        // Fermer les modals en cliquant sur le backdrop
+        document.getElementById('modal-backdrop').addEventListener('click', function() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+            this.style.display = 'none';
+            document.body.style.overflow = 'auto';
         });
     </script>
     
