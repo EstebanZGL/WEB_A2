@@ -40,26 +40,26 @@ class OffreModel {
             $jobTitle = isset($searchParams['jobTitle']) ? $searchParams['jobTitle'] : '';
             $location = isset($searchParams['location']) ? $searchParams['location'] : '';
             $filters = isset($searchParams['filters']) ? $searchParams['filters'] : [];
-
+    
             $query = "SELECT o.*, e.nom as entreprise FROM offre_stage o 
                       LEFT JOIN entreprise e ON o.entreprise_id = e.id
                       WHERE 1=1";
             $params = [];
-
+    
             // Ajouter des conditions de recherche si elles sont fournies
             if (!empty($jobTitle)) {
                 $query .= " AND (o.titre LIKE :jobTitle OR o.description LIKE :jobTitle)";
                 $params[':jobTitle'] = "%$jobTitle%";
             }
-
+    
             if (!empty($location)) {
-                $query .= " AND (e.nom LIKE :location OR o.lieu LIKE :location)";
+                $query .= " AND (e.nom LIKE :location OR o.ville LIKE :location)";
                 $params[':location'] = "%$location%";
             }
-
+    
             // Ajouter des filtres supplémentaires si nécessaire
             if (!empty($filters) && is_array($filters)) {
-                // Filtres de ville
+                // Filtres de ville - Inchangé
                 if (isset($filters['city']) && is_array($filters['city']) && !empty($filters['city'])) {
                     $cityPlaceholders = [];
                     foreach ($filters['city'] as $index => $city) {
@@ -67,10 +67,10 @@ class OffreModel {
                         $cityPlaceholders[] = $param;
                         $params[$param] = $city;
                     }
-                    $query .= " AND o.lieu IN (" . implode(", ", $cityPlaceholders) . ")";
+                    $query .= " AND o.ville IN (" . implode(", ", $cityPlaceholders) . ")";
                 }
                 
-                // Filtres de famille d'emploi
+                // Filtres de famille d'emploi - Modifié pour utiliser la colonne 'type'
                 if (isset($filters['jobFamily']) && is_array($filters['jobFamily']) && !empty($filters['jobFamily'])) {
                     $jobFamilyConditions = [];
                     foreach ($filters['jobFamily'] as $index => $jobFamily) {
@@ -109,8 +109,7 @@ class OffreModel {
                     }
                 }
                 
-                
-                // Filtres de salaire
+                // Filtres de salaire - Inchangé
                 if (isset($filters['salary']) && is_array($filters['salary']) && !empty($filters['salary'])) {
                     $salaryConditions = [];
                     foreach ($filters['salary'] as $range) {
@@ -127,14 +126,14 @@ class OffreModel {
                     }
                 }
             }
-
+    
             // Trier par date décroissante
             $query .= " ORDER BY o.date_publication DESC";
-
+    
             // Déboguer la requête SQL
             error_log("Requête SQL: " . $query);
             error_log("Paramètres: " . print_r($params, true));
-
+    
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -143,6 +142,7 @@ class OffreModel {
             return [];
         }
     }
+    
 
     // Méthodes pour la gestion avec pagination
     public function getOffres($limit = 10, $offset = 0) {
