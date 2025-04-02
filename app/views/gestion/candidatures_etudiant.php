@@ -43,10 +43,10 @@
         .cv-upload-btn {
             display: inline-block;
             padding: 5px 10px;
-            background-color: #f8f9fa;
+            background-color: #2c3e50;
             border: 1px solid #3498db;
             border-radius: 4px;
-            color: #3498db;
+            color: #ffffff;
             cursor: pointer;
             font-size: 0.85rem;
             transition: all 0.3s ease;
@@ -64,11 +64,12 @@
         
         /* Style pour les fichiers à télécharger */
         .file-upload-container {
-            border: 1px solid #e0e0e0;
+            border: 1px solid #2c3e50;
             border-radius: 4px;
             padding: 15px;
             margin-bottom: 15px;
-            background-color: #f9f9f9;
+            background-color: #f8f9fa;
+            color: #2c3e50;
         }
         
         .file-upload-header {
@@ -91,7 +92,7 @@
         
         .file-upload-info {
             font-size: 0.85rem;
-            color: #7f8c8d;
+            color: #2c3e50;
             margin-top: 5px;
         }
         
@@ -107,25 +108,32 @@
             width: 100%;
             min-height: 150px;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #2c3e50;
             border-radius: 4px;
             font-family: inherit;
             font-size: 0.9rem;
             line-height: 1.5;
             resize: vertical;
+            background-color: #ffffff;
+            color: #2c3e50;
+        }
+        
+        .lettre-motivation-textarea::placeholder {
+            color: #7f8c8d;
         }
         
         .lettre-motivation-preview {
             padding: 10px;
-            background-color: #f8f9fa;
-            border: 1px solid #e0e0e0;
+            background-color: #ffffff;
+            border: 1px solid #2c3e50;
             border-radius: 4px;
             font-size: 0.9rem;
             line-height: 1.5;
-            max-height: 150px;
+            max-height: 300px;
             overflow-y: auto;
             margin-bottom: 10px;
             white-space: pre-wrap;
+            color: #2c3e50;
         }
         
         .lettre-motivation-actions {
@@ -137,10 +145,10 @@
         .lettre-motivation-btn {
             display: inline-block;
             padding: 5px 10px;
-            background-color: #f8f9fa;
+            background-color: #2c3e50;
             border: 1px solid #3498db;
             border-radius: 4px;
-            color: #3498db;
+            color: #ffffff;
             cursor: pointer;
             font-size: 0.85rem;
             transition: all 0.3s ease;
@@ -177,13 +185,14 @@
             padding: 20px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             display: none;
+            color: #2c3e50;
         }
         
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #2c3e50;
             padding-bottom: 10px;
             margin-bottom: 15px;
         }
@@ -199,7 +208,7 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #7f8c8d;
+            color: #2c3e50;
         }
         
         .modal-body {
@@ -210,8 +219,106 @@
             display: flex;
             justify-content: flex-end;
             gap: 10px;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid #2c3e50;
             padding-top: 15px;
+        }
+        
+        /* Style pour les boutons dans les modals */
+        .button-outline {
+            background-color: #ffffff;
+            color: #2c3e50;
+            border: 1px solid #2c3e50;
+        }
+        
+        .button-outline:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .button-primary {
+            background-color: #2c3e50;
+            color: #ffffff;
+        }
+        
+        .button-primary:hover {
+            background-color: #3498db;
+        }
+        
+        /* Style pour les statuts */
+        .status-select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #2c3e50;
+            background-color: #ffffff;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+        
+        .status-waiting {
+            background-color: #f39c12;
+            color: #ffffff;
+        }
+        
+        .status-interview {
+            background-color: #3498db;
+            color: #ffffff;
+        }
+        
+        .status-accepted {
+            background-color: #2ecc71;
+            color: #ffffff;
+        }
+        
+        .status-rejected {
+            background-color: #e74c3c;
+            color: #ffffff;
+        }
+        
+        /* Styles supplémentaires pour le formulaire et les tables */
+        .form-control {
+            padding: 8px;
+            border: 1px solid #2c3e50;
+            border-radius: 4px;
+            background-color: #ffffff;
+            color: #2c3e50;
+            width: 100%;
+        }
+        
+        .table {
+            color: #2c3e50;
+        }
+        
+        .table thead th {
+            background-color: #2c3e50;
+            color: #ffffff;
+        }
+        
+        .btn-modifier, .btn-supprimer {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-modifier {
+            background-color: #2c3e50;
+            color: #ffffff;
+            border: 1px solid #3498db;
+        }
+        
+        .btn-modifier:hover {
+            background-color: #3498db;
+        }
+        
+        .btn-supprimer {
+            background-color: #e74c3c;
+            color: #ffffff;
+            border: 1px solid #c0392b;
+        }
+        
+        .btn-supprimer:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
@@ -417,7 +524,7 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="offre_id">Offre</label>
-                                        <select name="offre_id" id="offre_id" required>
+                                        <select name="offre_id" id="offre_id" required class="form-control">
                                             <option value="">Sélectionnez une offre</option>
                                             <?php
                                             // Charger les offres disponibles
@@ -436,7 +543,7 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="statut">Statut</label>
-                                        <select name="statut" id="statut" required>
+                                        <select name="statut" id="statut" required class="form-control">
                                             <option value="En attente">En attente</option>
                                             <option value="Entretien">Entretien</option>
                                             <option value="Acceptée">Acceptée</option>
@@ -559,7 +666,7 @@
                                                     </div>
                                                     
                                                     <!-- Lettre de motivation -->
-                                                    <div style="margin-top: 10px; border-top: 1px dashed #e0e0e0; padding-top: 10px;">
+                                                    <div style="margin-top: 10px; border-top: 1px dashed #2c3e50; padding-top: 10px;">
                                                         <?php if (isset($candidature['lettre_motivation']) && !empty($candidature['lettre_motivation'])): ?>
                                                             <div class="lettre-motivation-actions">
                                                                 <button type="button" class="lettre-motivation-btn" onclick="showLettreMotivation(<?php echo $candidature['id']; ?>, '<?php echo htmlspecialchars(addslashes($candidature['lettre_motivation'])); ?>')">
@@ -769,6 +876,11 @@
             document.getElementById('modal-backdrop').style.display = 'block';
             document.getElementById('edit-lettre-modal').style.display = 'block';
             document.body.style.overflow = 'hidden';
+            
+            // Donner le focus au textarea
+            setTimeout(() => {
+                document.getElementById('edit-lettre-content').focus();
+            }, 100);
         }
         
         function closeModal(modalId) {
@@ -780,6 +892,13 @@
         function submitLettreForm() {
             document.getElementById('lettre-form').submit();
         }
+        
+        // Empêcher que le clic sur le contenu du modal ferme le modal
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        });
         
         // Fermer les modals en cliquant sur le backdrop
         document.getElementById('modal-backdrop').addEventListener('click', function() {
