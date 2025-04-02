@@ -35,33 +35,6 @@
             font-size: 0.9rem;
         }
         
-        /* Style pour l'upload de CV */
-        .cv-upload-form {
-            margin-top: 10px;
-        }
-        
-        .cv-upload-btn {
-            display: inline-block;
-            padding: 5px 10px;
-            background-color: #2c3e50;
-            border: 1px solid #3498db;
-            border-radius: 4px;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        
-        .cv-upload-btn:hover {
-            background-color: #3498db;
-            color: #ffffff;
-        }
-        
-        .file-input {
-            display: none;
-        }
-        
         /* Style pour les fichiers à télécharger */
         .file-upload-container {
             border: 1px solid #2c3e50;
@@ -90,38 +63,7 @@
             margin: 0;
         }
         
-        .file-upload-info {
-            font-size: 0.85rem;
-            color: #2c3e50;
-            margin-top: 5px;
-        }
-        
-        .document-header {
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 0.9rem;
-        }
-        
         /* Style pour la lettre de motivation */
-        .lettre-motivation-textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 10px;
-            border: 1px solid #2c3e50;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            resize: vertical;
-            background-color: #ffffff;
-            color: #2c3e50;
-        }
-        
-        .lettre-motivation-textarea::placeholder {
-            color: #7f8c8d;
-        }
-        
         .lettre-motivation-preview {
             padding: 10px;
             background-color: #ffffff;
@@ -244,13 +186,13 @@
         }
         
         /* Style pour les statuts */
-        .status-select {
-            padding: 5px;
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
             border-radius: 4px;
-            border: 1px solid #2c3e50;
-            background-color: #ffffff;
-            color: #2c3e50;
             font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
         }
         
         .status-waiting {
@@ -290,35 +232,6 @@
         .table thead th {
             background-color: #2c3e50;
             color: #ffffff;
-        }
-        
-        .btn-modifier, .btn-supprimer {
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-modifier {
-            background-color: #2c3e50;
-            color: #ffffff;
-            border: 1px solid #3498db;
-        }
-        
-        .btn-modifier:hover {
-            background-color: #3498db;
-        }
-        
-        .btn-supprimer {
-            background-color: #e74c3c;
-            color: #ffffff;
-            border: 1px solid #c0392b;
-        }
-        
-        .btn-supprimer:hover {
-            background-color: #c0392b;
         }
     </style>
 </head>
@@ -431,19 +344,6 @@
                                     <?php else: ?>
                                         <span class="cv-unavailable">Pas de CV disponible</span>
                                     <?php endif; ?>
-                                    
-                                    <!-- Formulaire d'upload de CV général -->
-                                    <form action="/gestion/etudiants/upload-cv" method="post" enctype="multipart/form-data" class="cv-upload-form">
-                                        <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                                        <label for="cv-general-upload" class="cv-upload-btn">
-                                            <?php if (isset($etudiant['cv_path']) && !empty($etudiant['cv_path'])): ?>
-                                                Mettre à jour le CV
-                                            <?php else: ?>
-                                                Ajouter un CV
-                                            <?php endif; ?>
-                                        </label>
-                                        <input type="file" name="cv_file" id="cv-general-upload" class="file-input" accept="application/pdf" onchange="this.form.submit()">
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -515,80 +415,6 @@
                     <div id="candidatures" class="tab-content">
                         <h2>Candidatures de l'étudiant</h2>
                         
-                        <!-- Formulaire d'ajout de candidature -->
-                        <div class="form-container">
-                            <h3>Ajouter une candidature</h3>
-                            <form action="/gestion/etudiants/candidatures/add" method="post" class="form" enctype="multipart/form-data">
-                                <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                                
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="offre_id">Offre</label>
-                                        <select name="offre_id" id="offre_id" required class="form-control">
-                                            <option value="">Sélectionnez une offre</option>
-                                            <?php
-                                            // Charger les offres disponibles
-                                            require_once 'app/models/OffreModel.php';
-                                            $offreModel = new OffreModel();
-                                            $offres = $offreModel->getOffresForSelect();
-                                            
-                                            foreach ($offres as $offre) {
-                                                echo '<option value="' . $offre['id'] . '">' . htmlspecialchars($offre['titre']) . ' - ' . htmlspecialchars($offre['nom_entreprise']) . '</option>';
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="statut">Statut</label>
-                                        <select name="statut" id="statut" required class="form-control">
-                                            <option value="En attente">En attente</option>
-                                            <option value="Entretien">Entretien</option>
-                                            <option value="Acceptée">Acceptée</option>
-                                            <option value="Refusée">Refusée</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <!-- Documents à télécharger -->
-                                <div class="file-upload-container">
-                                    <div class="file-upload-header">
-                                        <div class="file-upload-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                                <polyline points="14 2 14 8 20 8"></polyline>
-                                                <line x1="12" y1="18" x2="12" y2="12"></line>
-                                                <line x1="9" y1="15" x2="15" y2="15"></line>
-                                            </svg>
-                                        </div>
-                                        <h4 class="file-upload-title">Documents de candidature</h4>
-                                    </div>
-                                    
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <div class="document-header">CV spécifique</div>
-                                            <input type="file" name="cv_file" id="cv_file" accept="application/pdf" class="form-control">
-                                            <div class="file-upload-info">Laissez vide pour utiliser le CV général de l'étudiant</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <div class="document-header">Lettre de motivation</div>
-                                            <textarea name="lettre_motivation" id="lettre_motivation" class="lettre-motivation-textarea" placeholder="Rédigez une lettre de motivation personnalisée pour cette offre..."></textarea>
-                                            <div class="file-upload-info">Une lettre de motivation personnalisée pour cette offre (optionnel)</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-actions">
-                                    <button type="submit" class="button button-primary">Ajouter la candidature</button>
-                                </div>
-                            </form>
-                        </div>
-                        
                         <!-- Liste des candidatures -->
                         <div class="table-responsive">
                             <table class="table">
@@ -601,13 +427,12 @@
                                         <th>Date de candidature</th>
                                         <th>Documents</th>
                                         <th>Statut</th>
-                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($candidatures)): ?>
                                         <tr>
-                                            <td colspan="8" class="text-center">Aucune candidature trouvée</td>
+                                            <td colspan="7" class="text-center">Aucune candidature trouvée</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($candidatures as $candidature): ?>
@@ -631,12 +456,6 @@
                                                                 </svg>
                                                                 CV spécifique
                                                             </a>
-                                                            <form action="/gestion/etudiants/candidatures/upload-cv" method="post" enctype="multipart/form-data" class="cv-upload-form">
-                                                                <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
-                                                                <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                                                                <label for="cv-upload-<?php echo $candidature['id']; ?>" class="cv-upload-btn">Mettre à jour</label>
-                                                                <input type="file" name="cv_file" id="cv-upload-<?php echo $candidature['id']; ?>" class="file-input" accept="application/pdf" onchange="this.form.submit()">
-                                                            </form>
                                                         <?php elseif (isset($etudiant['cv_path']) && !empty($etudiant['cv_path'])): ?>
                                                             <a href="/<?php echo $etudiant['cv_path']; ?>" class="cv-link" target="_blank">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -648,20 +467,8 @@
                                                                 </svg>
                                                                 CV général
                                                             </a>
-                                                            <form action="/gestion/etudiants/candidatures/upload-cv" method="post" enctype="multipart/form-data" class="cv-upload-form">
-                                                                <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
-                                                                <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                                                                <label for="cv-upload-<?php echo $candidature['id']; ?>" class="cv-upload-btn">Ajouter spécifique</label>
-                                                                <input type="file" name="cv_file" id="cv-upload-<?php echo $candidature['id']; ?>" class="file-input" accept="application/pdf" onchange="this.form.submit()">
-                                                            </form>
                                                         <?php else: ?>
                                                             <span class="cv-unavailable">CV non disponible</span>
-                                                            <form action="/gestion/etudiants/candidatures/upload-cv" method="post" enctype="multipart/form-data" class="cv-upload-form">
-                                                                <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
-                                                                <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                                                                <label for="cv-upload-<?php echo $candidature['id']; ?>" class="cv-upload-btn">Ajouter</label>
-                                                                <input type="file" name="cv_file" id="cv-upload-<?php echo $candidature['id']; ?>" class="file-input" accept="application/pdf" onchange="this.form.submit()">
-                                                            </form>
                                                         <?php endif; ?>
                                                     </div>
                                                     
@@ -676,34 +483,31 @@
                                                                     </svg>
                                                                     Voir la lettre
                                                                 </button>
-                                                                <button type="button" class="lettre-motivation-btn" onclick="editLettreMotivation(<?php echo $candidature['id']; ?>, '<?php echo htmlspecialchars(addslashes($candidature['lettre_motivation'])); ?>')">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                                                    </svg>
-                                                                    Modifier
-                                                                </button>
                                                             </div>
                                                         <?php else: ?>
                                                             <span class="cv-unavailable">Lettre non disponible</span>
-                                                            <button type="button" class="cv-upload-btn" onclick="editLettreMotivation(<?php echo $candidature['id']; ?>, '')">Ajouter</button>
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <form action="/gestion/etudiants/candidatures/update-status" method="post" class="status-form">
-                                                        <input type="hidden" name="candidature_id" value="<?php echo $candidature['id']; ?>">
-                                                        <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                                                        <select name="statut" onchange="this.form.submit()" class="status-select">
-                                                            <option value="En attente" <?php echo $candidature['statut'] === 'En attente' ? 'selected' : ''; ?>>En attente</option>
-                                                            <option value="Entretien" <?php echo $candidature['statut'] === 'Entretien' ? 'selected' : ''; ?>>Entretien</option>
-                                                            <option value="Acceptée" <?php echo $candidature['statut'] === 'Acceptée' ? 'selected' : ''; ?>>Acceptée</option>
-                                                            <option value="Refusée" <?php echo $candidature['statut'] === 'Refusée' ? 'selected' : ''; ?>>Refusée</option>
-                                                        </select>
-                                                    </form>
-                                                </td>
-                                                <td class="actions">
-                                                    <a href="/gestion/etudiants/candidatures/delete?candidature_id=<?php echo $candidature['id']; ?>&etudiant_id=<?php echo $etudiant['id']; ?>" class="btn-supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?')">Supprimer</a>
+                                                    <?php
+                                                        $statusClass = '';
+                                                        switch($candidature['statut']) {
+                                                            case 'En attente':
+                                                                $statusClass = 'status-waiting';
+                                                                break;
+                                                            case 'Entretien':
+                                                                $statusClass = 'status-interview';
+                                                                break;
+                                                            case 'Acceptée':
+                                                                $statusClass = 'status-accepted';
+                                                                break;
+                                                            case 'Refusée':
+                                                                $statusClass = 'status-rejected';
+                                                                break;
+                                                        }
+                                                    ?>
+                                                    <span class="status-badge <?php echo $statusClass; ?>"><?php echo $candidature['statut']; ?></span>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -727,13 +531,12 @@
                                         <th>Lieu</th>
                                         <th>Date d'ajout</th>
                                         <th>Statut de l'offre</th>
-                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($wishlist)): ?>
                                         <tr>
-                                            <td colspan="7" class="text-center">Aucune offre dans la wishlist</td>
+                                            <td colspan="6" class="text-center">Aucune offre dans la wishlist</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($wishlist as $item): ?>
@@ -744,13 +547,6 @@
                                                 <td><?php echo isset($item['offre_lieu']) ? htmlspecialchars($item['offre_lieu']) : 'Non spécifié'; ?></td>
                                                 <td><?php echo date('d/m/Y', strtotime($item['date_ajout'])); ?></td>
                                                 <td><?php echo htmlspecialchars($item['offre_statut']); ?></td>
-                                                <td class="actions">
-                                                    <form action="/gestion/etudiants/candidatures/add" method="post" style="display: inline;">
-                                                        <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                                                        <input type="hidden" name="offre_id" value="<?php echo $item['offre_id']; ?>">
-                                                        <button type="submit" class="btn-modifier">Convertir en candidature</button>
-                                                    </form>
-                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
@@ -787,25 +583,6 @@
             <button type="button" class="button button-outline" onclick="closeModal('view-lettre-modal')">Fermer</button>
         </div>
     </div>
-    
-    <!-- Modal pour éditer la lettre -->
-    <div id="edit-lettre-modal" class="modal">
-        <div class="modal-header">
-            <h3 class="modal-title">Modifier la lettre de motivation</h3>
-            <button type="button" class="modal-close" onclick="closeModal('edit-lettre-modal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <form id="lettre-form" action="/gestion/etudiants/candidatures/update-lettre" method="post">
-                <input type="hidden" id="edit-candidature-id" name="candidature_id">
-                <input type="hidden" name="etudiant_id" value="<?php echo $etudiant['id']; ?>">
-                <textarea id="edit-lettre-content" name="lettre_motivation" class="lettre-motivation-textarea" rows="15"></textarea>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="button button-outline" onclick="closeModal('edit-lettre-modal')">Annuler</button>
-            <button type="button" class="button button-primary" onclick="submitLettreForm()">Enregistrer</button>
-        </div>
-    </div>
 
     <script>
         // Mettre à jour l'année actuelle dans le footer
@@ -833,35 +610,6 @@
             return false;
         }
         
-        // Style pour le sélecteur de statut
-        document.addEventListener('DOMContentLoaded', function() {
-            const statusSelects = document.querySelectorAll('.status-select');
-            
-            statusSelects.forEach(select => {
-                // Appliquer une couleur en fonction du statut sélectionné
-                const updateSelectColor = () => {
-                    const value = select.value;
-                    select.className = 'status-select';
-                    
-                    if (value === 'En attente') {
-                        select.classList.add('status-waiting');
-                    } else if (value === 'Entretien') {
-                        select.classList.add('status-interview');
-                    } else if (value === 'Acceptée') {
-                        select.classList.add('status-accepted');
-                    } else if (value === 'Refusée') {
-                        select.classList.add('status-rejected');
-                    }
-                };
-                
-                // Initialiser la couleur
-                updateSelectColor();
-                
-                // Mettre à jour la couleur lors du changement
-                select.addEventListener('change', updateSelectColor);
-            });
-        });
-        
         // Fonctions pour gérer les modals de lettre de motivation
         function showLettreMotivation(candidatureId, lettreContent) {
             document.getElementById('lettre-preview').textContent = lettreContent.replace(/\\'/g, "'");
@@ -870,27 +618,10 @@
             document.body.style.overflow = 'hidden';
         }
         
-        function editLettreMotivation(candidatureId, lettreContent) {
-            document.getElementById('edit-candidature-id').value = candidatureId;
-            document.getElementById('edit-lettre-content').value = lettreContent.replace(/\\'/g, "'");
-            document.getElementById('modal-backdrop').style.display = 'block';
-            document.getElementById('edit-lettre-modal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            // Donner le focus au textarea
-            setTimeout(() => {
-                document.getElementById('edit-lettre-content').focus();
-            }, 100);
-        }
-        
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
             document.getElementById('modal-backdrop').style.display = 'none';
             document.body.style.overflow = 'auto';
-        }
-        
-        function submitLettreForm() {
-            document.getElementById('lettre-form').submit();
         }
         
         // Empêcher que le clic sur le contenu du modal ferme le modal
