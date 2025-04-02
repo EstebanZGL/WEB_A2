@@ -5,8 +5,22 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Stockage global des IDs d'offres dans la wishlist
-    let wishlistIds = new Set();
+    // Utiliser localStorage pour stocker les IDs de wishlist de façon persistante
+    const WISHLIST_STORAGE_KEY = 'user_wishlist_ids';
+    
+    // Fonction pour sauvegarder les IDs de wishlist dans localStorage
+    function saveWishlistIds(ids) {
+        localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(Array.from(ids)));
+    }
+    
+    // Fonction pour récupérer les IDs de wishlist depuis localStorage
+    function getStoredWishlistIds() {
+        const stored = localStorage.getItem(WISHLIST_STORAGE_KEY);
+        return stored ? new Set(JSON.parse(stored)) : new Set();
+    }
+    
+    // Initialiser avec les valeurs stockées localement
+    let wishlistIds = getStoredWishlistIds();
     
     // Fonction pour récupérer la liste des offres dans la wishlist de l'utilisateur
     function getWishlistItems() {
@@ -24,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 } else {
                     // L'utilisateur n'est pas un étudiant connecté
+                    localStorage.removeItem(WISHLIST_STORAGE_KEY); // Effacer le stockage si déconnecté
                     throw new Error('Utilisateur non connecté ou non étudiant');
                 }
             })
@@ -36,6 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 wishlistData.forEach(item => {
                     wishlistIds.add(item.id.toString());
                 });
+                
+                // Sauvegarder dans localStorage
+                saveWishlistIds(wishlistIds);
                 
                 console.log("Wishlist IDs:", Array.from(wishlistIds));
                 
@@ -102,9 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Intercepter les clics sur les boutons wishlist pour mettre à jour l'état localement
     document.addEventListener('click', function(event) {
-        // Vérifier si l'élément cliqué est un bouton wishlist
-        if (event.target.closest('.wishlist-button')) {
-            const button = event.target.closest('.wishlist-button');
+        // Vérifier si l'élément cliqué est un bouton wishlist ou un de ses enfants
+        const button = event.target.closest('.wishlist-button');
+        if (button) {
             const jobId = button.getAttribute('data-job-id');
             
             // Si le bouton n'a pas la classe 'added', c'est qu'on ajoute l'offre à la wishlist
@@ -112,12 +130,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Ajouter l'ID à notre ensemble local
                 wishlistIds.add(jobId);
                 
-                // La classe 'added' sera ajoutée par le gestionnaire d'événements existant
+                // Sauvegarder immédiatement dans localStorage
+                saveWishlistIds(wishlistIds);
+                
+                // Appliquer visuellement les changements
+                button.classList.add('added');
+                button.title = "Ajouté à votre wishlist";
+                
+                // Modifier l'icône SVG
+                const icon = button.querySelector('.icon');
+                if (icon) {
+                    icon.setAttribute('fill', 'rgba(255, 0, 0, 0.2)');
+                    icon.setAttribute('stroke', '#ff0000');
+                }
             }
         }
     }, true);
     
-    // Appeler la fonction au chargement de la page
+    // Appliquer immédiatement les styles aux boutons existants avec les données du localStorage
+    updateWishlistButtons();
+    
+    // Puis récupérer les données fraîches depuis le serveur
     getWishlistItems();
     
     // Rafraîchir la wishlist périodiquement (toutes les 30 secondes)
