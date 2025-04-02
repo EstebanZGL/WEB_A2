@@ -666,3 +666,41 @@ html, body {
 .etudiant-row:hover {
   cursor: pointer;
 }
+
+
+/* Correction des boutons coupés dans la colonne Actions */
+.gestion-table td:last-child {
+  width: auto !important;
+  min-width: 150px !important;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* S'assurer que les boutons sont sur une ligne complète avec espace suffisant */
+.actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+/* Assurer que les boutons dans la colonne d'actions s'adaptent correctement */
+.btn-modifier, .btn-supprimer {
+  padding: 6px 10px;
+  white-space: nowrap;
+  min-width: 70px;
+}
+
+/* Adapter le tableau pour les petits écrans */
+@media (max-width: 991px) {
+  .actions {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .btn-modifier, .btn-supprimer {
+    width: 100%;
+  }
+}
