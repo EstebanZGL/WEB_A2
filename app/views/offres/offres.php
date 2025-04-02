@@ -665,6 +665,7 @@
                 const dateDebut = new Date(job.date_debut);
                 const dateFin = new Date(job.date_fin);
                 const dureeMois = job.duree_stage;
+                const formattedDate = `${dateDebut.toLocaleDateString()} - ${dateFin.toLocaleDateString()}`;
                 
                 jobCard.innerHTML = `
                     <a href="offres/details/${job.id}" class="job-card-link" aria-label="Voir les détails de ${job.titre}"></a>
