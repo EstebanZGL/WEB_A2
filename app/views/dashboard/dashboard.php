@@ -310,6 +310,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
                         body: `offre_id=${offreId}`
                     })
@@ -335,7 +336,7 @@
                                 statsTable.appendChild(emptyState);
                             }
                         } else {
-                            alert('Une erreur est survenue lors de la suppression de l\'offre de la wishlist.');
+                            alert('Une erreur est survenue lors de la suppression de l\'offre de la wishlist: ' + data.message);
                         }
                     })
                     .catch(error => {

@@ -81,59 +81,95 @@ class WishlistController {
     public function remove() {
         // Vérifier si la requête est de type POST
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            $_SESSION['status_message'] = 'Méthode non autorisée';
-            $_SESSION['status_type'] = 'status-error';
-            header('Location: /wishlist');
-            exit;
+            // Si la requête est AJAX, renvoyer une réponse JSON
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+                return;
+            } else {
+                $_SESSION['status_message'] = 'Méthode non autorisée';
+                $_SESSION['status_type'] = 'status-error';
+                header('Location: /wishlist');
+                exit;
+            }
         }
         
         // Vérifier si l'utilisateur est connecté
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            $_SESSION['status_message'] = 'Utilisateur non connecté';
-            $_SESSION['status_type'] = 'status-error';
-            header('Location: /login');
-            exit;
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
+                return;
+            } else {
+                $_SESSION['status_message'] = 'Utilisateur non connecté';
+                $_SESSION['status_type'] = 'status-error';
+                header('Location: /login');
+                exit;
+            }
         }
         
         // Vérifier si l'utilisateur est un étudiant
-        // CORRECTION : utiliser la variable de session 'utilisateur' au lieu de vérifier 'user_type'
         if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur'] != 0) {
-            $_SESSION['status_message'] = 'Accès non autorisé';
-            $_SESSION['status_type'] = 'status-error';
-            header('Location: /home');
-            exit;
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Accès non autorisé']);
+                return;
+            } else {
+                $_SESSION['status_message'] = 'Accès non autorisé';
+                $_SESSION['status_type'] = 'status-error';
+                header('Location: /home');
+                exit;
+            }
         }
         
-        // Récupérer l'ID de l'offre à supprimer
-        $offreId = isset($_POST['item_id']) ? $_POST['item_id'] : null;
+        // Récupérer l'ID de l'offre à supprimer (accepter à la fois item_id et offre_id)
+        $offreId = isset($_POST['item_id']) ? $_POST['item_id'] : (isset($_POST['offre_id']) ? $_POST['offre_id'] : null);
         
         if (!$offreId) {
-            $_SESSION['status_message'] = 'ID de l\'offre manquant';
-            $_SESSION['status_type'] = 'status-error';
-            header('Location: /wishlist');
-            exit;
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'ID de l\'offre manquant']);
+                return;
+            } else {
+                $_SESSION['status_message'] = 'ID de l\'offre manquant';
+                $_SESSION['status_type'] = 'status-error';
+                header('Location: /wishlist');
+                exit;
+            }
         }
         
         // Récupérer l'ID de l'étudiant
         $etudiantId = $this->wishlistModel->getEtudiantIdByUserId($_SESSION['user_id']);
         
         if (!$etudiantId) {
-            $_SESSION['status_message'] = 'Profil étudiant non trouvé';
-            $_SESSION['status_type'] = 'status-error';
-            header('Location: /wishlist');
-            exit;
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Profil étudiant non trouvé']);
+                return;
+            } else {
+                $_SESSION['status_message'] = 'Profil étudiant non trouvé';
+                $_SESSION['status_type'] = 'status-error';
+                header('Location: /wishlist');
+                exit;
+            }
         }
         
         // Supprimer l'offre de la wishlist
-        if ($this->wishlistModel->removeFromWishlist($etudiantId, $offreId)) {
-            $_SESSION['status_message'] = 'Offre retirée de votre wishlist';
-            $_SESSION['status_type'] = 'status-success';
-        } else {
-            $_SESSION['status_message'] = 'Une erreur est survenue lors de la suppression';
-            $_SESSION['status_type'] = 'status-error';
-        }
+        $result = $this->wishlistModel->removeFromWishlist($etudiantId, $offreId);
         
-        header('Location: /wishlist');
-        exit;
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'Offre retirée de votre wishlist']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Une erreur est survenue lors de la suppression']);
+            }
+            return;
+        } else {
+            if ($result) {
+                $_SESSION['status_message'] = 'Offre retirée de votre wishlist';
+                $_SESSION['status_type'] = 'status-success';
+            } else {
+                $_SESSION['status_message'] = 'Une erreur est survenue lors de la suppression';
+                $_SESSION['status_type'] = 'status-error';
+            }
+            
+            header('Location: /wishlist');
+            exit;
+        }
     }
 }
