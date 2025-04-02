@@ -91,7 +91,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (mobilePageGestion) mobilePageGestion.style.display = "none";
                 if (mobilePageAdmin) mobilePageAdmin.style.display = "none";
                 if (mobilePageDashboard) mobilePageDashboard.style.display = "none";
-            
+                
+                // Masquer la section wishlist dans la barre latérale si on est sur la page des offres
+                if (window.location.pathname.includes('offres')) {
+                    const wishlistSection = document.getElementById('wishlist-section');
+                    if (wishlistSection) {
+                        wishlistSection.style.display = 'none';
+                    }
+                }
             }
         })
         .catch(error => console.error("Erreur lors de la récupération de la session :", error));
