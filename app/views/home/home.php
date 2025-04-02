@@ -146,6 +146,7 @@
         </footer>
     </div>
 
+ <!-- À la fin du fichier, juste avant la fermeture du body -->
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
     <script src="public/js/mobile-menu.js"></script>
     <script>
@@ -175,6 +176,9 @@
         document.getElementById('current-year').textContent = new Date().getFullYear();
     });
     </script>
+    
+    <!-- Charger le script dashboard-link.js -->
+    <script src="public/js/dashboard-link.js"></script>
     
     <!-- Charger le script app.js à la fin du body -->
     <script src="public/js/app.js"></script>
