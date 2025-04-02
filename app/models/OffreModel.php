@@ -24,7 +24,7 @@ class OffreModel {
     public function getAvailableCities() {
         try {
             // Récupérer les villes distinctes des offres
-            $stmt = $this->pdo->query("SELECT DISTINCT ville FROM offre_stage WHERE ville IS NOT NULL AND ville != '' ORDER BY ville ASC");
+            $stmt = $this->pdo->query("SELECT DISTINCT lieu FROM offre_stage WHERE lieu IS NOT NULL AND lieu != '' ORDER BY lieu ASC");
             $cities = $stmt->fetchAll(PDO::FETCH_COLUMN);
             return $cities;
         } catch (PDOException $e) {
