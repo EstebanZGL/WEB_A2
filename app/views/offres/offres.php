@@ -9,7 +9,87 @@
     <link rel="stylesheet" href="public/css/responsive-complete.css">
     <!-- Ajout du fichier CSS pour la wishlist -->
     <link rel="stylesheet" href="public/css/wishlist.css">
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <!-- Ajout d'Iconify pour les icônes -->
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+    <style>
+        /* Styles supplémentaires pour les cartes d'offres */
+        .job-card {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .job-card-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .job-salary {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+        }
+        
+        .wishlist-button {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Style pour la pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+        
+        .pagination-button {
+            background-color: #2d2d2d;
+            color: #ffffff;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-button:hover {
+            background-color: rgba(0, 123, 255, 0.2);
+        }
+        
+        .pagination-button.active {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .pagination-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Style pour le bouton de réinitialisation des filtres */
+        .reset-filters-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: #2d2d2d;
+            color: #ffffff;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .reset-filters-btn:hover {
+            background-color: rgba(0, 123, 255, 0.2);
+        }
+    </style>
+
 </head>
 <body>
     <div id="app">
@@ -94,6 +174,36 @@
                             <h2 class="filters-title">Filtres</h2>
                             <button id="clear-filters" class="clear-filters-btn">Tout effacer</button>
                         </div>
+                        
+                        <!-- Filtre par ville -->
+                        <div class="filter-group">
+                            <div class="filter-heading" data-toggle="city-filters">
+                                <h3>Ville</h3>
+                                <span class="iconify" data-icon="mdi:chevron-down" width="16" height="16"></span>
+                            </div>
+                            <div class="filter-options" id="city-filters">
+                                <!-- Les options seront chargées dynamiquement via JavaScript -->
+                                <div id="city-filters-loading">Chargement des villes...</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Filtre par famille d'emploi -->
+                        <div class="filter-group">
+                            <div class="filter-heading" data-toggle="job-family-filters">
+                                <h3>Famille d'emploi</h3>
+                                <span class="iconify" data-icon="mdi:chevron-down" width="16" height="16"></span>
+                            </div>
+                            <div class="filter-options" id="job-family-filters">
+                                <label class="filter-option"><input type="checkbox" data-filter="job-family" value="informatique" class="filter-checkbox" /> Informatique & Tech</label>
+                                <label class="filter-option"><input type="checkbox" data-filter="job-family" value="btp" class="filter-checkbox" /> BTP & Construction</label>
+                                <label class="filter-option"><input type="checkbox" data-filter="job-family" value="finance" class="filter-checkbox" /> Finance & Comptabilité</label>
+                                <label class="filter-option"><input type="checkbox" data-filter="job-family" value="marketing" class="filter-checkbox" /> Marketing & Communication</label>
+                                <label class="filter-option"><input type="checkbox" data-filter="job-family" value="sante" class="filter-checkbox" /> Santé & Médical</label>
+                                <label class="filter-option"><input type="checkbox" data-filter="job-family" value="autre" class="filter-checkbox" /> Autre</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Filtre par salaire -->
                         <div class="filter-group">
                             <div class="filter-heading" data-toggle="salary-filters">
                                 <h3>Rémunération</h3>
@@ -119,10 +229,19 @@
                                 </a>
                             </div>
                         </div>
+                        
+                        <!-- Bouton pour réinitialiser tous les filtres -->
+                        <button id="reset-all-filters" class="reset-filters-btn">
+                            <span class="iconify" data-icon="mdi:refresh" width="16" height="16"></span> 
+                            Réinitialiser tous les filtres
+                        </button>
                     </div>
                     <div class="jobs-content">
                         <div id="jobs-list" class="jobs-list">
                             <!-- Les offres d'emploi seront chargées ici -->
+                        </div>
+                        <div id="pagination" class="pagination">
+                            <!-- La pagination sera générée ici -->
                         </div>
                         <div id="no-jobs-found" class="no-jobs-found hide">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon">
@@ -166,6 +285,33 @@
     <script src="public/js/mobile-menu.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Variables pour la pagination
+        let currentPage = 1;
+        let totalPages = 1;
+        let allJobs = []; // Stocke toutes les offres récupérées
+        const jobsPerPage = 4; // Nombre d'offres par page
+        
+        // Fonction pour déterminer quelle image utiliser en fonction du type de l'offre
+        function getJobImage(job) {
+            // Vérifier si le job a un type défini
+            const jobType = job.type ? job.type.toLowerCase() : '';
+            // Déterminer l'image en fonction du type d'offre
+            if (jobType.includes('informatique') || jobType.includes('tech')) {
+                return 'public/images/info-img.png';
+            } else if (jobType.includes('btp') || jobType.includes('construction')) {
+                return 'public/images/btp-img.png';
+            } else if (jobType.includes('santé') || jobType.includes('médical') || jobType.includes('sante')) {
+                return 'public/images/sante-img.png';
+            } else if (jobType.includes('finance') || jobType.includes('comptabilité')) {
+                return 'public/images/fin-img.png';
+            } else if (jobType.includes('marketing') || jobType.includes('communication')) {
+                return 'public/images/mark-img.png';
+            } else {
+                // Pour "Autre" ou si le type n'est pas reconnu
+                return 'public/images/gen-img.png';
+            }
+        }
+        
         // Vérifier si l'utilisateur est un étudiant pour afficher la section wishlist
         fetch("app/views/login/session.php")
             .then(response => response.json())
@@ -191,6 +337,45 @@
                 }
             })
             .catch(error => console.error("Erreur lors de la vérification de la session:", error));
+        
+        // Charger la liste des villes disponibles
+        loadCities();
+        
+        // Fonction pour charger les villes disponibles
+        function loadCities() {
+            fetch('offres/cities')
+                .then(response => response.json())
+                .then(cities => {
+                    const cityFiltersContainer = document.getElementById('city-filters');
+                    cityFiltersContainer.innerHTML = '';
+                    
+                    if (cities.length === 0) {
+                        cityFiltersContainer.innerHTML = '<p>Aucune ville disponible</p>';
+                        return;
+                    }
+                    
+                    cities.forEach(city => {
+                        if (city && city.trim() !== '') {
+                            const label = document.createElement('label');
+                            label.className = 'filter-option';
+                            label.innerHTML = `<input type="checkbox" data-filter="city" value="${city}" class="filter-checkbox" /> ${city}`;
+                            cityFiltersContainer.appendChild(label);
+                        }
+                    });
+                    
+                    // Ajouter les écouteurs d'événements pour les nouveaux filtres
+                    document.querySelectorAll('#city-filters .filter-checkbox').forEach(checkbox => {
+                        checkbox.addEventListener('change', function() {
+                            currentPage = 1; // Réinitialiser à la première page lors du changement de filtre
+                            applyFilters();
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error("Erreur lors du chargement des villes:", error);
+                    document.getElementById('city-filters').innerHTML = '<p>Erreur lors du chargement des villes</p>';
+                });
+        }
             
         // Fonction pour charger les offres d'emploi
         function loadJobs(searchParams = {}) {
@@ -223,40 +408,183 @@
                 }
             }
             
+            // Afficher un indicateur de chargement
+            document.getElementById('jobs-count').textContent = "Chargement...";
+            
             // Effectuer la requête AJAX
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
+                    // Stocker toutes les offres
+                    allJobs = data;
+                    
+                    // Calculer le nombre total de pages
+                    totalPages = Math.ceil(allJobs.length / jobsPerPage);
+                    
                     // Vérifier si l'utilisateur est un étudiant pour afficher les boutons wishlist
                     fetch("app/views/login/session.php")
                         .then(response => response.json())
                         .then(sessionData => {
                             if (sessionData.logged_in && parseInt(sessionData.utilisateur) === 0) {
-                                displayJobsWithWishlist(data);
+                                displayJobsWithWishlist(getPaginatedJobs());
                             } else {
-                                displayJobsWithoutWishlist(data);
+                                displayJobsWithoutWishlist(getPaginatedJobs());
                             }
                             
                             // Mettre à jour le compteur d'offres
-                            document.getElementById('jobs-count').textContent = `${data.length} offre(s) trouvée(s)`;
+                            document.getElementById('jobs-count').textContent = `${allJobs.length} offre(s) trouvée(s)`;
                             
                             // Afficher ou masquer le message "Aucun emploi trouvé"
-                            if (data.length === 0) {
+                            if (allJobs.length === 0) {
                                 document.getElementById('jobs-list').classList.add('hide');
+                                document.getElementById('pagination').classList.add('hide');
                                 document.getElementById('no-jobs-found').classList.remove('hide');
                             } else {
                                 document.getElementById('jobs-list').classList.remove('hide');
+                                document.getElementById('pagination').classList.remove('hide');
                                 document.getElementById('no-jobs-found').classList.add('hide');
+                                
+                                // Générer la pagination
+                                generatePagination();
                             }
                         })
                         .catch(error => {
                             console.error("Erreur lors de la vérification de la session:", error);
-                            displayJobsWithoutWishlist(data);
+                            displayJobsWithoutWishlist(getPaginatedJobs());
                         });
                 })
                 .catch(error => {
                     console.error("Erreur lors du chargement des offres:", error);
                     document.getElementById('jobs-count').textContent = "Erreur lors du chargement des offres";
+                });
+        }
+        
+        // Fonction pour obtenir les offres de la page courante
+        function getPaginatedJobs() {
+            const startIndex = (currentPage - 1) * jobsPerPage;
+            const endIndex = startIndex + jobsPerPage;
+            return allJobs.slice(startIndex, endIndex);
+        }
+        
+        // Fonction pour générer la pagination
+        function generatePagination() {
+            const paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = '';
+            
+            // Ne pas afficher la pagination s'il n'y a qu'une seule page
+            if (totalPages <= 1) {
+                return;
+            }
+            
+            // Bouton précédent
+            const prevButton = document.createElement('button');
+            prevButton.className = 'pagination-button';
+            prevButton.innerHTML = '<span class="iconify" data-icon="mdi:chevron-left" width="16" height="16"></span>';
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePage();
+                }
+            });
+            paginationContainer.appendChild(prevButton);
+            
+            // Générer les boutons de page
+            const maxVisiblePages = 5; // Nombre maximum de boutons de page à afficher
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            // Ajuster startPage si on est proche de la fin
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            // Ajouter le bouton pour la première page si nécessaire
+            if (startPage > 1) {
+                const firstPageButton = document.createElement('button');
+                firstPageButton.className = 'pagination-button';
+                firstPageButton.textContent = '1';
+                firstPageButton.addEventListener('click', function() {
+                    currentPage = 1;
+                    updatePage();
+                });
+                paginationContainer.appendChild(firstPageButton);
+                
+                // Ajouter des points de suspension si nécessaire
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.className = 'pagination-ellipsis';
+                    paginationContainer.appendChild(ellipsis);
+                }
+            }
+            
+            // Ajouter les boutons de page
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.className = 'pagination-button' + (i === currentPage ? ' active' : '');
+                pageButton.textContent = i;
+                pageButton.addEventListener('click', function() {
+                    currentPage = i;
+                    updatePage();
+                });
+                paginationContainer.appendChild(pageButton);
+            }
+            
+            // Ajouter des points de suspension et le bouton pour la dernière page si nécessaire
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.className = 'pagination-ellipsis';
+                    paginationContainer.appendChild(ellipsis);
+                }
+                
+                const lastPageButton = document.createElement('button');
+                lastPageButton.className = 'pagination-button';
+                lastPageButton.textContent = totalPages;
+                lastPageButton.addEventListener('click', function() {
+                    currentPage = totalPages;
+                    updatePage();
+                });
+                paginationContainer.appendChild(lastPageButton);
+            }
+            
+            // Bouton suivant
+            const nextButton = document.createElement('button');
+            nextButton.className = 'pagination-button';
+            nextButton.innerHTML = '<span class="iconify" data-icon="mdi:chevron-right" width="16" height="16"></span>';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePage();
+                }
+            });
+            paginationContainer.appendChild(nextButton);
+        }
+        
+        // Fonction pour mettre à jour la page courante
+        function updatePage() {
+            // Vérifier si l'utilisateur est un étudiant pour afficher les boutons wishlist
+            fetch("app/views/login/session.php")
+                .then(response => response.json())
+                .then(sessionData => {
+                    if (sessionData.logged_in && parseInt(sessionData.utilisateur) === 0) {
+                        displayJobsWithWishlist(getPaginatedJobs());
+                    } else {
+                        displayJobsWithoutWishlist(getPaginatedJobs());
+                    }
+                    
+                    // Mettre à jour la pagination
+                    generatePagination();
+                    
+                    // Faire défiler vers le haut de la liste des offres
+                    document.getElementById('jobs-list').scrollIntoView({ behavior: 'smooth' });
+                })
+                .catch(error => {
+                    console.error("Erreur lors de la vérification de la session:", error);
+                    displayJobsWithoutWishlist(getPaginatedJobs());
                 });
         }
         
@@ -275,23 +603,37 @@
                 const dureeMois = job.duree_stage;
                 
                 jobCard.innerHTML = `
-                    <div class="job-header">
+                    <a href="offres/details/${job.id}" class="job-card-link" aria-label="Voir les détails de ${job.titre}"></a>
+                    <div class="job-card-image">
+                        <img src="${getJobImage(job)}" alt="${job.titre}" class="job-image">
+                    </div>
+                    <div class="job-card-content">
                         <h3 class="job-title">${job.titre}</h3>
+                        <div class="job-location">
+                            <span class="iconify" data-icon="mdi:map-marker" width="16" height="16"></span>
+                            <span>${job.ville || 'Non spécifiée'}</span>
+                        </div>
+                        <div class="job-company">
+                            <span class="iconify" data-icon="mdi:office-building" width="16" height="16"></span>
+                            <span>${job.entreprise || job.nom_entreprise || 'Entreprise non spécifiée'}</span>
+                        </div>
+                        <div class="job-salary">
+                            <span class="iconify" data-icon="mdi:currency-eur" width="16" height="16"></span>
+                            <span>${job.remuneration}€/an</span>
+                        </div>
+                    </div>
+                    <div class="job-card-actions">
+
                         <button class="wishlist-button" data-job-id="${job.id}" title="Ajouter à ma wishlist">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
                         </button>
-                    </div>
-                    <div class="job-company">${job.entreprise}</div>
-                    <div class="job-details">
-                        <div class="job-salary">${job.remuneration}€/an</div>
-                        <div class="job-date">Du ${dateDebut.toLocaleDateString()} au ${dateFin.toLocaleDateString()} (${dureeMois} mois)</div>
-                    </div>
-                    <div class="job-skills">${job.competences || 'Aucune compétence spécifiée'}</div>
-                    <div class="job-footer">
-                        <a href="offres/details/${job.id}" class="button button-secondary">Voir détails</a>
-                        <div class="job-applicants">${job.nb_postulants || 0} candidat(s)</div>
+                        <div class="job-date">
+                            <span class="iconify" data-icon="mdi:calendar" width="16" height="16"></span>
+                            <span>${formattedDate}</span>
+                        </div>
+
                     </div>
                 `;
                 
@@ -300,7 +642,9 @@
             
             // Ajouter les écouteurs d'événements pour les boutons wishlist
             document.querySelectorAll('.wishlist-button').forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function(e) {
+                    // Empêcher la propagation de l'événement pour éviter de cliquer sur la carte
+                    e.stopPropagation();
                     const jobId = this.getAttribute('data-job-id');
                     addToWishlist(jobId, this);
                 });
@@ -322,18 +666,30 @@
                 const dureeMois = job.duree_stage;
                 
                 jobCard.innerHTML = `
-                    <div class="job-header">
+                    <a href="offres/details/${job.id}" class="job-card-link" aria-label="Voir les détails de ${job.titre}"></a>
+                    <div class="job-card-image">
+                        <img src="${getJobImage(job)}" alt="${job.titre}" class="job-image">
+                    </div>
+                    <div class="job-card-content">
                         <h3 class="job-title">${job.titre}</h3>
+                        <div class="job-location">
+                            <span class="iconify" data-icon="mdi:map-marker" width="16" height="16"></span>
+                            <span>${job.ville || 'Non spécifiée'}</span>
+                        </div>
+                        <div class="job-company">
+                            <span class="iconify" data-icon="mdi:office-building" width="16" height="16"></span>
+                            <span>${job.entreprise || job.nom_entreprise || 'Entreprise non spécifiée'}</span>
+                        </div>
+                        <div class="job-salary">
+                            <span class="iconify" data-icon="mdi:currency-eur" width="16" height="16"></span>
+                            <span>${job.remuneration}€/an</span>
+                        </div>
                     </div>
-                    <div class="job-company">${job.entreprise}</div>
-                    <div class="job-details">
-                        <div class="job-salary">${job.remuneration}€/an</div>
-                        <div class="job-date">Du ${dateDebut.toLocaleDateString()} au ${dateFin.toLocaleDateString()} (${dureeMois} mois)</div>
-                    </div>
-                    <div class="job-skills">${job.competences || 'Aucune compétence spécifiée'}</div>
-                    <div class="job-footer">
-                        <a href="offres/details/${job.id}" class="button button-secondary">Voir détails</a>
-                        <div class="job-applicants">${job.nb_postulants || 0} candidat(s)</div>
+                    <div class="job-card-actions">
+                        <div class="job-date">
+                            <span class="iconify" data-icon="mdi:calendar" width="16" height="16"></span>
+                            <span>${formattedDate}</span>
+                        </div>
                     </div>
                 `;
                 
@@ -369,18 +725,25 @@
             });
         }
         
-        // Charger les offres au chargement de la page
-        loadJobs();
-        
-        // Gérer la soumission du formulaire de recherche
-        document.getElementById('search-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
+        // Fonction pour appliquer les filtres
+        function applyFilters() {
             const jobTitle = document.getElementById('job-search').value;
             const location = document.getElementById('location-search').value;
             
             // Récupérer les filtres actifs
             const filters = {};
+            
+            // Filtres de ville
+            const cityFilters = Array.from(document.querySelectorAll('input[data-filter="city"]:checked')).map(input => input.value);
+            if (cityFilters.length > 0) {
+                filters.city = cityFilters;
+            }
+            
+            // Filtres de famille d'emploi
+            const jobFamilyFilters = Array.from(document.querySelectorAll('input[data-filter="job-family"]:checked')).map(input => input.value);
+            if (jobFamilyFilters.length > 0) {
+                filters.jobFamily = jobFamilyFilters;
+            }
             
             // Filtres de salaire
             const salaryFilters = Array.from(document.querySelectorAll('input[data-filter="salary"]:checked')).map(input => input.value);
@@ -397,7 +760,7 @@
             
             // Mettre à jour les filtres actifs affichés
             updateActiveFilters(jobTitle, location, filters);
-        });
+        }
         
         // Fonction pour mettre à jour l'affichage des filtres actifs
         function updateActiveFilters(jobTitle, location, filters) {
@@ -424,6 +787,57 @@
                 activeFiltersContainer.appendChild(filterTag);
             }
             
+            // Afficher les filtres de ville
+            if (filters.city && filters.city.length > 0) {
+                filters.city.forEach(value => {
+                    const filterTag = document.createElement('span');
+                    filterTag.className = 'filter-tag';
+                    filterTag.innerHTML = `
+                        Ville: ${value}
+                        <button class="remove-filter" data-type="city" data-value="${value}">&times;</button>
+                    `;
+                    activeFiltersContainer.appendChild(filterTag);
+                });
+            }
+            
+            // Afficher les filtres de famille d'emploi
+            if (filters.jobFamily && filters.jobFamily.length > 0) {
+                filters.jobFamily.forEach(value => {
+                    let label = '';
+                    switch (value) {
+                        case 'informatique':
+                            label = 'Informatique & Tech';
+                            break;
+                        case 'btp':
+                            label = 'BTP & Construction';
+                            break;
+                        case 'finance':
+                            label = 'Finance & Comptabilité';
+                            break;
+                        case 'marketing':
+                            label = 'Marketing & Communication';
+                            break;
+                        case 'sante':
+                            label = 'Santé & Médical';
+                            break;
+                        case 'autre':
+                            label = 'Autre';
+                            break;
+                        default:
+                            label = value.charAt(0).toUpperCase() + value.slice(1);
+                    }
+                    
+                    const filterTag = document.createElement('span');
+                    filterTag.className = 'filter-tag';
+                    filterTag.innerHTML = `
+                        Famille: ${label}
+                        <button class="remove-filter" data-type="job-family" data-value="${value}">&times;</button>
+                    `;
+                    activeFiltersContainer.appendChild(filterTag);
+                });
+            }
+            
+            // Afficher les filtres de salaire
             if (filters.salary && filters.salary.length > 0) {
                 filters.salary.forEach(value => {
                     let label = '';
@@ -455,32 +869,75 @@
                         document.getElementById('job-search').value = '';
                     } else if (type === 'location') {
                         document.getElementById('location-search').value = '';
+                    } else if (type === 'city' && value) {
+                        document.querySelector(`input[data-filter="city"][value="${value}"]`).checked = false;
+                    } else if (type === 'job-family' && value) {
+                        document.querySelector(`input[data-filter="job-family"][value="${value}"]`).checked = false;
                     } else if (type === 'salary' && value) {
                         document.querySelector(`input[data-filter="salary"][value="${value}"]`).checked = false;
                     }
                     
-                    // Relancer la recherche
-                    document.getElementById('search-form').dispatchEvent(new Event('submit'));
+                    // Réinitialiser à la première page lors de la suppression d'un filtre
+                    currentPage = 1;
+                    
+                    // Appliquer les filtres mis à jour
+                    applyFilters();
                 });
             });
         }
         
+        // Charger les offres au chargement de la page
+        loadJobs();
+        
+        // Gérer la soumission du formulaire de recherche
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            currentPage = 1; // Réinitialiser à la première page lors d'une nouvelle recherche
+            applyFilters();
+        });
+        
+        // Ajouter des écouteurs d'événements pour les filtres
+        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                currentPage = 1; // Réinitialiser à la première page lors du changement de filtre
+                applyFilters();
+            });
+        });
+        
         // Gérer le clic sur le bouton "Effacer les filtres"
         document.getElementById('clear-filters').addEventListener('click', function() {
-            // Réinitialiser le formulaire
-            document.getElementById('search-form').reset();
-            
-            // Réinitialiser les filtres actifs
-            document.getElementById('active-filters').innerHTML = '';
-            
-            // Recharger les offres sans filtres
-            loadJobs();
+            resetAllFilters();
+        });
+        
+        // Gérer le clic sur le bouton "Réinitialiser tous les filtres"
+        document.getElementById('reset-all-filters').addEventListener('click', function() {
+            resetAllFilters();
         });
         
         // Gérer le clic sur le bouton "Effacer les filtres" dans le message "Aucun emploi trouvé"
         document.getElementById('reset-filters').addEventListener('click', function() {
-            document.getElementById('clear-filters').click();
+            resetAllFilters();
         });
+        
+        // Fonction pour réinitialiser tous les filtres
+        function resetAllFilters() {
+            // Réinitialiser le formulaire
+            document.getElementById('search-form').reset();
+            
+            // Décocher toutes les cases à cocher
+            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Réinitialiser les filtres actifs
+            document.getElementById('active-filters').innerHTML = '';
+            
+            // Réinitialiser à la première page
+            currentPage = 1;
+            
+            // Recharger les offres sans filtres
+            loadJobs();
+        }
         
         // Gérer l'affichage/masquage des sections de filtres
         document.querySelectorAll('.filter-heading').forEach(heading => {

@@ -8,6 +8,7 @@ require_once 'app/controllers/AdminController.php';
 require_once 'app/controllers/GestionController.php';
 require_once 'app/controllers/LogoutController.php';
 require_once 'app/controllers/WishlistController.php';
+require_once 'app/controllers/CandidatureController.php';
 
 function route($uri) {
     // Initialisation des contrôleurs
@@ -18,13 +19,11 @@ function route($uri) {
     $gestionController = new GestionController();
     $logoutController = new LogoutController();
     $wishlistController = new WishlistController();
+    $candidatureController = new CandidatureController();
 
     if (strpos($uri, 'cesi-lebonplan/') === 0) {
         $uri = substr($uri, strlen('cesi-lebonplan/'));
     }
-
-    // Pour le débogage - décommenter si nécessaire
-    //echo "URI reçue par le routeur: '" . $uri . "'<br>";
 
     // Gestion des différentes routes
     switch ($uri) {
@@ -56,6 +55,11 @@ function route($uri) {
         case 'offres/search':
             // Traiter la recherche et les filtres pour les offres
             $offresController->search();
+            break;
+            
+        case 'offres/cities':
+            // Récupérer la liste des villes disponibles
+            $offresController->cities();
             break;
 
         case 'gestion':
@@ -185,15 +189,18 @@ function route($uri) {
             break;
 
         default:
-        http_response_code(404);
-        echo "Page non trouvée pour l'URI: '" . $uri . "'";
-        echo "URI traitée: '" . $uri . "'<br>";
-        break;
+            // Gestion des détails des offres avec un pattern comme "offres/details/123"
+            if (preg_match('/^offres\/details\/(\d+)$/', $uri, $matches)) {
+                $id = $matches[1]; // Récupère l'ID de l'offre
+                $offresController->details($id);
+            } else {
+                http_response_code(404);
+                echo "Page non trouvée pour l'URI: '" . $uri . "'";
+                echo "URI traitée: '" . $uri . "'<br>";
+            }
+            break;
     }
 }
 
-// Ne pas appeler la fonction route ici car elle est déjà appelée dans index.php
-// La ligne ci-dessous a été supprimée:
-// route($uri);
-
 ?>
+
