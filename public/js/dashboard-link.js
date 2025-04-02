@@ -16,11 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const offresLink = document.querySelector('.navbar-nav a[href="offres"]');
                 
                 if (navbarNav && offresLink) {
-                    // Créer le lien vers le tableau de bord
+                    // Créer le lien vers le tableau de bord (sans icône)
                     const dashboardLink = document.createElement('a');
                     dashboardLink.href = 'dashboard';
                     dashboardLink.className = 'nav-link';
-                    dashboardLink.innerHTML = '<span class="iconify" data-icon="mdi:view-dashboard" style="margin-right: 5px;"></span>Tableau de bord';
+                    dashboardLink.textContent = 'Tableau de bord'; // Texte simple sans icône
                     
                     // Insérer le lien après le lien "Emplois"
                     navbarNav.insertBefore(dashboardLink, offresLink.nextSibling);
@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const mobileOffresLink = document.querySelector('.mobile-nav a[href="offres"]');
                 
                 if (mobileNav && mobileOffresLink) {
-                    // Créer le lien vers le tableau de bord pour le menu mobile
+                    // Créer le lien vers le tableau de bord pour le menu mobile (sans icône)
                     const mobileDashboardLink = document.createElement('a');
                     mobileDashboardLink.href = 'dashboard';
                     mobileDashboardLink.className = 'mobile-nav-link';
-                    mobileDashboardLink.textContent = 'Tableau de bord';
+                    mobileDashboardLink.textContent = 'Tableau de bord'; // Texte simple sans icône
                     
                     // Insérer le lien après le lien "Emplois" dans le menu mobile
                     mobileNav.insertBefore(mobileDashboardLink, mobileOffresLink.nextSibling);
