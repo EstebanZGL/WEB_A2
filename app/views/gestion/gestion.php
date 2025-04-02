@@ -269,11 +269,6 @@
                                                 <td><?php echo htmlspecialchars($item['email'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['promotion'] ?? ''); ?></td>
                                                 <td><?php echo htmlspecialchars($item['formation'] ?? ''); ?></td>
-                                                <td><?php 
-                                                    echo isset($item['nb_candidatures']) ? 
-                                                        ($item['nb_candidatures'] > 0 ? $item['nb_candidatures'] . " offre(s)" : "Aucune offre") : 
-                                                        "Aucune offre"; 
-                                                ?></td>
                                                 <td class="actions">
                                                     <a href="gestion/etudiants/edit?id=<?php echo $item['id']; ?>" class="btn-modifier">Modifier</a>
                                                     <button onclick="confirmDelete('etudiants', <?php echo $item['id']; ?>)" class="btn-supprimer">Supprimer</button>
