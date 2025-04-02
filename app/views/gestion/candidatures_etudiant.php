@@ -221,8 +221,8 @@
                                             <tr>
                                                 <td><?php echo htmlspecialchars($candidature['offre_titre']); ?></td>
                                                 <td><?php echo htmlspecialchars($candidature['entreprise_nom']); ?></td>
-                                                <td><?php echo htmlspecialchars($candidature['offre_type']); ?></td>
-                                                <td><?php echo htmlspecialchars($candidature['offre_lieu']); ?></td>
+                                                <td><?php echo isset($candidature['offre_type']) ? htmlspecialchars($candidature['offre_type']) : 'Non spécifié'; ?></td>
+                                                <td><?php echo isset($candidature['offre_lieu']) ? htmlspecialchars($candidature['offre_lieu']) : 'Non spécifié'; ?></td>
                                                 <td><?php echo date('d/m/Y', strtotime($candidature['date_candidature'])); ?></td>
                                                 <td>
                                                     <form action="/gestion/etudiants/candidatures/update-status" method="post" class="status-form">
@@ -274,8 +274,8 @@
                                             <tr>
                                                 <td><?php echo htmlspecialchars($item['offre_titre']); ?></td>
                                                 <td><?php echo htmlspecialchars($item['entreprise_nom']); ?></td>
-                                                <td><?php echo htmlspecialchars($item['offre_type']); ?></td>
-                                                <td><?php echo htmlspecialchars($item['offre_lieu']); ?></td>
+                                                <td><?php echo isset($item['offre_type']) ? htmlspecialchars($item['offre_type']) : 'Non spécifié'; ?></td>
+                                                <td><?php echo isset($item['offre_lieu']) ? htmlspecialchars($item['offre_lieu']) : 'Non spécifié'; ?></td>
                                                 <td><?php echo date('d/m/Y', strtotime($item['date_ajout'])); ?></td>
                                                 <td><?php echo htmlspecialchars($item['offre_statut']); ?></td>
                                                 <td class="actions">

@@ -3,10 +3,29 @@
 class CandidatureModel {
     private $db;
 
-  public function __construct() {
+    public function __construct() {
         require_once 'config/database.php';
         $this->db = getDbConnection();
     }
+
+    /**
+     * Récupère les informations d'un étudiant par son ID
+     */
+    public function getEtudiantInfo($id) {
+        try {
+            $query = "SELECT e.*, u.nom, u.prenom, u.email
+                      FROM etudiant e
+                      JOIN utilisateur u ON e.utilisateur_id = u.id
+                      WHERE e.id = :id";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute(['id' => $id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des informations de l'étudiant: " . $e->getMessage());
+            return null;
+        }
+    }
+
     /**
      * Récupère l'ID de l'étudiant basé sur l'ID de l'utilisateur
      */
@@ -20,6 +39,55 @@ class CandidatureModel {
         } catch (PDOException $e) {
             error_log("Erreur lors de la récupération de l'ID étudiant: " . $e->getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Récupère les candidatures d'un étudiant par son ID
+     */
+    public function getCandidaturesByEtudiantId($etudiantId) {
+        try {
+            $query = "SELECT c.*, 
+                      o.titre as offre_titre, 
+                      o.type as offre_type, 
+                      o.lieu as offre_lieu,
+                      e.nom as entreprise_nom 
+                      FROM candidature c
+                      JOIN offre_stage o ON c.offre_id = o.id
+                      JOIN entreprise e ON o.entreprise_id = e.id
+                      WHERE c.etudiant_id = :etudiant_id
+                      ORDER BY c.date_candidature DESC";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute(['etudiant_id' => $etudiantId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des candidatures: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Récupère la wishlist d'un étudiant par son ID
+     */
+    public function getWishlistByEtudiantId($etudiantId) {
+        try {
+            $query = "SELECT w.*,
+                      o.titre as offre_titre, 
+                      o.type as offre_type, 
+                      o.lieu as offre_lieu,
+                      o.statut as offre_statut,
+                      e.nom as entreprise_nom 
+                      FROM wishlist w
+                      JOIN offre_stage o ON w.offre_id = o.id
+                      JOIN entreprise e ON o.entreprise_id = e.id
+                      WHERE w.etudiant_id = :etudiant_id
+                      ORDER BY w.date_ajout DESC";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute(['etudiant_id' => $etudiantId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération de la wishlist: " . $e->getMessage());
+            return [];
         }
     }
 
@@ -41,16 +109,59 @@ class CandidatureModel {
     /**
      * Crée une nouvelle candidature
      */
-    public function createCandidature($etudiantId, $offreId, $cvPath, $lettreMotivation) {
+    public function createCandidature($etudiantId, $offreId, $cvPath = null, $lettreMotivation = null) {
         try {
             $stmt = $this->db->prepare(
                 "INSERT INTO candidature (etudiant_id, offre_id, date_candidature, cv_path, lettre_motivation, statut) 
-                VALUES (?, ?, NOW(), ?, ?, 'EN_ATTENTE')"
+                VALUES (?, ?, NOW(), ?, ?, 'En attente')"
             );
             
             return $stmt->execute([$etudiantId, $offreId, $cvPath, $lettreMotivation]);
         } catch (PDOException $e) {
             error_log("Erreur lors de la création de la candidature: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Ajoute une candidature (méthode utilisée par l'interface d'administration)
+     */
+    public function addCandidature($etudiantId, $offreId, $statut = 'En attente') {
+        try {
+            $stmt = $this->db->prepare(
+                "INSERT INTO candidature (etudiant_id, offre_id, date_candidature, statut) 
+                VALUES (?, ?, NOW(), ?)"
+            );
+            
+            return $stmt->execute([$etudiantId, $offreId, $statut]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de l'ajout de la candidature: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Met à jour le statut d'une candidature
+     */
+    public function updateCandidatureStatus($candidatureId, $statut) {
+        try {
+            $stmt = $this->db->prepare("UPDATE candidature SET statut = ? WHERE id = ?");
+            return $stmt->execute([$statut, $candidatureId]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour du statut de candidature: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Supprime une candidature
+     */
+    public function deleteCandidature($candidatureId) {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM candidature WHERE id = ?");
+            return $stmt->execute([$candidatureId]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la suppression de la candidature: " . $e->getMessage());
             return false;
         }
     }
@@ -73,42 +184,5 @@ class CandidatureModel {
             error_log("Erreur lors de la récupération des offres disponibles: " . $e->getMessage());
             return [];
         }
-
     }
-
-
-    public function getEtudiantInfo($id) {
-        $query = "SELECT e.*, u.nom, u.prenom, u.email
-                  FROM etudiant e
-                  JOIN utilisateur u ON e.utilisateur_id = u.id
-                  WHERE e.id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['id' => $id]);
-        return $stmt->fetch();
-    }
-
-    // Ajouter cette méthode à votre classe CandidatureModel
-public function getCandidaturesByEtudiantId($etudiantId) {
-    $query = "SELECT c.*, o.titre as offre_titre, e.nom as entreprise_nom 
-              FROM candidature c
-              JOIN offre_stage o ON c.offre_id = o.id
-              JOIN entreprise e ON o.entreprise_id = e.id
-              WHERE c.etudiant_id = :etudiant_id";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute(['etudiant_id' => $etudiantId]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-// Ajouter cette méthode à votre classe CandidatureModel
-public function getWishlistByEtudiantId($etudiantId) {
-    $query = "SELECT w.*, o.titre as offre_titre, e.nom as entreprise_nom 
-              FROM wishlist w
-              JOIN offre_stage o ON w.offre_id = o.id
-              JOIN entreprise e ON o.entreprise_id = e.id
-              WHERE w.etudiant_id = :etudiant_id";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute(['etudiant_id' => $etudiantId]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-    
 }
