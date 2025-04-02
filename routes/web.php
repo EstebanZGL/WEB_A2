@@ -8,6 +8,7 @@ require_once 'app/controllers/AdminController.php';
 require_once 'app/controllers/GestionController.php';
 require_once 'app/controllers/LogoutController.php';
 require_once 'app/controllers/WishlistController.php';
+require_once 'app/controllers/CandidatureController.php';
 
 function route($uri) {
     // Initialisation des contrôleurs
@@ -18,6 +19,7 @@ function route($uri) {
     $gestionController = new GestionController();
     $logoutController = new LogoutController();
     $wishlistController = new WishlistController();
+    $candidatureController = new CandidatureController();
 
     if (strpos($uri, 'cesi-lebonplan/') === 0) {
         $uri = substr($uri, strlen('cesi-lebonplan/'));
@@ -178,5 +180,3 @@ function route($uri) {
 // Ne pas appeler la fonction route ici car elle est déjà appelée dans index.php
 // La ligne ci-dessous a été supprimée:
 // route($uri);
-
-?>

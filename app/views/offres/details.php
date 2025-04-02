@@ -9,6 +9,18 @@ if (!isset($offre) || empty($offre)) {
     exit();
 }
 
+// Traitement du formulaire de candidature
+if (isset($_POST['submit_candidature'])) {
+    require_once 'app/controllers/CandidatureController.php';
+    $candidatureController = new CandidatureController();
+    
+    $offre_id = is_array($offre) ? $offre['id'] : $offre->id;
+    $result = $candidatureController->submitCandidature($offre_id);
+    
+    $message = $result['message'];
+    $messageType = $result['success'] ? 'success' : 'error';
+}
+
 // Déterminer le chemin de base pour les ressources statiques
 $basePath = '../../..'; // Remonte de 3 niveaux: offres/details/ID -> racine du projet
 
@@ -18,9 +30,9 @@ $competences = [];
 
 try {
     $sql_competences = "SELECT c.nom, c.description, c.categorie 
-                        FROM offre_competence oc 
-                        JOIN competence c ON oc.competence_id = c.id 
-                        WHERE oc.offre_id = ?";
+                       FROM offre_competence oc 
+                       JOIN competence c ON oc.competence_id = c.id 
+                       WHERE oc.offre_id = ?";
     $stmt_comp = $conn->prepare($sql_competences);
     $stmt_comp->execute([$offre_id]);
     $competences = $stmt_comp->fetchAll(PDO::FETCH_ASSOC);
@@ -28,9 +40,13 @@ try {
     // Gérer l'erreur silencieusement
 }
 
-// Variables pour les messages
-$message = '';
-$messageType = '';
+// Vérifier si l'utilisateur a déjà postulé
+$alreadyApplied = false;
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 0) {
+    require_once 'app/controllers/CandidatureController.php';
+    $candidatureController = new CandidatureController();
+    $alreadyApplied = $candidatureController->hasAlreadyApplied($offre_id);
+}
 
 // Helper function pour accéder aux propriétés/indices de manière sécurisée
 function getValue($object, $key) {
@@ -199,6 +215,12 @@ function getValue($object, $key) {
             border: 1px solid rgba(255, 0, 0, 0.3);
         }
         
+        /* Style pour les boutons désactivés */
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
         @media (max-width: 768px) {
             .info-grid {
                 grid-template-columns: 1fr;
@@ -337,7 +359,7 @@ function getValue($object, $key) {
                                     <span class="iconify" data-icon="mdi:heart-outline" width="20" height="20"></span> Ajouter aux favoris
                                 </button>
                             </form>
-                            <a href="#candidature-form" class="button button-primary button-glow">
+                            <a href="#candidature-form" class="button button-primary button-glow" id="btn-postuler">
                                 <span class="iconify" data-icon="mdi:send" width="20" height="20"></span> Postuler maintenant
                             </a>
                         </div>
@@ -347,21 +369,35 @@ function getValue($object, $key) {
                 <div class="candidature-form" id="candidature-form">
                     <h2 class="form-title">Déposer votre candidature</h2>
                     
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="cv">Votre CV (PDF, DOC, DOCX)</label>
-                            <input type="file" id="cv" name="cv" class="form-control" accept=".pdf,.doc,.docx" required>
+                    <?php if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']): ?>
+                        <div class="alert alert-error">
+                            Vous devez être <a href="<?php echo $basePath; ?>/login" style="color: #ff5555; text-decoration: underline;">connecté</a> en tant qu'étudiant pour postuler à cette offre.
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="lettre_motivation">Lettre de motivation</label>
-                            <textarea id="lettre_motivation" name="lettre_motivation" class="form-control" placeholder="Expliquez pourquoi vous êtes intéressé par cette offre et ce que vous pouvez apporter..." required></textarea>
+                    <?php elseif (isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] != 0): ?>
+                        <div class="alert alert-error">
+                            Seuls les étudiants peuvent postuler à cette offre.
                         </div>
-                        
-                        <button type="submit" name="submit_candidature" class="button button-primary button-glow">
-                            <span class="iconify" data-icon="mdi:check" width="20" height="20"></span> Soumettre ma candidature
-                        </button>
-                    </form>
+                    <?php elseif ($alreadyApplied): ?>
+                        <div class="alert alert-success">
+                            Vous avez déjà postulé à cette offre. Vous serez notifié de la suite donnée à votre candidature.
+                        </div>
+                    <?php else: ?>
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="cv">Votre CV (PDF, DOC, DOCX)</label>
+                                <input type="file" id="cv" name="cv" class="form-control" accept=".pdf,.doc,.docx" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="lettre_motivation">Lettre de motivation</label>
+                                <textarea id="lettre_motivation" name="lettre_motivation" class="form-control" rows="8" placeholder="Expliquez pourquoi vous êtes intéressé par cette offre et ce que vous pouvez apporter..." required></textarea>
+                            </div>
+                            
+                            <button type="submit" name="submit_candidature" class="button button-primary button-glow">
+                                <span class="iconify" data-icon="mdi:check" width="20" height="20"></span> Soumettre ma candidature
+                            </button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </div>
         </main>
@@ -417,6 +453,20 @@ function getValue($object, $key) {
                 
             // Mettre à jour l'année dans le copyright
             document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Faire défiler jusqu'au formulaire de candidature si le bouton est cliqué
+            const btnPostuler = document.getElementById('btn-postuler');
+            if (btnPostuler) {
+                btnPostuler.addEventListener('click', function(e) {
+                    const candidatureForm = document.getElementById('candidature-form');
+                    if (candidatureForm) {
+                        // Empêcher le comportement par défaut du lien
+                        e.preventDefault();
+                        // Faire défiler jusqu'au formulaire
+                        candidatureForm.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
         });
     </script>
 </body>
