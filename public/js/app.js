@@ -6,11 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (queryParam) {
         // Si nous sommes sur la page des offres, appliquer le filtre correspondant
         if (window.location.pathname.includes('offres')) {
-            // Mettre à jour le champ de recherche avec la valeur de q
-            const jobSearchInput = document.getElementById('job-search');
-            if (jobSearchInput) {
-                jobSearchInput.value = queryParam;
-            }
+            // Ne pas mettre à jour le champ de recherche, appliquer directement le filtre de catégorie
             
             // Si le paramètre correspond à une famille d'emploi, cocher la case correspondante
             if (queryParam.toLowerCase() === 'technology' || queryParam.toLowerCase() === 'informatique') {
