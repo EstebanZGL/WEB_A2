@@ -180,11 +180,6 @@ function route($uri) {
             $logoutController->logout();
             break;
 
-        case 'wishlist':
-            // Afficher la wishlist de l'utilisateur
-            $wishlistController->index();
-            break;
-
         case 'wishlist/add':
             // Ajouter un élément à la wishlist
             $wishlistController->add();
