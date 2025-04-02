@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
     <link rel="stylesheet" href="public/css/gestion.css">
-    <!-- Styles correctifs pour éliminer la colonne vide -->
+    <!-- Styles correctifs pour éliminer la colonne vide uniquement dans le tableau des étudiants -->
     <style>
-        /* Force le tableau à respecter strictement les largeurs définies */
-        .gestion-table {
+        /* Applique table-layout: fixed uniquement au tableau des étudiants */
+        .gestion-table-etudiants {
             table-layout: fixed;
             width: 100%;
         }
@@ -49,24 +49,23 @@
             min-width: 120px;
         }
         
-        /* Suppression de toutes les règles pour la 7e colonne qui n'existe pas */
+        /* Suppression de toute colonne potentielle après la 6e colonne */
         .gestion-table-etudiants th:nth-child(7),
         .gestion-table-etudiants td:nth-child(7) {
             display: none;
         }
         
-        /* Amélioration des cellules d'action */
-        .actions {
+        /* Correction spécifique pour les boutons dans la table des étudiants */
+        .gestion-table-etudiants .actions {
             display: flex;
             justify-content: center;
             gap: 8px;
-            width: 100%;
         }
         
-        /* S'assurer que le conteneur du tableau est correct */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
+        /* Assurer que le texte est centré dans les boutons supprimer */
+        .gestion-table-etudiants .btn-supprimer {
+            text-align: center;
+            display: inline-block;
         }
     </style>
 </head>
