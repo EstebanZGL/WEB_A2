@@ -46,7 +46,6 @@
         .gestion-table-etudiants td:nth-child(6) {
             width: 15%;
             text-align: center;
-            min-width: 120px;
         }
         
         /* Suppression de toute colonne potentielle après la 6e colonne */
@@ -59,13 +58,17 @@
         .gestion-table-etudiants .actions {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 8px;
         }
         
-        /* Assurer que le texte est centré dans les boutons supprimer */
+        /* Style amélioré pour les boutons modifier et supprimer */
+        .gestion-table-etudiants .btn-modifier,
         .gestion-table-etudiants .btn-supprimer {
-            text-align: center;
             display: inline-block;
+            text-align: center;
+            min-width: 70px;
+            padding: 5px 10px;
         }
     </style>
 </head>
