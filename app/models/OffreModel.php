@@ -53,7 +53,7 @@ class OffreModel {
             }
 
             if (!empty($location)) {
-                $query .= " AND (e.nom LIKE :location OR o.ville LIKE :location)";
+                $query .= " AND (e.nom LIKE :location OR o.lieu LIKE :location)";
                 $params[':location'] = "%$location%";
             }
 
@@ -67,7 +67,7 @@ class OffreModel {
                         $cityPlaceholders[] = $param;
                         $params[$param] = $city;
                     }
-                    $query .= " AND o.ville IN (" . implode(", ", $cityPlaceholders) . ")";
+                    $query .= " AND o.lieu IN (" . implode(", ", $cityPlaceholders) . ")";
                 }
                 
                 // Filtres de famille d'emploi
@@ -76,47 +76,30 @@ class OffreModel {
                     foreach ($filters['jobFamily'] as $index => $jobFamily) {
                         $param = ":jobFamily$index";
                         
-                        // Créer des conditions de recherche spécifiques pour chaque famille d'emploi
+                        // Utiliser directement le type de l'offre
                         switch ($jobFamily) {
                             case 'informatique':
-                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
-                                $params[$param] = "%informatique%";
-                                $params[":jobFamilyAlt$index"] = "%développeur%";
+                                $jobFamilyConditions[] = "o.type = $param";
+                                $params[$param] = "informatique";
                                 break;
                             case 'btp':
-                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
-                                $params[$param] = "%btp%";
-                                $params[":jobFamilyAlt$index"] = "%construction%";
+                                $jobFamilyConditions[] = "o.type = $param";
+                                $params[$param] = "btp";
                                 break;
                             case 'finance':
-                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
-                                $params[$param] = "%finance%";
-                                $params[":jobFamilyAlt$index"] = "%comptabilité%";
+                                $jobFamilyConditions[] = "o.type = $param";
+                                $params[$param] = "finance";
                                 break;
                             case 'marketing':
-                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
-                                $params[$param] = "%marketing%";
-                                $params[":jobFamilyAlt$index"] = "%communication%";
+                                $jobFamilyConditions[] = "o.type = $param";
+                                $params[$param] = "marketing";
                                 break;
                             case 'sante':
-                                $jobFamilyConditions[] = "(o.titre LIKE $param OR o.description LIKE $param OR o.titre LIKE :jobFamilyAlt$index OR o.description LIKE :jobFamilyAlt$index)";
-                                $params[$param] = "%santé%";
-                                $params[":jobFamilyAlt$index"] = "%médical%";
+                                $jobFamilyConditions[] = "o.type = $param";
+                                $params[$param] = "sante";
                                 break;
                             case 'autre':
-                                // Pour "autre", on exclut toutes les autres catégories
-                                $jobFamilyConditions[] = "(
-                                    o.titre NOT LIKE '%informatique%' AND o.description NOT LIKE '%informatique%' AND
-                                    o.titre NOT LIKE '%développeur%' AND o.description NOT LIKE '%développeur%' AND
-                                    o.titre NOT LIKE '%btp%' AND o.description NOT LIKE '%btp%' AND
-                                    o.titre NOT LIKE '%construction%' AND o.description NOT LIKE '%construction%' AND
-                                    o.titre NOT LIKE '%finance%' AND o.description NOT LIKE '%finance%' AND
-                                    o.titre NOT LIKE '%comptabilité%' AND o.description NOT LIKE '%comptabilité%' AND
-                                    o.titre NOT LIKE '%marketing%' AND o.description NOT LIKE '%marketing%' AND
-                                    o.titre NOT LIKE '%communication%' AND o.description NOT LIKE '%communication%' AND
-                                    o.titre NOT LIKE '%santé%' AND o.description NOT LIKE '%santé%' AND
-                                    o.titre NOT LIKE '%médical%' AND o.description NOT LIKE '%médical%'
-                                )";
+                                $jobFamilyConditions[] = "(o.type IS NULL OR o.type NOT IN ('informatique', 'btp', 'finance', 'marketing', 'sante'))";
                                 break;
                         }
                     }
@@ -125,6 +108,7 @@ class OffreModel {
                         $query .= " AND (" . implode(" OR ", $jobFamilyConditions) . ")";
                     }
                 }
+                
                 
                 // Filtres de salaire
                 if (isset($filters['salary']) && is_array($filters['salary']) && !empty($filters['salary'])) {
