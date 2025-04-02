@@ -48,10 +48,11 @@
                                     <label for="promotion">Promotion</label>
                                     <select id="promotion" name="promotion" required>
                                         <option value="">Sélectionner une promotion</option>
+                                        <option value="Promotion 2021" <?php echo $etudiant['promotion'] === 'Promotion 2021' ? 'selected' : ''; ?>>Promotion 2021</option>
+                                        <option value="Promotion 2022" <?php echo $etudiant['promotion'] === 'Promotion 2022' ? 'selected' : ''; ?>>Promotion 2022</option>
+                                        <option value="Promotion 2023" <?php echo $etudiant['promotion'] === 'Promotion 2023' ? 'selected' : ''; ?>>Promotion 2023</option>
+                                        <option value="Promotion 2024" <?php echo $etudiant['promotion'] === 'Promotion 2024' ? 'selected' : ''; ?>>Promotion 2024</option>
                                         <option value="Promotion 2025" <?php echo $etudiant['promotion'] === 'Promotion 2025' ? 'selected' : ''; ?>>Promotion 2025</option>
-                                        <option value="Promotion 2026" <?php echo $etudiant['promotion'] === 'Promotion 2026' ? 'selected' : ''; ?>>Promotion 2026</option>
-                                        <option value="Promotion 2027" <?php echo $etudiant['promotion'] === 'Promotion 2027' ? 'selected' : ''; ?>>Promotion 2027</option>
-                                        <option value="Promotion 2028" <?php echo $etudiant['promotion'] === 'Promotion 2028' ? 'selected' : ''; ?>>Promotion 2028</option>
                                     </select>
                                 </div>
                                 
@@ -59,10 +60,10 @@
                                     <label for="formation">Formation</label>
                                     <select id="formation" name="formation" required>
                                         <option value="">Sélectionner une formation</option>
-                                        <option value="Formation 1" <?php echo $etudiant['formation'] === 'Formation 1' ? 'selected' : ''; ?>>Formation 1</option>
-                                        <option value="Formation 2" <?php echo $etudiant['formation'] === 'Formation 2' ? 'selected' : ''; ?>>Formation 2</option>
-                                        <option value="Formation 3" <?php echo $etudiant['formation'] === 'Formation 3' ? 'selected' : ''; ?>>Formation 3</option>
-                                        <option value="Formation 4" <?php echo $etudiant['formation'] === 'Formation 4' ? 'selected' : ''; ?>>Formation 4</option>
+                                        <option value="Informatique" <?php echo $etudiant['formation'] === 'Informatique' ? 'selected' : ''; ?>>Informatique</option>
+                                        <option value="BTP" <?php echo $etudiant['formation'] === 'BTP' ? 'selected' : ''; ?>>BTP</option>
+                                        <option value="Généraliste" <?php echo $etudiant['formation'] === 'Généraliste' ? 'selected' : ''; ?>>Généraliste</option>
+                                        <option value="Systèmes Embarqués" <?php echo $etudiant['formation'] === 'Systèmes Embarqués' ? 'selected' : ''; ?>>Systèmes Embarqués</option>
                                     </select>
                                 </div>
                             </div>
