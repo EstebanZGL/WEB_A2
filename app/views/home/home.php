@@ -82,10 +82,10 @@
                     </form>
                     <div class="popular-searches">
                         <span>Recherches populaires:</span>
-                        <a href="offres?q=developer" class="popular-link">Développeur</a>
+                        <a href="offres?q=developper" class="popular-link">Développeur</a>
                         <a href="offres?q=designer" class="popular-link">Designer</a>
-                        <a href="offres?q=marketing" class="popular-link">Marketing</a>
-                        <a href="offres?q=audit" class="popular-link">Télétravail</a>
+                        <a href="offres?q=technicien" class="popular-link">Technicien</a>
+                        <a href="offres?q=consultant" class="popular-link">Consultant</a>
                     </div>
                 </div>
             </section>
