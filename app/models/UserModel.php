@@ -11,7 +11,6 @@ class UserModel {
 
     public function getUserByEmail($email) {
         try {
-            // Utiliser la table 'utilisateur' au lieu de 'connexion'
             $stmt = $this->pdo->prepare("
                 SELECT u.*, 
                     CASE 
@@ -29,10 +28,12 @@ class UserModel {
             $stmt->execute([':email' => $email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            // Renommer 'mot_de_passe' en 'mdp' pour la compatibilité avec le code existant
             if ($user) {
                 $user['mdp'] = $user['mot_de_passe'];
                 unset($user['mot_de_passe']);
+                
+                // S'assurer que nom et prenom sont correctement conservés
+                error_log("Utilisateur récupéré: " . print_r($user, true));
             }
             
             return $user;

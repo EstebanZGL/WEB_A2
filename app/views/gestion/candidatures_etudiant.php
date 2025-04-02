@@ -277,7 +277,6 @@
                     <a href="/home" class="nav-link">Accueil</a>
                     <a href="/offres" class="nav-link">Emplois</a>
                     <a href="/gestion" class="nav-link active" id="page-gestion">Gestion</a>
-                    <a href="/admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
                 </nav>
                 <div id="user-status">
                     <a href="/login" id="login-Bouton" class="button button-outline button-glow" style="display:none;">Connexion</a>
@@ -325,28 +324,7 @@
                             </div>
                         </div>
                         
-                        <!-- CV général de l'étudiant -->
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>CV général</label>
-                                <div>
-                                    <?php if (isset($etudiant['cv_path']) && !empty($etudiant['cv_path'])): ?>
-                                        <a href="/<?php echo $etudiant['cv_path']; ?>" class="cv-link" target="_blank">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                                <polyline points="14 2 14 8 20 8"></polyline>
-                                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                                <polyline points="10 9 9 9 8 9"></polyline>
-                                            </svg>
-                                            Voir le CV
-                                        </a>
-                                    <?php else: ?>
-                                        <span class="cv-unavailable">Pas de CV disponible</span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                     
                     <!-- Messages d'alerte -->

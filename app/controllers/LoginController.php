@@ -38,7 +38,10 @@ class LoginController {
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['utilisateur'] = $user['utilisateur'];
                     $_SESSION['logged_in'] = true;
+                    
+                    // Stocker le prénom et le nom de l'utilisateur en session
                     $_SESSION['prenom'] = $user['prenom'];
+                    $_SESSION['nom'] = $user['nom'];
 
                     // Ajouter un log pour le débogage
                     error_log("Connexion réussie pour {$email} - Type utilisateur: {$user['utilisateur']}");
