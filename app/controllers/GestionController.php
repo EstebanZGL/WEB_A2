@@ -64,6 +64,7 @@ class GestionController {
         // Récupérer les paramètres de la requête
         $section = isset($_GET['section']) ? $_GET['section'] : 'offres';
         $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
         
         // S'assurer que la page est au moins 1
         if ($page < 1) {
@@ -81,13 +82,23 @@ class GestionController {
         // Récupérer les données selon la section
         switch ($section) {
             case 'entreprises':
-                $items = $this->entrepriseModel->getEntreprises($this->itemsPerPage, $offset);
-                $totalItems = $this->entrepriseModel->countEntreprises();
+                if (!empty($search)) {
+                    $items = $this->entrepriseModel->searchEntreprises($search, $this->itemsPerPage, $offset);
+                    $totalItems = $this->entrepriseModel->countEntreprisesSearch($search);
+                } else {
+                    $items = $this->entrepriseModel->getEntreprises($this->itemsPerPage, $offset);
+                    $totalItems = $this->entrepriseModel->countEntreprises();
+                }
                 break;
                 
             case 'etudiants':
-                $items = $this->etudiantModel->getEtudiants($this->itemsPerPage, $offset);
-                $totalItems = $this->etudiantModel->countEtudiants();
+                if (!empty($search)) {
+                    $items = $this->etudiantModel->searchEtudiants($search, $this->itemsPerPage, $offset);
+                    $totalItems = $this->etudiantModel->countEtudiantsSearch($search);
+                } else {
+                    $items = $this->etudiantModel->getEtudiants($this->itemsPerPage, $offset);
+                    $totalItems = $this->etudiantModel->countEtudiants();
+                }
                 break;
                 
             case 'pilotes':
@@ -96,14 +107,24 @@ class GestionController {
                     header("Location: gestion?section=offres");
                     exit;
                 }
-                $items = $this->piloteModel->getPilotes($this->itemsPerPage, $offset);
-                $totalItems = $this->piloteModel->countPilotes();
+                if (!empty($search)) {
+                    $items = $this->piloteModel->searchPilotes($search, $this->itemsPerPage, $offset);
+                    $totalItems = $this->piloteModel->countPilotesSearch($search);
+                } else {
+                    $items = $this->piloteModel->getPilotes($this->itemsPerPage, $offset);
+                    $totalItems = $this->piloteModel->countPilotes();
+                }
                 break;
                 
             case 'offres':
             default:
-                $items = $this->offreModel->getOffres($this->itemsPerPage, $offset);
-                $totalItems = $this->offreModel->countOffres();
+                if (!empty($search)) {
+                    $items = $this->offreModel->searchOffresAdmin($search, $this->itemsPerPage, $offset);
+                    $totalItems = $this->offreModel->countOffresSearch($search);
+                } else {
+                    $items = $this->offreModel->getOffres($this->itemsPerPage, $offset);
+                    $totalItems = $this->offreModel->countOffres();
+                }
                 $section = 'offres'; // Assurer que la section est définie correctement
                 break;
         }
@@ -119,7 +140,8 @@ class GestionController {
             'totalPages' => $totalPages,
             'totalItems' => $totalItems,
             'itemsPerPage' => $this->itemsPerPage,
-            'isAdmin' => isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 2
+            'isAdmin' => isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 2,
+            'search' => $search
         ];
         
         // Charger la vue de la page Gestion
@@ -572,5 +594,129 @@ class GestionController {
         // Afficher la page de statistiques
         require 'app/views/gestion/stats_pilotes.php';
     }
+
+    // Ajoutez cette méthode à votre classe GestionController
+
+public function candidaturesEtudiant() {
+    // Vérifier si l'utilisateur est connecté et a les droits
+    $this->checkGestionAuth();
+    
+    // Récupérer l'ID de l'étudiant
+    $etudiantId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+    
+    if (!$etudiantId) {
+        // Rediriger vers la liste des étudiants si aucun ID n'est fourni
+        header('Location: /gestion?section=etudiants&error=3');
+        exit;
+    }
+    
+    // Charger les modèles nécessaires
+    require_once 'app/models/CandidatureModel.php';
+    $candidatureModel = new CandidatureModel();
+    
+    // Récupérer les informations de l'étudiant
+    $etudiant = $candidatureModel->getEtudiantInfo($etudiantId);
+    
+    if (!$etudiant) {
+        // Rediriger si l'étudiant n'existe pas
+        header('Location: /gestion?section=etudiants&error=3');
+        exit;
+    }
+    
+    // Récupérer les candidatures de l'étudiant
+    $candidatures = $candidatureModel->getCandidaturesByEtudiantId($etudiantId);
+    
+    // Récupérer les offres dans la wishlist de l'étudiant
+    $wishlist = $candidatureModel->getWishlistByEtudiantId($etudiantId);
+    
+    // Charger la vue
+    require_once 'app/views/gestion/candidatures_etudiant.php';
+}
+
+// Ajoutez cette méthode pour gérer l'ajout d'une candidature
+public function addCandidature() {
+    // Vérifier si l'utilisateur est connecté et a les droits
+    $this->checkGestionAuth();
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $etudiantId = isset($_POST['etudiant_id']) ? (int)$_POST['etudiant_id'] : 0;
+        $offreId = isset($_POST['offre_id']) ? (int)$_POST['offre_id'] : 0;
+        $statut = isset($_POST['statut']) ? $_POST['statut'] : 'En attente';
+        
+        if (!$etudiantId || !$offreId) {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=1');
+            exit;
+        }
+        
+        require_once 'app/models/CandidatureModel.php';
+        $candidatureModel = new CandidatureModel();
+        
+        if ($candidatureModel->addCandidature($etudiantId, $offreId, $statut)) {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&success=1');
+        } else {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=1');
+        }
+        exit;
+    }
+    
+    // Si ce n'est pas une requête POST, rediriger vers la liste des étudiants
+    header('Location: /gestion?section=etudiants');
+    exit;
+}
+
+// Ajoutez cette méthode pour gérer la mise à jour du statut d'une candidature
+public function updateCandidatureStatus() {
+    // Vérifier si l'utilisateur est connecté et a les droits
+    $this->checkGestionAuth();
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $candidatureId = isset($_POST['candidature_id']) ? (int)$_POST['candidature_id'] : 0;
+        $etudiantId = isset($_POST['etudiant_id']) ? (int)$_POST['etudiant_id'] : 0;
+        $statut = isset($_POST['statut']) ? $_POST['statut'] : '';
+        
+        if (!$candidatureId || !$etudiantId || !$statut) {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=2');
+            exit;
+        }
+        
+        require_once 'app/models/CandidatureModel.php';
+        $candidatureModel = new CandidatureModel();
+        
+        if ($candidatureModel->updateCandidatureStatus($candidatureId, $statut)) {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&success=2');
+        } else {
+            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=2');
+        }
+        exit;
+    }
+    
+    // Si ce n'est pas une requête POST, rediriger vers la liste des étudiants
+    header('Location: /gestion?section=etudiants');
+    exit;
+}
+
+// Ajoutez cette méthode pour gérer la suppression d'une candidature
+public function deleteCandidature() {
+    // Vérifier si l'utilisateur est connecté et a les droits
+    $this->checkGestionAuth();
+    
+    $candidatureId = isset($_GET['candidature_id']) ? (int)$_GET['candidature_id'] : 0;
+    $etudiantId = isset($_GET['etudiant_id']) ? (int)$_GET['etudiant_id'] : 0;
+    
+    if (!$candidatureId || !$etudiantId) {
+        header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=3');
+        exit;
+    }
+    
+    require_once 'app/models/CandidatureModel.php';
+    $candidatureModel = new CandidatureModel();
+    
+    if ($candidatureModel->deleteCandidature($candidatureId)) {
+        header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&success=3');
+    } else {
+        header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=4');
+    }
+    exit;
+}
 }
 ?>

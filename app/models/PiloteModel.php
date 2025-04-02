@@ -149,5 +149,56 @@ class PiloteModel {
         
         return $stats;
     }
+
+    public function searchPilotes($search, $limit = 10, $offset = 0) {
+        try {
+            $search = '%' . $search . '%';
+            $query = "SELECT p.*, u.nom, u.prenom, u.email
+                     FROM pilote p
+                     JOIN utilisateur u ON p.utilisateur_id = u.id
+                     WHERE u.nom LIKE :search 
+                        OR u.prenom LIKE :search 
+                        OR u.email LIKE :search 
+                        OR p.departement LIKE :search
+                        OR p.specialite LIKE :search
+                     ORDER BY u.nom, u.prenom ASC
+                     LIMIT :limit OFFSET :offset";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la recherche des pilotes: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    public function countPilotesSearch($search) {
+        try {
+            $search = '%' . $search . '%';
+            $query = "SELECT COUNT(*) as total 
+                     FROM pilote p
+                     JOIN utilisateur u ON p.utilisateur_id = u.id
+                     WHERE u.nom LIKE :search 
+                        OR u.prenom LIKE :search 
+                        OR u.email LIKE :search 
+                        OR p.departement LIKE :search
+                        OR p.specialite LIKE :search";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return (int)$result['total'];
+        } catch (PDOException $e) {
+            error_log("Erreur lors du comptage des pilotes recherchés: " . $e->getMessage());
+            return 0;
+        }
+    }
 }
 ?>

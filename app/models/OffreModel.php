@@ -329,5 +329,54 @@ class OffreModel {
             return [];
         }
     }
+
+    public function searchOffresAdmin($search, $limit = 10, $offset = 0) {
+        try {
+            $search = '%' . $search . '%';
+            $stmt = $this->pdo->prepare("
+                SELECT o.*, e.nom as nom_entreprise
+                FROM offre_stage o
+                LEFT JOIN entreprise e ON o.entreprise_id = e.id
+                WHERE o.titre LIKE :search 
+                   OR o.description LIKE :search 
+                   OR e.nom LIKE :search
+                   OR o.type LIKE :search
+                   OR o.lieu LIKE :search
+                ORDER BY o.date_publication DESC
+                LIMIT :limit OFFSET :offset
+            ");
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la recherche des offres: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    public function countOffresSearch($search) {
+        try {
+            $search = '%' . $search . '%';
+            $stmt = $this->pdo->prepare("
+                SELECT COUNT(*) 
+                FROM offre_stage o
+                LEFT JOIN entreprise e ON o.entreprise_id = e.id
+                WHERE o.titre LIKE :search 
+                   OR o.description LIKE :search 
+                   OR e.nom LIKE :search
+                   OR o.type LIKE :search
+                   OR o.lieu LIKE :search
+            ");
+            $stmt->bindParam(':search', $search, PDO::PARAM_STR);
+            $stmt->execute();
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Erreur lors du comptage des offres recherchées: " . $e->getMessage());
+            return 0;
+        }
+    }
 }
 ?>
+
