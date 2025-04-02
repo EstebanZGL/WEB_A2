@@ -962,5 +962,9 @@
     
     <!-- Charger le script dashboard-link.js après les autres scripts -->
     <script src="public/js/dashboard-link.js"></script>
+
+    <!-- Après la ligne qui charge wishlist.js -->
+    <script src="public/js/wishlist-state.js"></script>
+    
 </body>
 </html>

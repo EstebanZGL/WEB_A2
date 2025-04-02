@@ -16,21 +16,39 @@ class WishlistController {
     public function index() {
         // Vérifier si l'utilisateur est connecté
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            header('Location: login');
-            exit;
+            // Si la requête est AJAX, renvoyer une réponse JSON
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
+                return;
+            } else {
+                header('Location: login');
+                exit;
+            }
         }
         
         // Vérifier si l'utilisateur est un étudiant (type 0)
         // CORRECTION : utiliser la variable de session 'utilisateur' au lieu de vérifier 'user_type'
         if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur'] != 0) {
-            header('Location: home');
-            exit;
+            // Si la requête est AJAX, renvoyer une réponse JSON
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                echo json_encode(['success' => false, 'message' => 'Accès non autorisé']);
+                return;
+            } else {
+                header('Location: home');
+                exit;
+            }
         }
         
         // Récupérer les éléments de la wishlist
         $wishlistItems = $this->wishlistModel->getWishlistByUserId($_SESSION['user_id']);
         
-        // Inclure la vue
+        // Si la requête est AJAX, renvoyer les données au format JSON
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            echo json_encode($wishlistItems);
+            return;
+        }
+        
+        // Sinon, inclure la vue
         include 'app/views/wishlist/wishlist.php';
     }
     
