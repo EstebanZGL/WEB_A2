@@ -6,8 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const logoutBouton = document.getElementById("logout-Bouton");
             const welcomeMessage = document.getElementById("welcome-message");
             const pageGestion = document.getElementById("page-gestion");
+            const pageDashboard = document.getElementById("page-dashboard");
             const pageAdmin= document.getElementById("page-admin");
             const mobilePageGestion = document.getElementById("mobile-page-gestion");
+            const mobilePageDashboard = document.getElementById("mobile-page-dashboard");
             const mobilePageAdmin = document.getElementById("mobile-page-admin");
             const mobileLoginBouton = document.getElementById("mobile-login-Bouton");
             const mobileLogoutBouton = document.getElementById("mobile-logout-Bouton");
@@ -27,10 +29,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         utilisateurMessage = "Étudiant";
                         welcomeMessage.classList.add('etudiant');
                         
-                        // Ajouter le lien vers la wishlist uniquement pour les étudiants
-                        // et seulement sur la page des offres
+                        // Afficher le lien vers le tableau de bord pour les étudiants
+                        if (pageDashboard) pageDashboard.style.display = "inline-block";
+                        if (mobilePageDashboard) mobilePageDashboard.style.display = "block";
+                        
+                        // Afficher la section wishlist dans la barre latérale si on est sur la page des offres
                         if (window.location.pathname.includes('offres')) {
-                            addWishlistLinks();
+                            const wishlistSection = document.getElementById('wishlist-section');
+                            if (wishlistSection) {
+                                wishlistSection.style.display = 'block';
+                            }
                         }
                         break;
                     case 1:
@@ -61,51 +69,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 welcomeMessage.style.display = "none"; // Cache le message de bienvenue
                 if (pageGestion) pageGestion.style.display = "none";
                 if (pageAdmin) pageAdmin.style.display = "none"; // Cache la page administrateur
+                if (pageDashboard) pageDashboard.style.display = "none";
                 if (mobilePageGestion) mobilePageGestion.style.display = "none";
                 if (mobilePageAdmin) mobilePageAdmin.style.display = "none";
+                if (mobilePageDashboard) mobilePageDashboard.style.display = "none";
                 
-                // Supprimer le lien wishlist s'il existe
-                removeWishlistLinks();
+                // Masquer la section wishlist dans la barre latérale si on est sur la page des offres
+                if (window.location.pathname.includes('offres')) {
+                    const wishlistSection = document.getElementById('wishlist-section');
+                    if (wishlistSection) {
+                        wishlistSection.style.display = 'none';
+                    }
+                }
             }
         })
         .catch(error => console.error("Erreur lors de la récupération de la session :", error));
-    
-    // Fonction pour ajouter les liens vers la wishlist
-    function addWishlistLinks() {
-        const navLinks = document.querySelector('.navbar-nav');
-        const mobileNav = document.querySelector('.mobile-nav');
-        
-        // Vérifier si le lien wishlist existe déjà avant de l'ajouter dans la navigation principale
-        if (navLinks && !document.querySelector('.nav-link[href="wishlist"]')) {
-            const wishlistLink = document.createElement('a');
-            wishlistLink.href = "wishlist";
-            wishlistLink.className = "nav-link wishlist-nav-link";
-            
-            // Ajouter une icône de cœur avant le texte
-            wishlistLink.innerHTML = '<svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Ma Wishlist';
-            
-            navLinks.appendChild(wishlistLink);
-        }
-        
-        // Ajouter également à la navigation mobile
-        if (mobileNav && !document.querySelector('.mobile-nav-link[href="wishlist"]')) {
-            const mobileWishlistLink = document.createElement('a');
-            mobileWishlistLink.href = "wishlist";
-            mobileWishlistLink.className = "mobile-nav-link";
-            
-            // Ajouter une icône de cœur avant le texte
-            mobileWishlistLink.innerHTML = '<svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Ma Wishlist';
-            
-            mobileNav.appendChild(mobileWishlistLink);
-        }
-    }
-    
-    // Fonction pour supprimer les liens vers la wishlist
-    function removeWishlistLinks() {
-        const wishlistLink = document.querySelector('.nav-link[href="wishlist"]');
-        if (wishlistLink) wishlistLink.remove();
-        
-        const mobileWishlistLink = document.querySelector('.mobile-nav-link[href="wishlist"]');
-        if (mobileWishlistLink) mobileWishlistLink.remove();
-    }
 });
