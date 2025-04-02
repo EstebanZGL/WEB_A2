@@ -75,9 +75,9 @@
                 <div class="container">
                     <h1 class="hero-title">Découvrez Votre Prochaine <span class="gradient-text">Opportunité</span></h1>
                     <p class="hero-subtitle">Recherchez et postulez à des milliers d'emplois dans la technologie, le design, le marketing et plus encore.</p>
-                    <form class="search-form" id="search-form">
-                        <input type="text" placeholder="Titre du poste, mot-clé ou entreprise" id="job-search" class="search-input" />
-                        <input type="text" placeholder="Lieu" id="location-search" class="search-input" />
+                    <form class="search-form" id="search-form" action="offres" method="GET">
+                        <input type="text" placeholder="Titre du poste, mot-clé ou entreprise" id="job-search" name="jobTitle" class="search-input" />
+                        <input type="text" placeholder="Lieu" id="location-search" name="location" class="search-input" />
                         <button type="submit" class="button button-primary button-glow">Rechercher</button>
                     </form>
                     <div class="popular-searches">
@@ -173,6 +173,33 @@
             
         // Mettre à jour l'année dans le copyright
         document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Gérer la soumission du formulaire de recherche
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const jobTitle = document.getElementById('job-search').value.trim();
+            const location = document.getElementById('location-search').value.trim();
+            
+            // Construire l'URL de redirection
+            let redirectUrl = 'offres';
+            const params = [];
+            
+            if (jobTitle) {
+                params.push(`jobTitle=${encodeURIComponent(jobTitle)}`);
+            }
+            
+            if (location) {
+                params.push(`location=${encodeURIComponent(location)}`);
+            }
+            
+            if (params.length > 0) {
+                redirectUrl += '?' + params.join('&');
+            }
+            
+            // Rediriger vers la page des offres avec les paramètres
+            window.location.href = redirectUrl;
+        });
     });
     </script>
     

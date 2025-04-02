@@ -1,54 +1,75 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Vérifier si nous avons un paramètre q dans l'URL
+    // Vérifier si nous avons des paramètres dans l'URL
     const urlParams = new URLSearchParams(window.location.search);
     const queryParam = urlParams.get('q');
+    const jobTitleParam = urlParams.get('jobTitle');
+    const locationParam = urlParams.get('location');
     
-    if (queryParam && window.location.pathname.includes('offres')) {
-        // Liste des termes considérés comme des catégories (filtres)
-        const categoryTerms = ['technology', 'informatique', 'btp', 'marketing', 'finance'];
-        // Liste des termes considérés comme des recherches de titre
-        const titleSearchTerms = ['developer', 'développeur', 'designer', 'marketing', 'audit', 'remote', 'télétravail'];
-        
-        // Vérifier si le terme est une catégorie
-        const isCategory = categoryTerms.includes(queryParam.toLowerCase());
-        // Vérifier si le terme est une recherche de titre
-        const isTitleSearch = titleSearchTerms.includes(queryParam.toLowerCase());
-        
-        if (isCategory) {
-            // Appliquer le filtre de catégorie correspondant
-            if (queryParam.toLowerCase() === 'technology' || queryParam.toLowerCase() === 'informatique') {
-                const techCheckbox = document.querySelector('input[data-filter="job-family"][value="informatique"]');
-                if (techCheckbox) {
-                    techCheckbox.checked = true;
+    // Si nous sommes sur la page des offres et qu'il y a des paramètres de recherche
+    if (window.location.pathname.includes('offres')) {
+        // Traitement du paramètre q (recherche par catégorie ou mot-clé)
+        if (queryParam) {
+            // Liste des termes considérés comme des catégories (filtres)
+            const categoryTerms = ['technology', 'informatique', 'btp', 'marketing', 'finance'];
+            // Liste des termes considérés comme des recherches de titre
+            const titleSearchTerms = ['developer', 'développeur', 'designer', 'marketing', 'audit', 'remote', 'télétravail'];
+            
+            // Vérifier si le terme est une catégorie
+            const isCategory = categoryTerms.includes(queryParam.toLowerCase());
+            // Vérifier si le terme est une recherche de titre
+            const isTitleSearch = titleSearchTerms.includes(queryParam.toLowerCase());
+            
+            if (isCategory) {
+                // Appliquer le filtre de catégorie correspondant
+                if (queryParam.toLowerCase() === 'technology' || queryParam.toLowerCase() === 'informatique') {
+                    const techCheckbox = document.querySelector('input[data-filter="job-family"][value="informatique"]');
+                    if (techCheckbox) {
+                        techCheckbox.checked = true;
+                    }
+                } else if (queryParam.toLowerCase() === 'btp') {
+                    const btpCheckbox = document.querySelector('input[data-filter="job-family"][value="btp"]');
+                    if (btpCheckbox) {
+                        btpCheckbox.checked = true;
+                    }
+                } else if (queryParam.toLowerCase() === 'marketing') {
+                    const marketingCheckbox = document.querySelector('input[data-filter="job-family"][value="marketing"]');
+                    if (marketingCheckbox) {
+                        marketingCheckbox.checked = true;
+                    }
+                } else if (queryParam.toLowerCase() === 'finance') {
+                    const financeCheckbox = document.querySelector('input[data-filter="job-family"][value="finance"]');
+                    if (financeCheckbox) {
+                        financeCheckbox.checked = true;
+                    }
                 }
-            } else if (queryParam.toLowerCase() === 'btp') {
-                const btpCheckbox = document.querySelector('input[data-filter="job-family"][value="btp"]');
-                if (btpCheckbox) {
-                    btpCheckbox.checked = true;
+            } else if (isTitleSearch) {
+                // C'est une recherche par titre, remplir le champ de recherche
+                const jobSearchInput = document.getElementById('job-search');
+                if (jobSearchInput) {
+                    jobSearchInput.value = queryParam;
                 }
-            } else if (queryParam.toLowerCase() === 'marketing') {
-                const marketingCheckbox = document.querySelector('input[data-filter="job-family"][value="marketing"]');
-                if (marketingCheckbox) {
-                    marketingCheckbox.checked = true;
-                }
-            } else if (queryParam.toLowerCase() === 'finance') {
-                const financeCheckbox = document.querySelector('input[data-filter="job-family"][value="finance"]');
-                if (financeCheckbox) {
-                    financeCheckbox.checked = true;
+            } else {
+                // Si ce n'est ni une catégorie ni une recherche par titre reconnue,
+                // on considère que c'est une recherche par titre générique
+                const jobSearchInput = document.getElementById('job-search');
+                if (jobSearchInput) {
+                    jobSearchInput.value = queryParam;
                 }
             }
-        } else if (isTitleSearch) {
-            // C'est une recherche par titre, remplir le champ de recherche
+        }
+        
+        // Traitement des paramètres jobTitle et location (provenant de la page d'accueil)
+        if (jobTitleParam) {
             const jobSearchInput = document.getElementById('job-search');
             if (jobSearchInput) {
-                jobSearchInput.value = queryParam;
+                jobSearchInput.value = jobTitleParam;
             }
-        } else {
-            // Si ce n'est ni une catégorie ni une recherche par titre reconnue,
-            // on considère que c'est une recherche par titre générique
-            const jobSearchInput = document.getElementById('job-search');
-            if (jobSearchInput) {
-                jobSearchInput.value = queryParam;
+        }
+        
+        if (locationParam) {
+            const locationSearchInput = document.getElementById('location-search');
+            if (locationSearchInput) {
+                locationSearchInput.value = locationParam;
             }
         }
         
