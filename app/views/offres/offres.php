@@ -217,18 +217,7 @@
                                 <label class="filter-option"><input type="checkbox" data-filter="salary" value="100000+" class="filter-checkbox" /> 100 000€ +</label>
                             </div>
                         </div>
-                        
-                        <!-- Section Wishlist pour les étudiants (sera affichée/masquée via JavaScript) -->
-                        <div class="filter-group" id="wishlist-section" style="display: none;">
-                            <div class="filter-heading">
-                                <h3>Ma Wishlist</h3>
-                            </div>
-                            <div class="filter-options">
-                                <a href="wishlist" class="wishlist-nav-link">
-                                    Voir ma wishlist
-                                </a>
-                            </div>
-                        </div>
+
                         
                         <!-- Section Tableau de bord pour les étudiants (sera affichée/masquée via JavaScript) -->
                         <div class="filter-group" id="dashboard-section" style="display: none;">
