@@ -10,8 +10,7 @@ $response = [
     'utilisateur' => isset($_SESSION['utilisateur']) ? $_SESSION['utilisateur'] : null,
     'user_id' => isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null,
     'email' => isset($_SESSION['email']) ? $_SESSION['email'] : null,
-    'prenom' => isset($_SESSION['prenom']) ? $_SESSION['prenom'] : null,
-    'nom' => isset($_SESSION['nom']) ? $_SESSION['nom'] : null
+    'prenom' => isset($_SESSION['prenom']) ? $_SESSION['prenom'] : null
 ];
 
 // Envoyer la réponse au format JSON
