@@ -116,7 +116,7 @@
                     <div class="cta-card">
                         <h2 class="cta-title">Prêt à faire le prochain pas dans votre carrière ?</h2>
                         <p class="cta-text">Rejoignez des milliers de chercheurs d'emploi qui ont trouvé leur emploi de rêve grâce à notre plateforme.</p>
-                        <a href="jobs" class="button button-primary button-glow">Trouver des Emplois Maintenant</a>
+                        <a href="offres" class="button button-primary button-glow">Trouver des Emplois Maintenant</a>
                     </div>
                 </div>
             </section>
