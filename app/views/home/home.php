@@ -95,10 +95,10 @@
                 <div class="container">
                     <h2 class="section-title section-title-center">Parcourir par <span class="accent-text-pink">Catégorie</span></h2>
                     <div class="categories-grid">
-                        <a href="jobs?q=technology" class="category-card">Technologie</a>
-                        <a href="jobs?q=design" class="category-card">Design</a>
-                        <a href="jobs?q=marketing" class="category-card">Marketing</a>
-                        <a href="jobs?q=finance" class="category-card">Finance</a>
+                        <a href="offres?q=technology" class="category-card">Technologie</a>
+                        <a href="offres?q=design" class="category-card">Design</a>
+                        <a href="offres?q=marketing" class="category-card">Marketing</a>
+                        <a href="offres?q=finance" class="category-card">Finance</a>
                     </div>
                 </div>
             </section>
