@@ -665,7 +665,6 @@ public function addCandidature() {
     exit;
 }
 
-// Ajoutez cette méthode pour gérer la mise à jour du statut d'une candidature
 /**
  * Met à jour le statut d'une candidature via AJAX
  */
@@ -697,7 +696,7 @@ public function updateCandidatureStatus()
     }
     
     // Vérifier que le statut est valide
-    $statutsValides = ['EN_ATTENTE', 'ACCEPTEE', 'REFUSEE'];
+    $statutsValides = ['EN_ATTENTE', 'ACCEPTEE', 'REFUSEE', 'ENTRETIEN'];
     if (!in_array($statut, $statutsValides)) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Statut invalide']);
@@ -706,8 +705,11 @@ public function updateCandidatureStatus()
     
     try {
         // Mise à jour du statut dans la base de données
-        $candidatureModel = new \App\Models\CandidatureModel();
-        $success = $candidatureModel->updateStatus($candidatureId, $statut);
+        require_once 'app/models/CandidatureModel.php'; // Chargement explicite du modèle
+        $candidatureModel = new CandidatureModel(); // Sans namespace
+        
+        // On utilise updateCandidatureStatus car c'est la méthode qui fonctionne correctement
+        $success = $candidatureModel->updateCandidatureStatus($candidatureId, $statut);
         
         if ($success) {
             echo json_encode(['success' => true, 'message' => 'Statut mis à jour avec succès']);
@@ -715,7 +717,7 @@ public function updateCandidatureStatus()
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => 'Échec de la mise à jour du statut']);
         }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour: ' . $e->getMessage()]);
     }
