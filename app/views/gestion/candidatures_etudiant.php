@@ -233,6 +233,50 @@
             background-color: #2c3e50;
             color: #ffffff;
         }
+        
+        /* Styles pour le menu déroulant de changement de statut */
+        .status-select {
+            padding: 6px 10px;
+            border: 1px solid #2c3e50;
+            border-radius: 4px;
+            background-color: #ffffff;
+            color: #2c3e50;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 150px;
+        }
+        
+        .status-select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .status-select option {
+            padding: 5px;
+        }
+        
+        /* Styles pour l'indicateur de chargement */
+        .loading-indicator {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-top-color: #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+            visibility: hidden;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -468,24 +512,15 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <?php
-                                                        $statusClass = '';
-                                                        switch($candidature['statut']) {
-                                                            case 'En attente':
-                                                                $statusClass = 'status-waiting';
-                                                                break;
-                                                            case 'Entretien':
-                                                                $statusClass = 'status-interview';
-                                                                break;
-                                                            case 'Acceptée':
-                                                                $statusClass = 'status-accepted';
-                                                                break;
-                                                            case 'Refusée':
-                                                                $statusClass = 'status-rejected';
-                                                                break;
-                                                        }
-                                                    ?>
-                                                    <span class="status-badge <?php echo $statusClass; ?>"><?php echo $candidature['statut']; ?></span>
+                                                    <div class="status-container">
+                                                        <select class="status-select" data-candidature-id="<?php echo $candidature['id']; ?>" onchange="updateStatut(this)">
+                                                            <option value="EN_ATTENTE" <?php echo ($candidature['statut'] == 'EN_ATTENTE') ? 'selected' : ''; ?>>En attente</option>
+                                                            <option value="ENTRETIEN" <?php echo ($candidature['statut'] == 'ENTRETIEN') ? 'selected' : ''; ?>>Entretien</option>
+                                                            <option value="ACCEPTEE" <?php echo ($candidature['statut'] == 'ACCEPTEE') ? 'selected' : ''; ?>>Acceptée</option>
+                                                            <option value="REFUSEE" <?php echo ($candidature['statut'] == 'REFUSEE') ? 'selected' : ''; ?>>Refusée</option>
+                                                        </select>
+                                                        <span class="loading-indicator" id="loading-<?php echo $candidature['id']; ?>"></span>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -617,6 +652,75 @@
             this.style.display = 'none';
             document.body.style.overflow = 'auto';
         });
+        
+        // Fonction pour mettre à jour le statut d'une candidature
+        function updateStatut(selectElement) {
+            const candidatureId = selectElement.dataset.candidatureId;
+            const nouveauStatut = selectElement.value;
+            const loadingIndicator = document.getElementById('loading-' + candidatureId);
+            
+            // Afficher l'indicateur de chargement
+            loadingIndicator.style.visibility = 'visible';
+            
+            // Envoi de la requête AJAX pour mettre à jour le statut
+            fetch('/gestion/update-candidature-statut', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `candidature_id=${candidatureId}&statut=${nouveauStatut}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur réseau');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Masquer l'indicateur de chargement
+                loadingIndicator.style.visibility = 'hidden';
+                
+                if (data.success) {
+                    // Afficher un message de succès temporaire
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'alert alert-success';
+                    successMessage.textContent = 'Statut mis à jour avec succès';
+                    successMessage.style.position = 'fixed';
+                    successMessage.style.bottom = '20px';
+                    successMessage.style.right = '20px';
+                    successMessage.style.padding = '10px 20px';
+                    successMessage.style.borderRadius = '4px';
+                    successMessage.style.backgroundColor = '#2ecc71';
+                    successMessage.style.color = '#ffffff';
+                    successMessage.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+                    successMessage.style.zIndex = '9999';
+                    
+                    document.body.appendChild(successMessage);
+                    
+                    // Faire disparaître le message après 3 secondes
+                    setTimeout(() => {
+                        successMessage.style.opacity = '0';
+                        successMessage.style.transition = 'opacity 0.5s ease';
+                        
+                        setTimeout(() => {
+                            document.body.removeChild(successMessage);
+                        }, 500);
+                    }, 3000);
+                } else {
+                    // En cas d'erreur, remettre la sélection précédente
+                    alert('Erreur lors de la mise à jour du statut: ' + data.message);
+                }
+            })
+            .catch(error => {
+                // Masquer l'indicateur de chargement
+                loadingIndicator.style.visibility = 'hidden';
+                
+                // Afficher l'erreur
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de la mise à jour du statut.');
+            });
+        }
     </script>
     
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
