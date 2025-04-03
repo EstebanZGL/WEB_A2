@@ -59,8 +59,9 @@
         </form>
           
         <div class="footer">
-            <a href="#">Politique de confidentialité</a>
-            <a href="#">Conditions d'utilisation</a>
+            <a href="mentions-legales">Politique de confidentialité</a>
+            <a href="mentions-legales">Conditions d'utilisation</a>
+            <a href="mentions-legales">Mentions légales</a>
         </div>
     </div>   
 </body>
