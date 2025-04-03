@@ -271,7 +271,7 @@ class OffreModel {
                 ':date_fin' => $data['date_fin'] ?? null,
                 ':statut' => $data['statut'],
                 ':duree_stage' => $data['duree_stage'],
-                ':ville' => isset($data['lieu']) ? $data['lieu'] : null,
+                ':lieu' => isset($data['lieu']) ? $data['lieu'] : null,
                 ':createur_id' => $data['createur_id']
             ]);
             
