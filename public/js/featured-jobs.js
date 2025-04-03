@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h3 class="job-title">${job.titre}</h3>
                     <div class="job-location">
                         <span class="iconify" data-icon="mdi:map-marker" width="16" height="16"></span>
-                        <span>${job.ville || 'Non spécifiée'}</span>
+                        <span>${job.lieu || 'Non spécifiée'}</span>
                     </div>
                     <div class="job-company">
                         <span class="iconify" data-icon="mdi:office-building" width="16" height="16"></span>
