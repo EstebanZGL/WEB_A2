@@ -22,7 +22,6 @@
                     <a href="../../offres" class="nav-link">Emplois</a>
                     <a href="../../gestion" class="nav-link active" id="page-gestion">Gestion</a>
                     <a href="../../admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
-                    <span id="welcome-message" style="display:none;"></span>
                 </nav>
                 <div id="user-status">
                     <a href="../../login" id="login-Bouton" class="button button-outline button-glow" style="display:none;">Connexion</a>
@@ -92,6 +91,5 @@
         // Mettre à jour l'année actuelle dans le footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
     </script>
-    <script src="../../public/js/app.js"></script>
 </body>
 </html>
