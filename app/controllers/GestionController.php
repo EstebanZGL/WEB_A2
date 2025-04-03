@@ -190,7 +190,18 @@ class GestionController {
         
         $id = $_GET['id'] ?? 0;
         
+        // Récupérer l'offre à modifier avant tout traitement
+        $offre = $this->offreModel->getOffreById($id);
+        
+        if (!$offre) {
+            header("Location: ../../gestion?section=offres&error=3");
+            exit;
+        }
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Enregistrer la valeur du createur_id avant la mise à jour
+            $createur_id = $offre['createur_id']; 
+            
             // Activer l'affichage des erreurs pour le débogage
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
@@ -201,7 +212,8 @@ class GestionController {
                 'titre' => $_POST['titre'] ?? '',
                 'description' => $_POST['description'] ?? '',
                 'entreprise_id' => $_POST['entreprise_id'] ?? null,
-                'createur_id' => $_POST['createur_id'] ?? null, // Ajout du champ createur_id
+                // Utiliser directement la valeur récupérée de la base de données
+                'createur_id' => $createur_id,
                 'date_debut' => $_POST['date_debut'] ?? null,
                 'date_fin' => $_POST['date_fin'] ?? null,
                 'duree_stage' => $_POST['duree_stage'] ?? 0,
@@ -212,15 +224,9 @@ class GestionController {
                 'date_publication' => $_POST['date_publication'] ?? date('Y-m-d')
             ];
             
-            // Vérifier que createur_id n'est pas vide
-            if (empty($offreData['createur_id'])) {
-                // Si createur_id est vide, utiliser l'ID de l'utilisateur connecté ou récupérer la valeur existante
-                $offre = $this->offreModel->getOffreById($id);
-                $offreData['createur_id'] = $offre['createur_id'] ?? $_SESSION['user_id'] ?? 1;
-            }
-            
             // Journaliser les données pour débogage
             error_log("Mise à jour offre ID: $id - Données: " . json_encode($offreData));
+            error_log("createur_id conservé: " . $createur_id);
             
             // Mettre à jour l'offre dans la base de données
             $result = $this->offreModel->updateOffre($id, $offreData);
@@ -233,14 +239,6 @@ class GestionController {
             }
             exit;
         } else {
-            // Récupérer l'offre à modifier
-            $offre = $this->offreModel->getOffreById($id);
-            
-            if (!$offre) {
-                header("Location: ../../gestion?section=offres&error=3");
-                exit;
-            }
-            
             // Récupérer la liste des entreprises pour le formulaire
             $entreprises = $this->entrepriseModel->getEntreprisesForSelect();
             
