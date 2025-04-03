@@ -262,7 +262,7 @@
                         <h3 class="footer-heading">Pour les Chercheurs d'Emploi</h3>
                         <ul>
                             <li><a href="offres" class="footer-link">Parcourir les Emplois</a></li>
-                            <li><a href="#" class="footer-link">Ressources de Carrière</a></li>
+                            <li><a href="mentions-legales" class="footer-link">Mentions Légales</a></li>
                         </ul>
                     </div>
                 </div>

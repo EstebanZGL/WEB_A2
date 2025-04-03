@@ -433,6 +433,9 @@
             <div class="container">
                 <div class="footer-bottom">
                     <p class="copyright">© <span id="current-year">2025</span> LeBonPlan. Tous droits réservés.</p>
+                    <div>
+                        <a href="mentions-legales" class="footer-link">Mentions Légales</a>
+                    </div>
                 </div>
             </div>
         </footer>

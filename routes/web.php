@@ -10,6 +10,7 @@ require_once 'app/controllers/LogoutController.php';
 require_once 'app/controllers/WishlistController.php';
 require_once 'app/controllers/CandidatureController.php';
 require_once 'app/controllers/DashboardController.php'; 
+require_once 'app/controllers/MentionsLegalesController.php'; // Ajout du contrôleur des mentions légales
 
 function route($uri) {
     $homeController = new HomeController();
@@ -21,6 +22,7 @@ function route($uri) {
     $wishlistController = new WishlistController();
     $candidatureController = new CandidatureController();
     $dashboardController = new DashboardController(); 
+    $mentionsLegalesController = new MentionsLegalesController(); // Instanciation du contrôleur des mentions légales
 
     if (strpos($uri, 'cesi-lebonplan/') === 0) {
         $uri = substr($uri, strlen('cesi-lebonplan/'));
@@ -191,6 +193,11 @@ function route($uri) {
         case 'wishlist/remove':
             // Supprimer un élément de la wishlist
             $wishlistController->remove();
+            break;
+            
+        case 'mentions-legales':
+            // Afficher la page des mentions légales
+            $mentionsLegalesController->index();
             break;
 
         default:
