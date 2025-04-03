@@ -8,7 +8,96 @@
     <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
     <link rel="stylesheet" href="public/css/wishlist.css">
+    <!-- Ajout d'Iconify pour les icônes -->
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <style>
+        /* Styles pour les cartes d'offres sur la page d'accueil */
+        .job-card {
+            cursor: pointer;
+            position: relative;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .job-card-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .job-card-image {
+            height: 120px;
+            overflow: hidden;
+        }
+        
+        .job-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .job-card-content {
+            padding: 15px;
+        }
+        
+        .job-title {
+            margin: 0 0 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .job-location, .job-company, .job-salary {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+        
+        .job-location .iconify, .job-company .iconify, .job-salary .iconify {
+            margin-right: 8px;
+            color: #007bff;
+        }
+        
+        .job-card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .job-date {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #b0b0b0;
+        }
+        
+        .job-date .iconify {
+            margin-right: 5px;
+            color: #007bff;
+        }
+        
+        .no-jobs {
+            text-align: center;
+            padding: 20px;
+            color: #b0b0b0;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -86,7 +175,8 @@
                 <div class="container">
                     <h2 class="section-title">Offres <span class="accent-text">Mises en Avant</span></h2>
                     <div class="jobs-grid" id="featured-jobs">
-                        <!-- Jobs will be loaded here via JavaScript -->
+                        <!-- Les offres à la une seront chargées ici via JavaScript -->
+                        <div class="loading">Chargement des offres...</div>
                     </div>
                 </div>
             </section>
@@ -108,7 +198,7 @@
                     <div class="cta-card">
                         <h2 class="cta-title">Prêt à faire le prochain pas dans votre carrière ?</h2>
                         <p class="cta-text">Rejoignez des milliers de chercheurs d'emploi qui ont trouvé leur emploi de rêve grâce à notre plateforme.</p>
-                        <a href="jobs" class="button button-primary button-glow">Trouver des Emplois Maintenant</a>
+                        <a href="offres" class="button button-primary button-glow">Trouver des Emplois Maintenant</a>
                     </div>
                 </div>
             </section>
@@ -173,10 +263,34 @@
             
         // Mettre à jour l'année dans le copyright
         document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Rediriger le formulaire de recherche vers la page des offres
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const jobTitle = document.getElementById('job-search').value;
+            const location = document.getElementById('location-search').value;
+            
+            let url = 'offres';
+            if (jobTitle || location) {
+                url += '?';
+                if (jobTitle) {
+                    url += 'jobTitle=' + encodeURIComponent(jobTitle);
+                }
+                if (jobTitle && location) {
+                    url += '&';
+                }
+                if (location) {
+                    url += 'location=' + encodeURIComponent(location);
+                }
+            }
+            
+            window.location.href = url;
+        });
     });
     </script>
     
-    <!-- Charger le script app.js à la fin du body -->
+    <!-- Charger les scripts -->
     <script src="public/js/app.js"></script>
+    <script src="public/js/featured-jobs.js"></script>
 </body>
 </html>

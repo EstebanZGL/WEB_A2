@@ -463,6 +463,26 @@ class OffreModel {
             return 0;
         }
     }
+
+    // Ajouter cette méthode à la classe OffreModel
+public function getFeaturedOffres($limit = 4) {
+    try {
+        $stmt = $this->pdo->prepare("
+            SELECT o.*, e.nom as entreprise 
+            FROM offre_stage o 
+            LEFT JOIN entreprise e ON o.entreprise_id = e.id
+            WHERE o.statut = 'ACTIVE'
+            ORDER BY o.date_publication DESC
+            LIMIT :limit
+        ");
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Erreur lors de la récupération des offres à la une: " . $e->getMessage());
+        return [];
+    }
+}
 }
 ?>
 

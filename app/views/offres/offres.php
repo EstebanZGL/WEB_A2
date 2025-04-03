@@ -281,7 +281,7 @@
         let currentPage = 1;
         let totalPages = 1;
         let allJobs = []; // Stocke toutes les offres récupérées
-        const jobsPerPage = 4; // Nombre d'offres par page
+        const jobsPerPage = 6; // Nombre d'offres par page
         
         // Fonction pour déterminer quelle image utiliser en fonction du type de l'offre
         function getJobImage(job) {
