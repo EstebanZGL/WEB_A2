@@ -459,6 +459,24 @@ function getValue($object, $key) {
                         if (dashboardLink) dashboardLink.style.display = 'inline-flex';
                         if (mobileDashboardLink) mobileDashboardLink.style.display = 'block';
                     }
+                    
+                    // Pour les pilotes et administrateurs - Afficher le lien Gestion
+                    if (parseInt(data.utilisateur) === 1 || parseInt(data.utilisateur) === 2) {
+                        const gestionLink = document.getElementById('page-gestion');
+                        const mobileGestionLink = document.getElementById('mobile-page-gestion');
+                        
+                        if (gestionLink) gestionLink.style.display = 'inline-flex';
+                        if (mobileGestionLink) mobileGestionLink.style.display = 'block';
+                    }
+                    
+                    // Pour les administrateurs uniquement - Afficher le lien Admin
+                    if (parseInt(data.utilisateur) === 2) {
+                        const adminLink = document.getElementById('page-admin');
+                        const mobileAdminLink = document.getElementById('mobile-page-admin');
+                        
+                        if (adminLink) adminLink.style.display = 'inline-flex';
+                        if (mobileAdminLink) mobileAdminLink.style.display = 'block';
+                    }
                 }
             })
             .catch(error => console.error("Erreur lors de la vérification de la session:", error));
