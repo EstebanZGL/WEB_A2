@@ -118,7 +118,7 @@ class CandidatureController {
         }
         
         // Définir le chemin de destination
-        $destination = 'uploads/' . $fileName;
+        $destination = '/uploads/' . $fileName;
         
         // Déplacer le fichier téléchargé vers le dossier uploads
         if (!move_uploaded_file($_FILES['cv']['tmp_name'], $destination)) {
