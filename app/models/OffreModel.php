@@ -256,7 +256,7 @@ class OffreModel {
                 date_fin = :date_fin,
                 statut = :statut,
                 duree_stage = :duree_stage,
-                ville = :ville,
+                lieu = :lieu,
                 createur_id = :createur_id
                 WHERE id = :id
             ");
