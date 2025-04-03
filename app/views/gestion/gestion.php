@@ -86,6 +86,7 @@
                 <a href="offres" class="mobile-nav-link">Emplois</a>
                 <a href="gestion" class="mobile-nav-link active">Gestion</a>
                 <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                <!-- Suppression de l'élément span id="mobile-welcome-message" -->
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
