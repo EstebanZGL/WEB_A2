@@ -140,19 +140,7 @@ public function addCandidature($etudiantId, $offreId, $statut = 'EN_ATTENTE') {
     }
 }
 
-    /**
-     * Met à jour le statut d'une candidature
-     */
-    public function updateCandidatureStatus($candidatureId, $statut) {
-        try {
-            $stmt = $this->db->prepare("UPDATE candidature SET statut = ? WHERE id = ?");
-            return $stmt->execute([$statut, $candidatureId]);
-        } catch (PDOException $e) {
-            error_log("Erreur lors de la mise à jour du statut de candidature: " . $e->getMessage());
-            return false;
-        }
-    }
-    
+ 
     /**
      * Supprime une candidature
      */
@@ -186,25 +174,14 @@ public function addCandidature($etudiantId, $offreId, $statut = 'EN_ATTENTE') {
         }
     }
 
-    // Ajouter cette nouvelle méthode dans le CandidatureModel.php existant
-
-// Ajouter cette nouvelle méthode dans le CandidatureModel.php existant
-
-/**
- * Met à jour le statut d'une candidature
- * 
- * @param int $candidatureId ID de la candidature à mettre à jour
- * @param string $statut Nouveau statut ('EN_ATTENTE', 'ACCEPTEE', 'REFUSEE')
- * @return bool True si la mise à jour a réussi, False sinon
- */
-public function updateStatus($candidatureId, $statut)
-{
-    $query = "UPDATE candidature SET statut = :statut WHERE id = :candidature_id";
-    $params = [
-        ':candidature_id' => $candidatureId,
-        ':statut' => $statut
-    ];
-    
-    return $this->executeQuery($query, $params);
-}
+    public function updateStatus($candidatureId, $statut)
+    {
+        try {
+            $stmt = $this->db->prepare("UPDATE candidature SET statut = ? WHERE id = ?");
+            return $stmt->execute([$statut, $candidatureId]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour du statut de candidature: " . $e->getMessage());
+            return false;
+        }
+    }
 } 
