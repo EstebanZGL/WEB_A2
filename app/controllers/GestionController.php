@@ -191,19 +191,36 @@ class GestionController {
         $id = $_GET['id'] ?? 0;
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Activer l'affichage des erreurs pour le débogage
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+            
             // Récupérer les données du formulaire
             $offreData = [
                 'titre' => $_POST['titre'] ?? '',
                 'description' => $_POST['description'] ?? '',
                 'entreprise_id' => $_POST['entreprise_id'] ?? null,
+                'createur_id' => $_POST['createur_id'] ?? null, // Ajout du champ createur_id
                 'date_debut' => $_POST['date_debut'] ?? null,
                 'date_fin' => $_POST['date_fin'] ?? null,
                 'duree_stage' => $_POST['duree_stage'] ?? 0,
                 'remuneration' => $_POST['remuneration'] ?? 0,
                 'statut' => $_POST['statut'] ?? 'ACTIVE',
                 'type' => $_POST['type'] ?? null,
-                'lieu' => $_POST['lieu'] ?? null
+                'lieu' => $_POST['lieu'] ?? null,
+                'date_publication' => $_POST['date_publication'] ?? date('Y-m-d')
             ];
+            
+            // Vérifier que createur_id n'est pas vide
+            if (empty($offreData['createur_id'])) {
+                // Si createur_id est vide, utiliser l'ID de l'utilisateur connecté ou récupérer la valeur existante
+                $offre = $this->offreModel->getOffreById($id);
+                $offreData['createur_id'] = $offre['createur_id'] ?? $_SESSION['user_id'] ?? 1;
+            }
+            
+            // Journaliser les données pour débogage
+            error_log("Mise à jour offre ID: $id - Données: " . json_encode($offreData));
             
             // Mettre à jour l'offre dans la base de données
             $result = $this->offreModel->updateOffre($id, $offreData);
@@ -211,6 +228,7 @@ class GestionController {
             if ($result) {
                 header("Location: ../../gestion?section=offres&success=2");
             } else {
+                error_log("Erreur lors de la mise à jour de l'offre ID: $id");
                 header("Location: ../../gestion?section=offres&error=2");
             }
             exit;
