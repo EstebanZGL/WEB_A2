@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LeBonPlan | Trouvez votre prochain emploi</title>
     <meta name="description" content="LeBonPlan vous aide à trouver votre prochain emploi dans la technologie, le design, le marketing et plus encore." />
-    <link rel="stylesheet" href="public/css/style.css" />
-    <link rel="stylesheet" href="public/css/responsive-complete.css">
-    <link rel="stylesheet" href="public/css/wishlist.css">
+    <link rel="stylesheet" href="/public/css/style.css" />
+    <link rel="stylesheet" href="/public/css/responsive-complete.css">
+    <link rel="stylesheet" href="/public/css/wishlist.css">
+    <link rel="stylesheet" href="/public/css/cookies.css">
     <!-- Ajout d'Iconify pour les icônes -->
     <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
@@ -226,10 +227,27 @@
                 </div>
             </div>
         </footer>
+
+        <!-- Composant Cookie Consent -->
+        <div class="cookie-consent" id="cookieConsent">
+            <div class="cookie-content">
+                <div class="cookie-text">
+                    <h3>🍪 Paramètres des cookies</h3>
+                    <p>Nous utilisons des cookies pour améliorer votre expérience sur notre site. Ces cookies sont essentiels pour le bon fonctionnement du site et la sécurité de vos données.</p>
+                </div>
+                <div class="cookie-actions">
+                    <button class="cookie-btn cookie-btn-accept" onclick="acceptCookies()">
+                        Accepter
+                    </button>
+                    <button class="cookie-btn cookie-btn-decline" onclick="declineCookies()">
+                        Refuser
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
- <!-- À la fin du fichier, juste avant la fermeture du body -->
-    <!-- Important: Charger mobile-menu.js avant les autres scripts -->
+    <!-- Scripts -->
     <script src="public/js/mobile-menu.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -237,20 +255,15 @@
         fetch("app/views/login/session.php")
             .then(response => response.json())
             .then(data => {
-                console.log("Session data:", data); // Débogage
+                console.log("Session data:", data);
                 if (data.logged_in) {
-                    // Si l'utilisateur est un étudiant (utilisateur = 0)
                     if (parseInt(data.utilisateur) === 0) {
-                        // Afficher le lien dashboard pour les étudiants
                         const dashboardLink = document.getElementById('page-dashboard');
                         const mobileDashboardLink = document.getElementById('mobile-page-dashboard');
                         
                         if (dashboardLink) dashboardLink.style.display = 'inline-flex';
                         if (mobileDashboardLink) mobileDashboardLink.style.display = 'block';
-                    }
-                    // Si l'utilisateur est un administrateur ou autre type d'utilisateur
-                    else {
-                        // Afficher les liens de gestion pour les administrateurs
+                    } else {
                         const gestionLink = document.getElementById('page-gestion');
                         const mobileGestionLink = document.getElementById('mobile-page-gestion');
                         
@@ -286,10 +299,26 @@
             
             window.location.href = url;
         });
+
+        // Gestion des cookies
+        if (!localStorage.getItem('cookieConsent')) {
+            setTimeout(function() {
+                document.getElementById('cookieConsent').classList.add('show');
+            }, 1000);
+        }
     });
+
+    function acceptCookies() {
+        localStorage.setItem('cookieConsent', 'accepted');
+        document.getElementById('cookieConsent').classList.remove('show');
+    }
+
+    function declineCookies() {
+        localStorage.setItem('cookieConsent', 'declined');
+        document.getElementById('cookieConsent').classList.remove('show');
+    }
     </script>
     
-    <!-- Charger les scripts -->
     <script src="public/js/app.js"></script>
     <script src="public/js/offres-alaune.js"></script>
 </body>
