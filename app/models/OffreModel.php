@@ -212,13 +212,11 @@ class OffreModel {
                 INSERT INTO offre_stage (
                     entreprise_id, createur_id, titre, description, 
                     remuneration, date_debut, date_fin, date_publication, 
-
                     statut, duree_stage, ville
                 ) VALUES (
                     :entreprise_id, :createur_id, :titre, :description, 
                     :remuneration, :date_debut, :date_fin, :date_publication, 
                     :statut, :duree_stage, :ville
-
                 )
             ");
             
@@ -234,7 +232,6 @@ class OffreModel {
                 ':statut' => $data['statut'],
                 ':duree_stage' => $data['duree_stage'],
                 ':ville' => isset($data['ville']) ? $data['ville'] : null
-
             ]);
             
             return $this->pdo->lastInsertId();
@@ -257,7 +254,6 @@ class OffreModel {
                 statut = :statut,
                 duree_stage = :duree_stage,
                 ville = :ville
-
                 WHERE id = :id
             ");
             
@@ -272,7 +268,6 @@ class OffreModel {
                 ':statut' => $data['statut'],
                 ':duree_stage' => $data['duree_stage'],
                 ':ville' => isset($data['ville']) ? $data['ville'] : null
-
             ]);
             
             return $stmt->rowCount() > 0;
@@ -427,7 +422,7 @@ class OffreModel {
                    OR o.description LIKE :search 
                    OR e.nom LIKE :search
                    OR o.type LIKE :search
-                   OR o.lieu LIKE :search
+                   OR o.ville LIKE :search
                 ORDER BY o.date_publication DESC
                 LIMIT :limit OFFSET :offset
             ");
@@ -453,7 +448,7 @@ class OffreModel {
                    OR o.description LIKE :search 
                    OR e.nom LIKE :search
                    OR o.type LIKE :search
-                   OR o.lieu LIKE :search
+                   OR o.ville LIKE :search
             ");
             $stmt->bindParam(':search', $search, PDO::PARAM_STR);
             $stmt->execute();
@@ -465,4 +460,3 @@ class OffreModel {
     }
 }
 ?>
-
