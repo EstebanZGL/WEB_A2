@@ -1,4 +1,7 @@
 <?php
+// Définir l'encodage pour PHP
+mb_internal_encoding('UTF-8');
+
 // Démarrer la session si ce n'est pas déjà fait
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -9,10 +12,18 @@ $response = [
     'logged_in' => isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true,
     'utilisateur' => isset($_SESSION['utilisateur']) ? $_SESSION['utilisateur'] : null,
     'user_id' => isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null,
-    'email' => isset($_SESSION['email']) ? $_SESSION['email'] : null
+    'email' => isset($_SESSION['email']) ? $_SESSION['email'] : null,
+    'prenom' => isset($_SESSION['prenom']) ? $_SESSION['prenom'] : null
 ];
 
-// Envoyer la réponse au format JSON
-header('Content-Type: application/json');
-echo json_encode($response);
+// Définir l'encodage UTF-8 pour la réponse
+header('Content-Type: application/json; charset=utf-8');
+
+// Ajouter des informations de débogage
+$response['debug'] = [
+    'prenom_raw' => isset($_SESSION['prenom']) ? bin2hex($_SESSION['prenom']) : null,
+    'encoding' => 'UTF-8'
+];
+
+echo json_encode($response, JSON_UNESCAPED_UNICODE);
 ?>

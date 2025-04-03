@@ -74,10 +74,8 @@
 </head>
 <body>
     <div id="app">
-        <!-- Menu Mobile Overlay - Déplacé ici comme dans home.php -->
         <div class="mobile-menu-overlay"></div>
         
-        <!-- Menu Mobile - Déplacé ici comme dans home.php -->
         <div class="mobile-menu">
             <div class="mobile-menu-header">
                 <img src="public/images/logo.png" alt="D" width="100" height="113">
@@ -88,6 +86,7 @@
                 <a href="offres" class="mobile-nav-link">Emplois</a>
                 <a href="gestion" class="mobile-nav-link active">Gestion</a>
                 <a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                <!-- Suppression de l'élément span id="mobile-welcome-message" -->
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -115,12 +114,14 @@
                     <a href="offres" class="nav-link">Emplois</a>
                     <a href="gestion" class="nav-link active" id="page-gestion">Gestion</a>
                     <a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
+                    
                 </nav>
                 <div id="user-status">
                     <a href="login" id="login-Bouton" class="button button-outline button-glow" style="display:none;">Connexion</a>
                     <a href="logout" id="logout-Bouton" class="button button-outline button-glow">Déconnexion</a>
                 </div>
             </div>
+            <span id="welcome-message" style="display:none;"></span>
         </header>
         
         <main>
@@ -471,5 +472,6 @@
     
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
     <script src="public/js/mobile-menu.js"></script>
+    <script src="public/js/app.js"></script>
 </body>
 </html>

@@ -31,6 +31,8 @@ class LoginController {
             if (!empty($email) && !empty($password)) {
                 // Récupérer l'utilisateur avec l'email fourni
                 $user = $this->userModel->getUserByEmail($email);
+                
+                error_log("Données utilisateur récupérées: " . print_r($user, true));
 
                 // Vérification du mot de passe hashé
                 if ($user && password_verify($password, $user['mdp'])) {
@@ -38,9 +40,13 @@ class LoginController {
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['utilisateur'] = $user['utilisateur'];
                     $_SESSION['logged_in'] = true;
-
-                    // Ajouter un log pour le débogage
-                    error_log("Connexion réussie pour {$email} - Type utilisateur: {$user['utilisateur']}");
+                    
+                    // Stocker explicitement le prénom et le nom de l'utilisateur en session
+                    $_SESSION['prenom'] = $user['prenom'];
+                    $_SESSION['nom'] = $user['nom'];
+                    
+                    // Ajouter un log pour vérifier les valeurs stockées en session
+                    error_log("Session après authentification: " . print_r($_SESSION, true));
 
                     // Redirection vers la page d'accueil avec chemin absolu
                     header("Location: /home");

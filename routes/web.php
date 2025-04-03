@@ -9,6 +9,7 @@ require_once 'app/controllers/GestionController.php';
 require_once 'app/controllers/LogoutController.php';
 require_once 'app/controllers/WishlistController.php';
 require_once 'app/controllers/CandidatureController.php';
+require_once 'app/controllers/DashboardController.php'; // Ajout du contrôleur Dashboard
 
 function route($uri) {
     // Initialisation des contrôleurs
@@ -20,6 +21,7 @@ function route($uri) {
     $logoutController = new LogoutController();
     $wishlistController = new WishlistController();
     $candidatureController = new CandidatureController();
+    $dashboardController = new DashboardController(); // Initialisation du contrôleur Dashboard
 
     if (strpos($uri, 'cesi-lebonplan/') === 0) {
         $uri = substr($uri, strlen('cesi-lebonplan/'));
@@ -60,6 +62,11 @@ function route($uri) {
         case 'offres/cities':
             // Récupérer la liste des villes disponibles
             $offresController->cities();
+            break;
+
+        case 'dashboard': // Nouvelle route pour le dashboard étudiant
+            // Afficher le tableau de bord de l'étudiant
+            $dashboardController->index();
             break;
 
         case 'gestion':
@@ -173,11 +180,6 @@ function route($uri) {
             $logoutController->logout();
             break;
 
-        case 'wishlist':
-            // Afficher la wishlist de l'utilisateur
-            $wishlistController->index();
-            break;
-
         case 'wishlist/add':
             // Ajouter un élément à la wishlist
             $wishlistController->add();
@@ -201,6 +203,3 @@ function route($uri) {
             break;
     }
 }
-
-?>
-

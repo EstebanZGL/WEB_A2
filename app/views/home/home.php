@@ -24,10 +24,8 @@
             <nav class="mobile-nav">
                 <a href="home" class="mobile-nav-link active">Accueil</a>
                 <a href="offres" class="mobile-nav-link">Emplois</a>
+                <a href="dashboard" class="mobile-nav-link" id="mobile-page-dashboard" style="display:none;">Tableau de bord</a>
                 <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
-                
-                <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
-                <a href="wishlist" class="mobile-nav-link" id="mobile-wishlist-link" style="display:none;">Ma Wishlist</a>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -51,14 +49,8 @@
                 <nav class="navbar-nav">
                     <a href="home" class="nav-link active">Accueil</a>
                     <a href="offres" class="nav-link">Emplois</a>
+                    <a href="dashboard" class="nav-link" id="page-dashboard" style="display:none;">Tableau de bord</a>
                     <a href="gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
-                    
-                    <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
-                    <a href="wishlist" class="nav-link wishlist-icon-link" id="wishlist-link" style="display:none;" title="Ma Wishlist">
-                        <svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                    </a>
                 </nav>
 
                 <div id="user-status">
@@ -146,26 +138,34 @@
         </footer>
     </div>
 
+ <!-- À la fin du fichier, juste avant la fermeture du body -->
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
     <script src="public/js/mobile-menu.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Vérifier si l'utilisateur est un étudiant pour afficher la section wishlist
+        // Vérifier si l'utilisateur est connecté et son type
         fetch("app/views/login/session.php")
             .then(response => response.json())
             .then(data => {
                 console.log("Session data:", data); // Débogage
-                if (data.logged_in && parseInt(data.utilisateur) === 0) {
-                    // L'utilisateur est un étudiant, afficher les liens wishlist
-                    const wishlistLink = document.getElementById('wishlist-link');
-                    const mobileWishlistLink = document.getElementById('mobile-wishlist-link');
-                    
-                    if (wishlistLink) {
-                        wishlistLink.style.display = 'inline-flex';
+                if (data.logged_in) {
+                    // Si l'utilisateur est un étudiant (utilisateur = 0)
+                    if (parseInt(data.utilisateur) === 0) {
+                        // Afficher le lien dashboard pour les étudiants
+                        const dashboardLink = document.getElementById('page-dashboard');
+                        const mobileDashboardLink = document.getElementById('mobile-page-dashboard');
+                        
+                        if (dashboardLink) dashboardLink.style.display = 'inline-flex';
+                        if (mobileDashboardLink) mobileDashboardLink.style.display = 'block';
                     }
-                    
-                    if (mobileWishlistLink) {
-                        mobileWishlistLink.style.display = 'block';
+                    // Si l'utilisateur est un administrateur ou autre type d'utilisateur
+                    else {
+                        // Afficher les liens de gestion pour les administrateurs
+                        const gestionLink = document.getElementById('page-gestion');
+                        const mobileGestionLink = document.getElementById('mobile-page-gestion');
+                        
+                        if (gestionLink) gestionLink.style.display = 'inline-flex';
+                        if (mobileGestionLink) mobileGestionLink.style.display = 'block';
                     }
                 }
             })
