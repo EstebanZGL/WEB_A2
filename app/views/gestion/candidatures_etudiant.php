@@ -233,6 +233,36 @@
             background-color: #2c3e50;
             color: #ffffff;
         }
+        
+        /* Styles pour le filtre de statut */
+        .filter-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .filter-label {
+            margin-right: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #2c3e50;
+            border-radius: 4px;
+            background-color: #ffffff;
+            color: #2c3e50;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -393,6 +423,18 @@
                     <div id="candidatures" class="tab-content">
                         <h2>Candidatures de l'étudiant</h2>
                         
+                        <!-- Filtre de statut des offres de stage -->
+                        <div class="filter-container">
+                            <label for="statut-filter" class="filter-label">Filtrer par statut:</label>
+                            <select id="statut-filter" class="filter-select">
+                                <option value="tous">Tous les statuts</option>
+                                <option value="En attente">En attente</option>
+                                <option value="Entretien">Entretien</option>
+                                <option value="Acceptée">Acceptée</option>
+                                <option value="Refusée">Refusée</option>
+                            </select>
+                        </div>
+                        
                         <!-- Liste des candidatures -->
                         <div class="table-responsive">
                             <table class="table">
@@ -414,7 +456,7 @@
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($candidatures as $candidature): ?>
-                                            <tr>
+                                            <tr class="candidature-row" data-statut="<?php echo htmlspecialchars($candidature['statut']); ?>">
                                                 <td><?php echo htmlspecialchars($candidature['offre_titre']); ?></td>
                                                 <td><?php echo htmlspecialchars($candidature['entreprise_nom']); ?></td>
                                                 <td><?php echo isset($candidature['offre_type']) ? htmlspecialchars($candidature['offre_type']) : 'Non spécifié'; ?></td>
@@ -616,6 +658,42 @@
             });
             this.style.display = 'none';
             document.body.style.overflow = 'auto';
+        });
+        
+        // Filtrage des candidatures par statut
+        document.addEventListener('DOMContentLoaded', function() {
+            const statutFilter = document.getElementById('statut-filter');
+            
+            if (statutFilter) {
+                statutFilter.addEventListener('change', function() {
+                    const selectedStatut = this.value;
+                    const candidatureRows = document.querySelectorAll('.candidature-row');
+                    
+                    candidatureRows.forEach(row => {
+                        const rowStatut = row.getAttribute('data-statut');
+                        
+                        if (selectedStatut === 'tous' || selectedStatut === rowStatut) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                    
+                    // Afficher un message si aucun résultat
+                    const visibleRows = document.querySelectorAll('.candidature-row[style=""]').length;
+                    const tableBody = document.querySelector('#candidatures table tbody');
+                    const noResultsRow = document.querySelector('.no-results-row');
+                    
+                    if (visibleRows === 0 && !noResultsRow) {
+                        const tr = document.createElement('tr');
+                        tr.className = 'no-results-row';
+                        tr.innerHTML = '<td colspan="7" class="text-center">Aucune candidature trouvée avec ce statut</td>';
+                        tableBody.appendChild(tr);
+                    } else if (visibleRows > 0 && noResultsRow) {
+                        noResultsRow.remove();
+                    }
+                });
+            }
         });
     </script>
     
