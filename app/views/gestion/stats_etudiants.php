@@ -47,8 +47,8 @@
                             </div>
                             
                             <div class="stat-card">
-                                <h3>Étudiants avec une offre assignée</h3>
-                                <p class="stat-value"><?php echo $stats['avec_offre']; ?> (<?php echo $stats['total'] > 0 ? round(($stats['avec_offre'] / $stats['total']) * 100, 1) : 0; ?>%)</p>
+                                <h3>Étudiants avec une candidature acceptée</h3>
+                                <p class="stat-value"><?php echo $stats['avec_candidature_acceptee']; ?> (<?php echo $stats['total'] > 0 ? round(($stats['avec_candidature_acceptee'] / $stats['total']) * 100, 1) : 0; ?>%)</p>
                             </div>
                         </div>
                         
@@ -138,6 +138,17 @@
                         labels: {
                             color: '#f1f5f9' // var(--foreground)
                         }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.raw || 0;
+                                let total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                let percentage = Math.round((value / total * 100) * 10) / 10;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
                     }
                 }
             }
@@ -185,6 +196,17 @@
                     legend: {
                         labels: {
                             color: '#f1f5f9' // var(--foreground)
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                let value = context.raw || 0;
+                                let total = <?php echo $stats['total']; ?>;
+                                let percentage = Math.round((value / total * 100) * 10) / 10;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
                         }
                     }
                 }

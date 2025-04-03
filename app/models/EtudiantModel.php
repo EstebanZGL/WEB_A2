@@ -167,6 +167,14 @@ class EtudiantModel {
         $stmt = $this->db->query($query);
         $stats['avec_offre'] = $stmt->fetchColumn();
         
+        // NOUVELLE STATISTIQUE: Nombre d'étudiants ayant au moins une candidature acceptée
+        $query = "SELECT COUNT(DISTINCT e.id) as count
+                 FROM etudiant e
+                 JOIN candidature c ON e.id = c.etudiant_id
+                 WHERE c.statut = 'ACCEPTEE'";
+        $stmt = $this->db->query($query);
+        $stats['avec_candidature_acceptee'] = $stmt->fetchColumn();
+        
         // Nombre de candidatures par étudiant - REQUÊTE CORRIGÉE
         $query = "SELECT u.nom, u.prenom, COUNT(c.id) as nb_candidatures 
                  FROM etudiant e 
@@ -211,8 +219,7 @@ class EtudiantModel {
                     COUNT(*) as total_candidatures,
                     SUM(CASE WHEN statut = 'ACCEPTEE' THEN 1 ELSE 0 END) as candidatures_acceptees,
                     SUM(CASE WHEN statut = 'REFUSEE' THEN 1 ELSE 0 END) as candidatures_refusees,
-                    SUM(CASE WHEN statut = 'EN_ATTENTE' THEN 1 ELSE 0 END) as candidatures_en_attente,
-                    SUM(CASE WHEN statut = 'ENTRETIEN' THEN 1 ELSE 0 END) as candidatures_entretien
+                    SUM(CASE WHEN statut = 'EN_ATTENTE' THEN 1 ELSE 0 END) as candidatures_en_attente
                   FROM candidature";
         $stmt = $this->db->query($query);
         $candidatures_stats = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -225,12 +232,11 @@ class EtudiantModel {
             round(($candidatures_stats['candidatures_refusees'] / $candidatures_stats['total_candidatures']) * 100, 2) : 0;
         $stats['candidatures_stats']['pourcentage_en_attente'] = ($candidatures_stats['total_candidatures'] > 0) ? 
             round(($candidatures_stats['candidatures_en_attente'] / $candidatures_stats['total_candidatures']) * 100, 2) : 0;
-        $stats['candidatures_stats']['pourcentage_entretien'] = ($candidatures_stats['total_candidatures'] > 0) ? 
-            round(($candidatures_stats['candidatures_entretien'] / $candidatures_stats['total_candidatures']) * 100, 2) : 0;
         
         return $stats;
     }
-        /**
+    
+    /**
      * Met à jour un étudiant par son ID utilisateur
      */
     public function updateEtudiantByUserId($utilisateur_id, $data) {
@@ -281,6 +287,7 @@ class EtudiantModel {
             return false;
         }
     }
+    
     public function searchEtudiants($search, $limit = 10, $offset = 0) {
         try {
             $search = '%' . $search . '%';
@@ -332,7 +339,5 @@ class EtudiantModel {
             return 0;
         }
     }
-
-    
 }
 ?>
