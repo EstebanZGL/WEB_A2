@@ -55,4 +55,14 @@ class OffresController {
         
         include 'app/views/offres/details.php';
     }
+    
+    // Nouvelle méthode pour récupérer les offres à la une
+    public function featured() {
+        // Récupérer les offres les plus récentes (max 4)
+        $featuredOffres = $this->offreModel->getFeaturedOffres(4);
+        
+        // Retourner les résultats au format JSON
+        header('Content-Type: application/json');
+        echo json_encode($featuredOffres);
+    }
 }

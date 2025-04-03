@@ -12,27 +12,7 @@ class WishlistController {
         require_once 'app/models/WishlistModel.php';
         $this->wishlistModel = new WishlistModel();
     }
-    
-    public function index() {
-        // Vérifier si l'utilisateur est connecté
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            header('Location: login');
-            exit;
-        }
-        
-        // Vérifier si l'utilisateur est un étudiant (type 0)
-        // CORRECTION : utiliser la variable de session 'utilisateur' au lieu de vérifier 'user_type'
-        if (!isset($_SESSION['utilisateur']) || $_SESSION['utilisateur'] != 0) {
-            header('Location: home');
-            exit;
-        }
-        
-        // Récupérer les éléments de la wishlist
-        $wishlistItems = $this->wishlistModel->getWishlistByUserId($_SESSION['user_id']);
-        
-        // Inclure la vue
-        include 'app/views/wishlist/wishlist.php';
-    }
+
     
     public function add() {
         // Vérifier si la requête est de type POST

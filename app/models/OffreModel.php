@@ -53,7 +53,7 @@ class OffreModel {
             }
 
             if (!empty($location)) {
-                $query .= " AND (e.nom LIKE :location OR o.ville LIKE :location)";
+                $query .= " AND (e.nom LIKE :location OR o.lieu LIKE :location)";
                 $params[':location'] = "%$location%";
             }
 
@@ -256,8 +256,8 @@ class OffreModel {
                 date_fin = :date_fin,
                 statut = :statut,
                 duree_stage = :duree_stage,
-                ville = :ville
-
+                lieu = :lieu,
+                createur_id = :createur_id
                 WHERE id = :id
             ");
             
@@ -271,8 +271,8 @@ class OffreModel {
                 ':date_fin' => $data['date_fin'] ?? null,
                 ':statut' => $data['statut'],
                 ':duree_stage' => $data['duree_stage'],
-                ':ville' => isset($data['ville']) ? $data['ville'] : null
-
+                ':lieu' => isset($data['lieu']) ? $data['lieu'] : null,
+                ':createur_id' => $data['createur_id']
             ]);
             
             return $stmt->rowCount() > 0;
@@ -463,6 +463,26 @@ class OffreModel {
             return 0;
         }
     }
+
+    // Ajouter cette méthode à la classe OffreModel
+public function getFeaturedOffres($limit = 4) {
+    try {
+        $stmt = $this->pdo->prepare("
+            SELECT o.*, e.nom as entreprise 
+            FROM offre_stage o 
+            LEFT JOIN entreprise e ON o.entreprise_id = e.id
+            WHERE o.statut = 'ACTIVE'
+            ORDER BY o.date_publication DESC
+            LIMIT :limit
+        ");
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Erreur lors de la récupération des offres à la une: " . $e->getMessage());
+        return [];
+    }
+}
 }
 ?>
 

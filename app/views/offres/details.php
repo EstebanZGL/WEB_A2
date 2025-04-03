@@ -249,7 +249,7 @@ function getValue($object, $key) {
                 <a href="<?php echo $basePath; ?>/gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
                 <a href="<?php echo $basePath; ?>/admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
                 <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
-                <a href="<?php echo $basePath; ?>/wishlist" class="mobile-nav-link" id="mobile-wishlist-link" style="display:none;">Ma Wishlist</a>
+                <a href="<?php echo $basePath; ?>/dashboard" class="mobile-nav-link" id="mobile-dashboard-link" style="display:none;">Tableau de bord</a>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -274,11 +274,8 @@ function getValue($object, $key) {
                     <a href="<?php echo $basePath; ?>/home" class="nav-link">Accueil</a>
                     <a href="<?php echo $basePath; ?>/offres" class="nav-link active">Emplois</a>
                     <a href="<?php echo $basePath; ?>/gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
+                    <a href="<?php echo $basePath; ?>/dashboard" class="nav-link" id="page-dashboard" style="display:none;">Tableau de bord</a>
                     <a href="<?php echo $basePath; ?>/admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
-                    <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
-                    <a href="<?php echo $basePath; ?>/wishlist" class="nav-link wishlist-icon-link" id="wishlist-link" style="display:none;" title="Ma Wishlist">
-                        <span class="iconify" data-icon="mdi:heart" width="20" height="20"></span>
-                    </a>
                 </nav>
 
                 <div id="user-status">
@@ -437,16 +434,11 @@ function getValue($object, $key) {
                 .then(data => {
                     if (data.logged_in && parseInt(data.utilisateur) === 0) {
                         // L'utilisateur est un étudiant, afficher la section wishlist et les liens
-                        const wishlistLink = document.getElementById('wishlist-link');
-                        const mobileWishlistLink = document.getElementById('mobile-wishlist-link');
+                        const dashboardLink = document.getElementById('page-dashboard');
+                        const mobileDashboardLink = document.getElementById('mobile-page-dashboard');
                         
-                        if (wishlistLink) {
-                            wishlistLink.style.display = 'inline-flex';
-                        }
-                        
-                        if (mobileWishlistLink) {
-                            mobileWishlistLink.style.display = 'block';
-                        }
+                        if (dashboardLink) dashboardLink.style.display = 'inline-flex';
+                        if (mobileDashboardLink) mobileDashboardLink.style.display = 'block';
                     }
                 })
                 .catch(error => console.error("Erreur lors de la vérification de la session:", error));

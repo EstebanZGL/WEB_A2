@@ -196,6 +196,7 @@ class GestionController {
                 'titre' => $_POST['titre'] ?? '',
                 'description' => $_POST['description'] ?? '',
                 'entreprise_id' => $_POST['entreprise_id'] ?? null,
+                'createur_id' => $_POST['createur_id'] ?? null, 
                 'date_debut' => $_POST['date_debut'] ?? null,
                 'date_fin' => $_POST['date_fin'] ?? null,
                 'duree_stage' => $_POST['duree_stage'] ?? 0,

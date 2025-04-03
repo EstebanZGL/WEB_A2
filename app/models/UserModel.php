@@ -33,6 +33,9 @@ class UserModel {
             if ($user) {
                 $user['mdp'] = $user['mot_de_passe'];
                 unset($user['mot_de_passe']);
+                
+                // S'assurer que le nom et le prénom sont correctement conservés
+                error_log("Utilisateur récupéré: " . print_r($user, true));
             }
             
             return $user;
