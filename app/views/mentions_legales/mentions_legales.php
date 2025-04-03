@@ -1,69 +1,67 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentions Légales - LeBonPlan</title>
-    <link rel="stylesheet" href="public/css/style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentions Légales | LeBonPlan</title>
+    <meta name="description" content="Mentions légales du site LeBonPlan." />
+    <link rel="stylesheet" href="public/css/style.css" />
     <link rel="stylesheet" href="public/css/responsive-complete.css">
+    <link rel="stylesheet" href="public/css/wishlist.css">
+    <!-- Ajout d'Iconify pour les icônes -->
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
 </head>
 <body>
-    <div class="page-wrapper">
-        <!-- Header -->
-        <header class="header">
-            <div class="container">
-                <div class="header-content">
-                    <a href="home" class="logo">
-                        <img src="public/images/logo.png" alt="LeBonPlan" width="150" height="170">
-                    </a>
-                    <nav class="main-nav">
-                        <ul class="nav-list">
-                            <li><a href="home" class="nav-link">Accueil</a></li>
-                            <li><a href="offres" class="nav-link">Offres</a></li>
-                            <li><a href="#" class="nav-link" id="wishlist-link" style="display:none;">Wishlist</a></li>
-                            <li><a href="dashboard" class="nav-link" id="dashboard-link" style="display:none;">Tableau de bord</a></li>
-                            <li><a href="gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a></li>
-                            <li><a href="admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a></li>
-                        </ul>
-                    </nav>
-                    <div class="header-buttons">
-                        <a href="login" id="login-Bouton" class="button button-primary button-glow">Connexion</a>
-                        <a href="logout" id="logout-Bouton" class="button button-primary button-glow" style="display:none;">Déconnexion</a>
-                    </div>
-                    <button class="mobile-menu-toggle" aria-label="Menu">
-                        <span class="hamburger"></span>
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Mobile Menu -->
-        <nav class="mobile-menu">
+    <div id="app">
+        <!-- Menu Mobile Overlay -->
+        <div class="mobile-menu-overlay"></div>
+        
+        <!-- Menu Mobile -->
+        <div class="mobile-menu">
             <div class="mobile-menu-header">
-                <a href="home" class="logo">
-                    <img src="public/images/logo.png" alt="LeBonPlan" width="150" height="170">
-                </a>
-                <button class="mobile-menu-close" aria-label="Fermer le menu">
-                    <span class="close-icon"></span>
-                </button>
+                <img src="public/images/logo.png" alt="D" width="100" height="113">
+                <button class="mobile-menu-close">&times;</button>
             </div>
-            <ul class="mobile-nav-list">
-                <li><a href="home" class="mobile-nav-link">Accueil</a></li>
-                <li><a href="offres" class="mobile-nav-link">Offres</a></li>
-                <li><a href="#" class="mobile-nav-link" id="mobile-wishlist-link" style="display:none;">Wishlist</a></li>
-                <li><a href="dashboard" class="mobile-nav-link" id="mobile-dashboard-link" style="display:none;">Tableau de bord</a></li>
-                <li><a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a></li>
-                <li><a href="admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a></li>
-            </ul>
+            <nav class="mobile-nav">
+                <a href="home" class="mobile-nav-link">Accueil</a>
+                <a href="offres" class="mobile-nav-link">Emplois</a>
+                <a href="dashboard" class="mobile-nav-link" id="mobile-page-dashboard" style="display:none;">Tableau de bord</a>
+                <a href="gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
+            </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
                     <a href="login" id="mobile-login-Bouton" class="button button-primary button-glow">Connexion</a>
                     <a href="logout" id="mobile-logout-Bouton" class="button button-primary button-glow" style="display:none;">Déconnexion</a>
                 </div>
             </div>
-        </nav>
+        </div>
+        
+        <header class="navbar">
+            <div class="container">
+                <img src="public/images/logo.png" alt="D" width="150" height="170">
+                
+                <!-- Bouton Menu Mobile -->
+                <button class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav class="navbar-nav">
+                    <a href="home" class="nav-link">Accueil</a>
+                    <a href="offres" class="nav-link">Emplois</a>
+                    <a href="dashboard" class="nav-link" id="page-dashboard" style="display:none;">Tableau de bord</a>
+                    <a href="gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
+                </nav>
 
-        <!-- Main Content -->
+                <div id="user-status">
+                    <a href="login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
+                    <a href="logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
+                </div>
+            </div>
+            <span id="welcome-message" class="welcome-message"></span>
+        </header>
+
         <main class="main-content">
             <div class="container">
                 <section class="section">
@@ -110,7 +108,6 @@
             </div>
         </main>
 
-        <!-- Footer -->
         <footer class="footer">
             <div class="container">
                 <div class="footer-grid">
@@ -124,7 +121,6 @@
                         <h3 class="footer-heading">Pour les Chercheurs d'Emploi</h3>
                         <ul>
                             <li><a href="offres" class="footer-link">Parcourir les Emplois</a></li>
-                            <li><a href="#" class="footer-link">Ressources de Carrière</a></li>
                             <li><a href="mentions-legales" class="footer-link">Mentions Légales</a></li>
                         </ul>
                     </div>
@@ -136,10 +132,41 @@
         </footer>
     </div>
 
+    <!-- Important: Charger mobile-menu.js avant les autres scripts -->
     <script src="public/js/mobile-menu.js"></script>
     <script>
-        // Mettre à jour l'année actuelle dans le footer
+    document.addEventListener('DOMContentLoaded', function() {
+        // Vérifier si l'utilisateur est connecté et son type
+        fetch("app/views/login/session.php")
+            .then(response => response.json())
+            .then(data => {
+                console.log("Session data:", data); // Débogage
+                if (data.logged_in) {
+                    // Si l'utilisateur est un étudiant (utilisateur = 0)
+                    if (parseInt(data.utilisateur) === 0) {
+                        // Afficher le lien dashboard pour les étudiants
+                        const dashboardLink = document.getElementById('page-dashboard');
+                        const mobileDashboardLink = document.getElementById('mobile-page-dashboard');
+                        
+                        if (dashboardLink) dashboardLink.style.display = 'inline-flex';
+                        if (mobileDashboardLink) mobileDashboardLink.style.display = 'block';
+                    }
+                    // Si l'utilisateur est un administrateur ou autre type d'utilisateur
+                    else {
+                        // Afficher les liens de gestion pour les administrateurs
+                        const gestionLink = document.getElementById('page-gestion');
+                        const mobileGestionLink = document.getElementById('mobile-page-gestion');
+                        
+                        if (gestionLink) gestionLink.style.display = 'inline-flex';
+                        if (mobileGestionLink) mobileGestionLink.style.display = 'block';
+                    }
+                }
+            })
+            .catch(error => console.error("Erreur lors de la vérification de la session:", error));
+            
+        // Mettre à jour l'année dans le copyright
         document.getElementById('current-year').textContent = new Date().getFullYear();
+    });
     </script>
 </body>
 </html>
