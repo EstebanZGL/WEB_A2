@@ -117,14 +117,33 @@ class CandidatureController {
             $fileName .= '.docx';
         }
         
-        // Définir le chemin de destination
-        $destination = '/uploads/' . $fileName;
+        // Chemin du dossier uploads (racine du projet)
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/';
+        
+        // S'assurer que le répertoire existe
+        if (!file_exists($uploadDir)) {
+            if (!mkdir($uploadDir, 0755, true)) {
+                return [
+                    'success' => false,
+                    'message' => 'Impossible de créer le dossier pour les CV. Veuillez contacter l\'administrateur.'
+                ];
+            }
+        }
+        
+        // Chemin complet pour l'enregistrement physique du fichier
+        $physicalPath = $uploadDir . $fileName;
+        
+        // Chemin à stocker dans la base de données (relatif)
+        $dbPath = '/uploads/' . $fileName;
         
         // Déplacer le fichier téléchargé vers le dossier uploads
-        if (!move_uploaded_file($_FILES['cv']['tmp_name'], $destination)) {
+        if (!move_uploaded_file($_FILES['cv']['tmp_name'], $physicalPath)) {
+            // Journaliser l'erreur pour l'administrateur
+            error_log("Erreur d'upload de CV: Impossible de déplacer le fichier temporaire vers $physicalPath");
+            
             return [
                 'success' => false,
-                'message' => 'Erreur lors de l\'enregistrement du fichier. Veuillez réessayer.'
+                'message' => 'Erreur lors de l\'enregistrement du fichier. Veuillez réessayer ou contacter l\'administrateur.'
             ];
         }
         
@@ -132,7 +151,7 @@ class CandidatureController {
         $lettreMotivation = isset($_POST['lettre_motivation']) ? trim($_POST['lettre_motivation']) : '';
         
         // Sauvegarder les informations de candidature dans la base de données
-        $result = $this->candidatureModel->createCandidature($etudiantId, $offreId, $destination, $lettreMotivation);
+        $result = $this->candidatureModel->createCandidature($etudiantId, $offreId, $dbPath, $lettreMotivation);
         
         if ($result) {
             return [
@@ -141,8 +160,8 @@ class CandidatureController {
             ];
         } else {
             // En cas d'échec, supprimer le fichier téléchargé
-            if (file_exists($destination)) {
-                unlink($destination);
+            if (file_exists($physicalPath)) {
+                unlink($physicalPath);
             }
             
             return [
