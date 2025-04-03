@@ -1,104 +1,62 @@
 <?php
-require_once __DIR__ . '/../../config/config.php';
-require_once __DIR__ . '/../../app/models/OffreModel.php';
-require_once __DIR__ . '/../../app/models/CandidatureModel.php';
-require_once __DIR__ . '/../../app/models/CompetenceModel.php';
+// Pas besoin de démarrer une session ici car elle est déjà démarrée dans le contrôleur
+require_once 'config/database.php';
+$conn = getDbConnection();
 
-// Initialiser les variables
-$message = '';
-$messageType = '';
-$offre = [];
+// Vérifier si l'offre existe
+if (!isset($offre) || empty($offre)) {
+    header('Location: offres');
+    exit();
+}
+
+// Traitement du formulaire de candidature
+if (isset($_POST['submit_candidature'])) {
+    require_once 'app/controllers/CandidatureController.php';
+    $candidatureController = new CandidatureController();
+    
+    $offre_id = is_array($offre) ? $offre['id'] : $offre->id;
+    $result = $candidatureController->submitCandidature($offre_id);
+    
+    $message = $result['message'];
+    $messageType = $result['success'] ? 'success' : 'error';
+}
+
+// Déterminer le chemin de base pour les ressources statiques
+$basePath = '../../..'; // Remonte de 3 niveaux: offres/details/ID -> racine du projet
+
+// Récupérer les compétences associées à l'offre si nécessaire
+$offre_id = is_array($offre) ? $offre['id'] : $offre->id;
 $competences = [];
+
+try {
+    $sql_competences = "SELECT c.nom, c.description, c.categorie 
+                       FROM offre_competence oc 
+                       JOIN competence c ON oc.competence_id = c.id 
+                       WHERE oc.offre_id = ?";
+    $stmt_comp = $conn->prepare($sql_competences);
+    $stmt_comp->execute([$offre_id]);
+    $competences = $stmt_comp->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Gérer l'erreur silencieusement
+}
+
+// Vérifier si l'utilisateur a déjà postulé
 $alreadyApplied = false;
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 0) {
+    require_once 'app/controllers/CandidatureController.php';
+    $candidatureController = new CandidatureController();
+    $alreadyApplied = $candidatureController->hasAlreadyApplied($offre_id);
+}
 
-// Récupérer l'ID de l'offre depuis l'URL
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $offre_id = $_GET['id'];
-    
-    // Récupérer les détails de l'offre
-    $offreModel = new OffreModel();
-    $offre = $offreModel->getOffreById($offre_id);
-    
-    // Récupérer les compétences associées à cette offre
-    $competenceModel = new CompetenceModel();
-    $competences = $competenceModel->getCompetencesForOffre($offre_id);
-    
-    // Vérifier si l'utilisateur est connecté et a déjà postulé
-    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 0) {
-        $etudiantId = $_SESSION['user_id'];
-        $candidatureModel = new CandidatureModel();
-        $alreadyApplied = $candidatureModel->checkIfAlreadyApplied($etudiantId, $offre_id);
+// Helper function pour accéder aux propriétés/indices de manière sécurisée
+function getValue($object, $key) {
+    if (is_array($object)) {
+        return isset($object[$key]) ? $object[$key] : '';
+    } elseif (is_object($object)) {
+        return isset($object->$key) ? $object->$key : '';
     }
-    
-    // Traitement du formulaire de candidature
-    if (isset($_POST['submit_candidature']) && isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SESSION['utilisateur']) && $_SESSION['utilisateur'] == 0) {
-        $etudiantId = $_SESSION['user_id'];
-        $lettreMotivation = $_POST['lettre_motivation'] ?? '';
-        
-        // Traitement du CV uploadé
-        if (isset($_FILES['cv']) && $_FILES['cv']['error'] == 0) {
-            $allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-            $fileType = $_FILES['cv']['type'];
-            
-            if (in_array($fileType, $allowedTypes)) {
-                // Créer le dossier uploads s'il n'existe pas
-                $uploadDir = __DIR__ . '/../../uploads/';
-                if (!file_exists($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-                
-                // Générer un nom de fichier unique
-                $fileName = uniqid() . '_' . basename($_FILES['cv']['name']);
-                $filePath = $uploadDir . $fileName;
-                
-                // Déplacer le fichier uploadé
-                if (move_uploaded_file($_FILES['cv']['tmp_name'], $filePath)) {
-                    $cvPath = '/uploads/' . $fileName;
-                    
-                    // Enregistrer la candidature
-                    $candidatureModel = new CandidatureModel();
-                    $result = $candidatureModel->createCandidature($etudiantId, $offre_id, $cvPath, $lettreMotivation);
-                    
-                    if ($result) {
-                        $message = 'Votre candidature a été soumise avec succès.';
-                        $messageType = 'success';
-                        $alreadyApplied = true;
-                    } else {
-                        $message = 'Une erreur est survenue lors de la soumission de votre candidature.';
-                        $messageType = 'error';
-                    }
-                } else {
-                    $message = 'Une erreur est survenue lors du téléchargement de votre CV.';
-                    $messageType = 'error';
-                }
-            } else {
-                $message = 'Format de fichier non autorisé. Veuillez télécharger un fichier PDF, DOC ou DOCX.';
-                $messageType = 'error';
-            }
-        } else {
-            $message = 'Veuillez télécharger votre CV.';
-            $messageType = 'error';
-        }
-    }
-} else {
-    // Rediriger vers la liste des offres si aucun ID n'est spécifié
-    header('Location: ' . $basePath . '/offres');
-    exit;
+    return '';
 }
-
-// Fonction utilitaire pour récupérer une valeur d'un tableau avec une clé par défaut
-function getValue($array, $key, $default = '') {
-    return isset($array[$key]) ? $array[$key] : $default;
-}
-
-// Si l'offre n'existe pas, rediriger vers la liste des offres
-if (empty($offre)) {
-    header('Location: ' . $basePath . '/offres');
-    exit;
-}
-
-// Titre de la page
-$pageTitle = htmlspecialchars(getValue($offre, 'titre')) . ' - LeBonPlan';
 ?>
 
 <!DOCTYPE html>
@@ -106,74 +64,225 @@ $pageTitle = htmlspecialchars(getValue($offre, 'titre')) . ' - LeBonPlan';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $pageTitle; ?></title>
-    <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/styles.css">
-    <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/offre-details.css">
-    <link rel="icon" href="<?php echo $basePath; ?>/public/images/favicon.ico" type="image/x-icon">
-    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <title><?php echo htmlspecialchars(getValue($offre, 'titre')); ?> - LeBonPlan</title>
+    
+    <!-- Utilisation de chemins absolus pour les ressources statiques -->
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/style.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/responsive-complete.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/public/css/wishlist.css">
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+    <style>
+        /* Styles spécifiques pour la page de détails - avec bleu au lieu de vert */
+        .offre-details {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+        }
+        
+        .offre-header {
+            background-color: #2d2d2d;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 123, 255, 0.3);
+            position: relative;
+        }
+        
+        .offre-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #007bff; /* Bleu au lieu de vert */
+            text-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        
+        .offre-entreprise {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            color: #cccccc;
+        }
+        
+        .offre-content {
+            padding: 2rem;
+        }
+        
+        .offre-section {
+            margin-bottom: 2rem;
+        }
+        
+        .offre-section h3 {
+            color: #007bff; /* Bleu au lieu de vert */
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 123, 255, 0.3);
+            padding-bottom: 0.5rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .competences-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        
+        .competence-badge {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #007bff; /* Bleu au lieu de vert */
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+        }
+        
+        .entreprise-info {
+            background-color: #2d2d2d;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid rgba(0, 123, 255, 0.2);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .candidature-form {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+        }
+        
+        .form-title {
+            color: #007bff; /* Bleu au lieu de vert */
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #cccccc;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-success {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #007bff; /* Bleu au lieu de vert */
+            border: 1px solid rgba(0, 123, 255, 0.3);
+        }
+        
+        .alert-error {
+            background-color: rgba(255, 0, 0, 0.1);
+            color: #ff5555;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        /* Style pour les boutons désactivés */
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="page-wrapper">
-        <header class="header">
-            <div class="container header-container">
-                <div class="logo-container">
-                    <a href="<?php echo $basePath; ?>/home" class="logo">
-                        <img src="<?php echo $basePath; ?>/public/images/logo.png" alt="LeBonPlan Logo" width="150" height="170">
-                    </a>
+    <div id="app">
+        <!-- Menu Mobile Overlay -->
+        <div class="mobile-menu-overlay"></div>
+        
+        <!-- Menu Mobile -->
+        <div class="mobile-menu">
+            <div class="mobile-menu-header">
+                <img src="<?php echo $basePath; ?>/public/images/logo.png" alt="D" width="100" height="113">
+                <button class="mobile-menu-close">&times;</button>
+            </div>
+            <nav class="mobile-nav">
+                <a href="<?php echo $basePath; ?>/home" class="mobile-nav-link">Accueil</a>
+                <a href="<?php echo $basePath; ?>/offres" class="mobile-nav-link active">Emplois</a>
+                <a href="<?php echo $basePath; ?>/gestion" class="mobile-nav-link" id="mobile-page-gestion" style="display:none;">Gestion</a>
+                <a href="<?php echo $basePath; ?>/admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
+                <!-- Le lien wishlist sera ajouté dynamiquement par JavaScript pour les étudiants -->
+                <a href="<?php echo $basePath; ?>/dashboard" class="mobile-nav-link" id="mobile-dashboard-link" style="display:none;">Tableau de bord</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <div class="mobile-menu-buttons">
+                    <a href="<?php echo $basePath; ?>/login" id="mobile-login-Bouton" class="button button-primary button-glow">Connexion</a>
+                    <a href="<?php echo $basePath; ?>/logout" id="mobile-logout-Bouton" class="button button-primary button-glow" style="display:none;">Déconnexion</a>
                 </div>
-                <div class="nav-container">
-                    <nav class="main-nav">
-                        <ul class="nav-list">
-                            <li class="nav-item"><a href="<?php echo $basePath; ?>/home" class="nav-link">Accueil</a></li>
-                            <li class="nav-item"><a href="<?php echo $basePath; ?>/offres" class="nav-link">Offres</a></li>
-                            <li class="nav-item"><a href="<?php echo $basePath; ?>/entreprises" class="nav-link">Entreprises</a></li>
-                            <li class="nav-item"><a href="<?php echo $basePath; ?>/contact" class="nav-link">Contact</a></li>
-                        </ul>
-                    </nav>
-                    <div class="auth-buttons">
-                        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
-                            <a href="<?php echo $basePath; ?>/dashboard" class="button button-secondary">
-                                <span class="iconify" data-icon="mdi:account" width="20" height="20"></span>
-                                Mon compte
-                            </a>
-                            <a href="<?php echo $basePath; ?>/wishlist" id="wishlist-link" class="button button-icon" style="display: none;">
-                                <span class="iconify" data-icon="mdi:heart" width="24" height="24"></span>
-                            </a>
-                            <a href="<?php echo $basePath; ?>/logout" class="button button-text">Déconnexion</a>
-                        <?php else: ?>
-                            <a href="<?php echo $basePath; ?>/login" class="button button-secondary">Connexion</a>
-                            <a href="<?php echo $basePath; ?>/register" class="button button-primary">Inscription</a>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <button class="mobile-menu-toggle" aria-label="Menu">
-                    <span class="iconify" data-icon="mdi:menu" width="24" height="24"></span>
+            </div>
+        </div>
+        
+        <header class="navbar">
+            <div class="container">
+                <img src="<?php echo $basePath; ?>/public/images/logo.png" alt="D" width="150" height="170">
+
+                <!-- Bouton Menu Mobile -->
+                <button class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
-                <div class="mobile-menu">
-                    <div class="mobile-menu-header">
-                        <a href="<?php echo $basePath; ?>/home" class="logo">
-                            <img src="<?php echo $basePath; ?>/public/images/logo.png" alt="LeBonPlan Logo" width="100" height="120">
-                        </a>
-                        <button class="mobile-menu-close" aria-label="Fermer le menu">
-                            <span class="iconify" data-icon="mdi:close" width="24" height="24"></span>
-                        </button>
-                    </div>
-                    <nav class="mobile-nav">
-                        <ul class="mobile-nav-list">
-                            <li class="mobile-nav-item"><a href="<?php echo $basePath; ?>/home" class="mobile-nav-link">Accueil</a></li>
-                            <li class="mobile-nav-item"><a href="<?php echo $basePath; ?>/offres" class="mobile-nav-link">Offres</a></li>
-                            <li class="mobile-nav-item"><a href="<?php echo $basePath; ?>/entreprises" class="mobile-nav-link">Entreprises</a></li>
-                            <li class="mobile-nav-item"><a href="<?php echo $basePath; ?>/contact" class="mobile-nav-link">Contact</a></li>
-                            <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
-                                <li class="mobile-nav-item"><a href="<?php echo $basePath; ?>/dashboard" class="mobile-nav-link">Mon compte</a></li>
-                                <li class="mobile-nav-item"><a href="<?php echo $basePath; ?>/wishlist" id="mobile-wishlist-link" class="mobile-nav-link" style="display: none;">Mes favoris</a></li>
-                                <li class="mobile-nav-item"><a href="<?php echo $basePath; ?>/logout" class="mobile-nav-link">Déconnexion</a></li>
-                            <?php else: ?>
-                                <li class="mobile-nav-item"><a href="<?php echo $basePath; ?>/login" class="mobile-nav-link">Connexion</a></li>
-                                <li class="mobile-nav-item"><a href="<?php echo $basePath; ?>/register" class="mobile-nav-link">Inscription</a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
+                <nav class="navbar-nav">
+                    <a href="<?php echo $basePath; ?>/home" class="nav-link">Accueil</a>
+                    <a href="<?php echo $basePath; ?>/offres" class="nav-link active">Emplois</a>
+                    <a href="<?php echo $basePath; ?>/gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
+                    <a href="<?php echo $basePath; ?>/dashboard" class="nav-link" id="page-dashboard" style="display:none;">Tableau de bord</a>
+                    <a href="<?php echo $basePath; ?>/admin" class="nav-link" id="page-admin" style="display:none;">Administrateur</a>
+                        <span class="iconify" data-icon="mdi:heart" width="20" height="20"></span>
+                    </a>
+                </nav>
+
+                <div id="user-status">
+                    <a href="<?php echo $basePath; ?>/login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
+                    <a href="<?php echo $basePath; ?>/logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
                 </div>
             </div>
             <span id="welcome-message" class="welcome-message"></span>
@@ -243,9 +352,12 @@ $pageTitle = htmlspecialchars(getValue($offre, 'titre')) . ' - LeBonPlan';
                         </section>
                         
                         <div class="action-buttons">
-                            <a href="<?php echo $basePath; ?>/dashboard" class="button button-secondary">
-                                <span class="iconify" data-icon="mdi:account" width="20" height="20"></span> Accéder au tableau de bord
-                            </a>
+                            <form method="post" action="<?php echo $basePath; ?>/wishlist/add">
+                                <input type="hidden" name="item_id" value="<?php echo $offre_id; ?>">
+                                <button type="submit" class="button button-secondary">
+                                    <span class="iconify" data-icon="mdi:heart-outline" width="20" height="20"></span> Ajouter aux favoris
+                                </button>
+                            </form>
                             <a href="#candidature-form" class="button button-primary button-glow" id="btn-postuler">
                                 <span class="iconify" data-icon="mdi:send" width="20" height="20"></span> Postuler maintenant
                             </a>
@@ -324,16 +436,11 @@ $pageTitle = htmlspecialchars(getValue($offre, 'titre')) . ' - LeBonPlan';
                 .then(data => {
                     if (data.logged_in && parseInt(data.utilisateur) === 0) {
                         // L'utilisateur est un étudiant, afficher la section wishlist et les liens
-                        const wishlistLink = document.getElementById('wishlist-link');
-                        const mobileWishlistLink = document.getElementById('mobile-wishlist-link');
+                        const dashboardLink = document.getElementById('page-dashboard');
+                        const mobileDashboardLink = document.getElementById('mobile-page-dashboard');
                         
-                        if (wishlistLink) {
-                            wishlistLink.style.display = 'inline-flex';
-                        }
-                        
-                        if (mobileWishlistLink) {
-                            mobileWishlistLink.style.display = 'block';
-                        }
+                        if (dashboardLink) dashboardLink.style.display = 'inline-flex';
+                        if (mobileDashboardLink) mobileDashboardLink.style.display = 'block';
                     }
                 })
                 .catch(error => console.error("Erreur lors de la vérification de la session:", error));
