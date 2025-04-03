@@ -38,6 +38,9 @@
                         <a href="../../gestion?section=offres" class="button button-secondary">Retour à la liste</a>
                         
                         <form action="../../gestion/offres/edit?id=<?php echo $offre['id']; ?>" method="post" class="form">
+                            <!-- Champ caché pour conserver le createur_id -->
+                            <input type="hidden" name="createur_id" value="<?php echo $offre['createur_id']; ?>">
+                            
                             <div class="form-group">
                                 <label for="entreprise_id">Entreprise</label>
                                 <select id="entreprise_id" name="entreprise_id" required>
@@ -65,7 +68,6 @@
                                 <input type="number" id="remuneration" name="remuneration" step="0.01" min="0" value="<?php echo $offre['remuneration']; ?>" required>
                             </div>
                             
-                            <!-- Ajout des champs de date manquants -->
                             <div class="form-row">
                                 <div class="form-group half">
                                     <label for="date_debut">Date de début</label>
@@ -81,7 +83,7 @@
                             <div class="form-row">
                                 <div class="form-group half">
                                     <label for="duree_stage">Durée du stage (mois)</label>
-                                    <input type="number" id="duree_stage" name="duree_stage" min="1" max="12" value="<?php echo $offre['duree_stage']; ?>" readonly>
+                                    <input type="number" id="duree_stage" name="duree_stage" min="1" max="12" value="<?php echo $offre['duree_stage']; ?>">
                                 </div>
                                 
                                 <div class="form-group half">
@@ -113,7 +115,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Ajout du champ date_publication -->
                             <div class="form-group">
                                 <label for="date_publication">Date de publication</label>
                                 <input type="date" id="date_publication" name="date_publication" value="<?php echo $offre['date_publication']; ?>" required>
