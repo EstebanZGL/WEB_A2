@@ -678,7 +678,7 @@ public function updateCandidatureStatus()
     }
     
     // Vérifier si l'utilisateur est connecté et a les droits
-    if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] != 'pilote') {
+    if (!isset($_SESSION['logged_in']) || $_SESSION['utilisateur'] < 1) {
         http_response_code(403);
         echo json_encode(['success' => false, 'message' => 'Accès refusé. Vous devez être connecté en tant que pilote.']);
         exit;
