@@ -174,7 +174,6 @@ function route($uri) {
             $gestionController->deletePilote();
             break;
 
-
         case 'logout':
             // Utiliser le contrôleur de déconnexion
             $logoutController->logout();
