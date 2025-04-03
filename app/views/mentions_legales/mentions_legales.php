@@ -142,6 +142,12 @@
             .then(data => {
                 console.log("Session data:", data); // Débogage
                 if (data.logged_in) {
+                    // Afficher le bouton de déconnexion et masquer le bouton de connexion
+                    document.getElementById('login-Bouton').style.display = 'none';
+                    document.getElementById('logout-Bouton').style.display = 'inline-flex';
+                    document.getElementById('mobile-login-Bouton').style.display = 'none';
+                    document.getElementById('mobile-logout-Bouton').style.display = 'inline-flex';
+                    
                     // Si l'utilisateur est un étudiant (utilisateur = 0)
                     if (parseInt(data.utilisateur) === 0) {
                         // Afficher le lien dashboard pour les étudiants
