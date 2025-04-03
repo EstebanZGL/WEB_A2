@@ -708,8 +708,8 @@ public function updateCandidatureStatus()
         require_once 'app/models/CandidatureModel.php'; // Chargement explicite du modèle
         $candidatureModel = new CandidatureModel(); // Sans namespace
         
-        // On utilise updateCandidatureStatus car c'est la méthode qui fonctionne correctement
-        $success = $candidatureModel->updateCandidatureStatus($candidatureId, $statut);
+        // Modifier cette ligne - utiliser updateStatus au lieu de updateCandidatureStatus
+        $success = $candidatureModel->updateStatus($candidatureId, $statut);
         
         if ($success) {
             echo json_encode(['success' => true, 'message' => 'Statut mis à jour avec succès']);

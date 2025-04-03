@@ -505,7 +505,6 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <!-- Remplacer l'affichage statique par un menu déroulant -->
                                                     <div class="status-container">
                                                         <select class="status-select" data-candidature-id="<?php echo $candidature['id']; ?>" onchange="updateStatut(this)">
                                                             <option value="EN_ATTENTE" <?php echo ($candidature['statut'] == 'EN_ATTENTE') ? 'selected' : ''; ?>>En attente</option>
