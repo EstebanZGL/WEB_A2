@@ -200,11 +200,6 @@
             color: #ffffff;
         }
         
-        .status-interview {
-            background-color: #3498db;
-            color: #ffffff;
-        }
-        
         .status-accepted {
             background-color: #2ecc71;
             color: #ffffff;
@@ -367,8 +362,6 @@
                                 <p><?php echo htmlspecialchars($etudiant['formation']); ?></p>
                             </div>
                         </div>
-                        
-                        
                     </div>
                     
                     <!-- Messages d'alerte -->
@@ -512,12 +505,13 @@
                                                     </div>
                                                 </td>
                                                 <td>
+                                                    <!-- Remplacer l'affichage statique par un menu déroulant -->
                                                     <div class="status-container">
                                                         <select class="status-select" data-candidature-id="<?php echo $candidature['id']; ?>" onchange="updateStatut(this)">
                                                             <option value="EN_ATTENTE" <?php echo ($candidature['statut'] == 'EN_ATTENTE') ? 'selected' : ''; ?>>En attente</option>
-                                                            <option value="ENTRETIEN" <?php echo ($candidature['statut'] == 'ENTRETIEN') ? 'selected' : ''; ?>>Entretien</option>
                                                             <option value="ACCEPTEE" <?php echo ($candidature['statut'] == 'ACCEPTEE') ? 'selected' : ''; ?>>Acceptée</option>
                                                             <option value="REFUSEE" <?php echo ($candidature['statut'] == 'REFUSEE') ? 'selected' : ''; ?>>Refusée</option>
+                                                            <option value="ENTRETIEN" <?php echo ($candidature['statut'] == 'ENTRETIEN') ? 'selected' : ''; ?>>Entretien</option>
                                                         </select>
                                                         <span class="loading-indicator" id="loading-<?php echo $candidature['id']; ?>"></span>
                                                     </div>
@@ -663,13 +657,13 @@
             loadingIndicator.style.visibility = 'visible';
             
             // Envoi de la requête AJAX pour mettre à jour le statut
-            fetch('/gestion/update-candidature-statut', {
+            fetch('/gestion/etudiants/candidatures/update-status', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: `candidature_id=${candidatureId}&statut=${nouveauStatut}`
+                body: `candidature_id=${candidatureId}&status=${nouveauStatut}`
             })
             .then(response => {
                 if (!response.ok) {

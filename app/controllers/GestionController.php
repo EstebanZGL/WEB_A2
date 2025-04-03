@@ -666,35 +666,63 @@ public function addCandidature() {
 }
 
 // Ajoutez cette méthode pour gérer la mise à jour du statut d'une candidature
-public function updateCandidatureStatus() {
-    // Vérifier si l'utilisateur est connecté et a les droits
-    $this->checkGestionAuth();
-    
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $candidatureId = isset($_POST['candidature_id']) ? (int)$_POST['candidature_id'] : 0;
-        $etudiantId = isset($_POST['etudiant_id']) ? (int)$_POST['etudiant_id'] : 0;
-        $statut = isset($_POST['statut']) ? $_POST['statut'] : '';
-        
-        if (!$candidatureId || !$etudiantId || !$statut) {
-            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=2');
-            exit;
-        }
-        
-        require_once 'app/models/CandidatureModel.php';
-        $candidatureModel = new CandidatureModel();
-        
-        if ($candidatureModel->updateCandidatureStatus($candidatureId, $statut)) {
-            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&success=2');
-        } else {
-            header('Location: /gestion/etudiants/candidatures?id=' . $etudiantId . '&error=2');
-        }
+/**
+ * Met à jour le statut d'une candidature via AJAX
+ */
+public function updateCandidatureStatus()
+{
+    // Vérifier si la requête est bien une requête AJAX
+    if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Accès non autorisé']);
         exit;
     }
     
-    // Si ce n'est pas une requête POST, rediriger vers la liste des étudiants
-    header('Location: /gestion?section=etudiants');
+    // Vérifier si l'utilisateur est connecté et a les droits
+    if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] != 'pilote') {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Accès refusé. Vous devez être connecté en tant que pilote.']);
+        exit;
+    }
+    
+    // Récupérer les données de la requête
+    $candidatureId = isset($_POST['candidature_id']) ? intval($_POST['candidature_id']) : 0;
+    $statut = isset($_POST['status']) ? $_POST['status'] : '';
+    
+    // Valider les données
+    if ($candidatureId <= 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'ID de candidature invalide']);
+        exit;
+    }
+    
+    // Vérifier que le statut est valide
+    $statutsValides = ['EN_ATTENTE', 'ACCEPTEE', 'REFUSEE'];
+    if (!in_array($statut, $statutsValides)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Statut invalide']);
+        exit;
+    }
+    
+    try {
+        // Mise à jour du statut dans la base de données
+        $candidatureModel = new \App\Models\CandidatureModel();
+        $success = $candidatureModel->updateStatus($candidatureId, $statut);
+        
+        if ($success) {
+            echo json_encode(['success' => true, 'message' => 'Statut mis à jour avec succès']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Échec de la mise à jour du statut']);
+        }
+    } catch (\Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour: ' . $e->getMessage()]);
+    }
+    
     exit;
 }
+
 
 // Ajoutez cette méthode pour gérer la suppression d'une candidature
 public function deleteCandidature() {
@@ -719,5 +747,7 @@ public function deleteCandidature() {
     }
     exit;
 }
+
+
 }
 ?>

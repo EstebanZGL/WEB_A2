@@ -185,4 +185,26 @@ public function addCandidature($etudiantId, $offreId, $statut = 'EN_ATTENTE') {
             return [];
         }
     }
+
+    // Ajouter cette nouvelle méthode dans le CandidatureModel.php existant
+
+// Ajouter cette nouvelle méthode dans le CandidatureModel.php existant
+
+/**
+ * Met à jour le statut d'une candidature
+ * 
+ * @param int $candidatureId ID de la candidature à mettre à jour
+ * @param string $statut Nouveau statut ('EN_ATTENTE', 'ACCEPTEE', 'REFUSEE')
+ * @return bool True si la mise à jour a réussi, False sinon
+ */
+public function updateStatus($candidatureId, $statut)
+{
+    $query = "UPDATE candidature SET statut = :statut WHERE id = :candidature_id";
+    $params = [
+        ':candidature_id' => $candidatureId,
+        ':statut' => $statut
+    ];
+    
+    return $this->executeQuery($query, $params);
 }
+} 
