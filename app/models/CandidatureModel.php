@@ -107,39 +107,39 @@ class CandidatureModel {
     }
     
     /**
-     * Crée une nouvelle candidature
-     */
-    public function createCandidature($etudiantId, $offreId, $cvPath = null, $lettreMotivation = null) {
-        try {
-            $stmt = $this->db->prepare(
-                "INSERT INTO candidature (etudiant_id, offre_id, date_candidature, cv_path, lettre_motivation, statut) 
-                VALUES (?, ?, NOW(), ?, ?, 'En attente')"
-            );
-            
-            return $stmt->execute([$etudiantId, $offreId, $cvPath, $lettreMotivation]);
-        } catch (PDOException $e) {
-            error_log("Erreur lors de la création de la candidature: " . $e->getMessage());
-            return false;
-        }
+ * Crée une nouvelle candidature
+ */
+public function createCandidature($etudiantId, $offreId, $cvPath = null, $lettreMotivation = null) {
+    try {
+        $stmt = $this->db->prepare(
+            "INSERT INTO candidature (etudiant_id, offre_id, date_candidature, cv_path, lettre_motivation, statut) 
+            VALUES (?, ?, NOW(), ?, ?, 'EN_ATTENTE')"
+        );
+        
+        return $stmt->execute([$etudiantId, $offreId, $cvPath, $lettreMotivation]);
+    } catch (PDOException $e) {
+        error_log("Erreur lors de la création de la candidature: " . $e->getMessage());
+        return false;
     }
-    
-    /**
-     * Ajoute une candidature (méthode utilisée par l'interface d'administration)
-     */
-    public function addCandidature($etudiantId, $offreId, $statut = 'En attente') {
-        try {
-            $stmt = $this->db->prepare(
-                "INSERT INTO candidature (etudiant_id, offre_id, date_candidature, statut) 
-                VALUES (?, ?, NOW(), ?)"
-            );
-            
-            return $stmt->execute([$etudiantId, $offreId, $statut]);
-        } catch (PDOException $e) {
-            error_log("Erreur lors de l'ajout de la candidature: " . $e->getMessage());
-            return false;
-        }
+}
+
+/**
+ * Ajoute une candidature (méthode utilisée par l'interface d'administration)
+ */
+public function addCandidature($etudiantId, $offreId, $statut = 'EN_ATTENTE') {
+    try {
+        $stmt = $this->db->prepare(
+            "INSERT INTO candidature (etudiant_id, offre_id, date_candidature, statut) 
+            VALUES (?, ?, NOW(), ?)"
+        );
+        
+        return $stmt->execute([$etudiantId, $offreId, $statut]);
+    } catch (PDOException $e) {
+        error_log("Erreur lors de l'ajout de la candidature: " . $e->getMessage());
+        return false;
     }
-    
+}
+
     /**
      * Met à jour le statut d'une candidature
      */

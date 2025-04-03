@@ -427,39 +427,57 @@ function getValue($object, $key) {
     <script src="<?php echo $basePath; ?>/public/js/mobile-menu.js"></script>
     <script src="<?php echo $basePath; ?>/public/js/app.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Vérifier si l'utilisateur est un étudiant pour afficher la section wishlist
-            fetch("<?php echo $basePath; ?>/app/views/login/session.php")
-                .then(response => response.json())
-                .then(data => {
-                    if (data.logged_in && parseInt(data.utilisateur) === 0) {
-                        // L'utilisateur est un étudiant, afficher la section wishlist et les liens
+    document.addEventListener('DOMContentLoaded', function() {
+        // Vérifier la session utilisateur
+        fetch("<?php echo $basePath; ?>/app/views/login/session.php")
+            .then(response => response.json())
+            .then(data => {
+                // Mettre à jour les boutons login/logout
+                const loginBtn = document.getElementById('login-Bouton');
+                const logoutBtn = document.getElementById('logout-Bouton');
+                const mobileLoginBtn = document.getElementById('mobile-login-Bouton');
+                const mobileLogoutBtn = document.getElementById('mobile-logout-Bouton');
+                
+                if (data.logged_in) {
+                    // Utilisateur connecté
+                    if (loginBtn) loginBtn.style.display = 'none';
+                    if (logoutBtn) logoutBtn.style.display = 'inline-flex';
+                    if (mobileLoginBtn) mobileLoginBtn.style.display = 'none';
+                    if (mobileLogoutBtn) mobileLogoutBtn.style.display = 'block';
+                    
+                    // Afficher le message de bienvenue
+                    const welcomeMsg = document.getElementById('welcome-message');
+                    if (welcomeMsg) {
+                        welcomeMsg.textContent = 'Bonjour ' + data.nom + ' ' + data.prenom;
+                    }
+                    
+                    // Pour les étudiants spécifiquement
+                    if (parseInt(data.utilisateur) === 0) {
                         const dashboardLink = document.getElementById('page-dashboard');
-                        const mobileDashboardLink = document.getElementById('mobile-page-dashboard');
+                        const mobileDashboardLink = document.getElementById('mobile-dashboard-link');
                         
                         if (dashboardLink) dashboardLink.style.display = 'inline-flex';
                         if (mobileDashboardLink) mobileDashboardLink.style.display = 'block';
                     }
-                })
-                .catch(error => console.error("Erreur lors de la vérification de la session:", error));
-                
-            // Mettre à jour l'année dans le copyright
-            document.getElementById('current-year').textContent = new Date().getFullYear();
+                }
+            })
+            .catch(error => console.error("Erreur lors de la vérification de la session:", error));
             
-            // Faire défiler jusqu'au formulaire de candidature si le bouton est cliqué
-            const btnPostuler = document.getElementById('btn-postuler');
-            if (btnPostuler) {
-                btnPostuler.addEventListener('click', function(e) {
-                    const candidatureForm = document.getElementById('candidature-form');
-                    if (candidatureForm) {
-                        // Empêcher le comportement par défaut du lien
-                        e.preventDefault();
-                        // Faire défiler jusqu'au formulaire
-                        candidatureForm.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            }
-        });
-    </script>
+        // Mettre à jour l'année dans le copyright
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Faire défiler jusqu'au formulaire de candidature si le bouton est cliqué
+        const btnPostuler = document.getElementById('btn-postuler');
+        if (btnPostuler) {
+            btnPostuler.addEventListener('click', function(e) {
+                const candidatureForm = document.getElementById('candidature-form');
+                if (candidatureForm) {
+                    e.preventDefault();
+                    candidatureForm.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

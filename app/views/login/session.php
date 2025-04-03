@@ -19,11 +19,6 @@ $response = [
 // Définir l'encodage UTF-8 pour la réponse
 header('Content-Type: application/json; charset=utf-8');
 
-// Ajouter des informations de débogage
-$response['debug'] = [
-    'prenom_raw' => isset($_SESSION['prenom']) ? bin2hex($_SESSION['prenom']) : null,
-    'encoding' => 'UTF-8'
-];
 
 echo json_encode($response, JSON_UNESCAPED_UNICODE);
 ?>
