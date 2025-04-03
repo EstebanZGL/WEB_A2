@@ -256,8 +256,8 @@ class OffreModel {
                 date_fin = :date_fin,
                 statut = :statut,
                 duree_stage = :duree_stage,
-                ville = :ville
-
+                ville = :ville,
+                createur_id = :createur_id
                 WHERE id = :id
             ");
             
@@ -271,8 +271,8 @@ class OffreModel {
                 ':date_fin' => $data['date_fin'] ?? null,
                 ':statut' => $data['statut'],
                 ':duree_stage' => $data['duree_stage'],
-                ':ville' => isset($data['ville']) ? $data['ville'] : null
-
+                ':ville' => isset($data['lieu']) ? $data['lieu'] : null,
+                ':createur_id' => $data['createur_id']
             ]);
             
             return $stmt->rowCount() > 0;
