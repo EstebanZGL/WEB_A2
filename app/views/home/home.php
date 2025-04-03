@@ -291,6 +291,6 @@
     
     <!-- Charger les scripts -->
     <script src="public/js/app.js"></script>
-    <script src="public/js/featured-jobs.js"></script>
+    <script src="public/js/offres-alaune.js"></script>
 </body>
 </html>

@@ -277,11 +277,35 @@
     <script src="public/js/mobile-menu.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Variables pour la pagination
-        let currentPage = 1;
-        let totalPages = 1;
-        let allJobs = []; // Stocke toutes les offres récupérées
-        const jobsPerPage = 6; // Nombre d'offres par page
+    // Variables pour la pagination
+    let currentPage = 1;
+    let totalPages = 1;
+    let allJobs = []; // Stocke toutes les offres récupérées
+    const jobsPerPage = 6; // Nombre d'offres par page
+    
+    // Vérifier les paramètres d'URL pour pré-remplir les filtres
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobTitleParam = urlParams.get('jobTitle');
+    const locationParam = urlParams.get('location');
+    const qParam = urlParams.get('q'); // Récupérer le paramètre q des liens populaires
+    
+    // Pré-remplir les champs de formulaire
+    if (jobTitleParam) {
+        document.getElementById('job-search').value = jobTitleParam;
+    } else if (qParam) {
+        // Si q est présent mais pas jobTitle, utiliser q à la place
+        document.getElementById('job-search').value = qParam;
+    }
+    
+    if (locationParam) {
+        document.getElementById('location-search').value = locationParam;
+    }
+    
+    // Appliquer les filtres si des paramètres sont présents dans l'URL
+    if (jobTitleParam || locationParam || qParam) {
+        // Un petit délai pour s'assurer que tout est chargé
+        setTimeout(applyFilters, 100);
+    }
         
         // Fonction pour déterminer quelle image utiliser en fonction du type de l'offre
         function getJobImage(job) {
