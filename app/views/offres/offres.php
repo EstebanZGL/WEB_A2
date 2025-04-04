@@ -132,18 +132,6 @@
                             </div>
                         </div>
                         
-                        <!-- Section Wishlist pour les étudiants (sera affichée/masquée via JavaScript) -->
-                        <div class="filter-group" id="wishlist-section" style="display: none;">
-                            <div class="filter-heading">
-                                <h3>Ma Wishlist</h3>
-                            </div>
-                            <div class="filter-options">
-                                <a href="dashboard" class="wishlist-nav-link">
-                                    Voir mes favoris
-                                </a>
-                            </div>
-                        </div>
-                        
                         <!-- Bouton pour réinitialiser tous les filtres -->
                         <button id="reset-all-filters" class="reset-filters-btn">
                             <span class="iconify" data-icon="mdi:refresh" width="16" height="16"></span> 
