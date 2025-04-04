@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="public/css/responsive-complete.css"/>
     <link rel="stylesheet" href="public/css/offres.css"/>
     <link rel="stylesheet" href="public/css/wishlist.css"/>
-    <link rel="stylesheet" href="cookies.css"/>
+    <link rel="stylesheet" href="public/css/cookies.css"/>
     <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     
 
