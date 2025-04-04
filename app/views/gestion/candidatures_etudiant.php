@@ -24,40 +24,41 @@
             <nav class="mobile-nav">
                 <a href="/home" class="mobile-nav-link">Accueil</a>
                 <a href="/offres" class="mobile-nav-link">Emplois</a>
+                <a href="/dashboard" class="mobile-nav-link" id="mobile-page-dashboard" style="display:none;">Tableau de bord</a>
                 <a href="/gestion" class="mobile-nav-link active">Gestion</a>
-                <a href="/admin" class="mobile-nav-link" id="mobile-page-admin" style="display:none;">Administrateur</a>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
-                    <a href="/logout" class="button button-primary button-glow">Déconnexion</a>
+                    <a href="/login" id="mobile-login-Bouton" class="button button-primary button-glow" style="display:none;">Connexion</a>
+                    <a href="/logout" id="mobile-logout-Bouton" class="button button-primary button-glow">Déconnexion</a>
                 </div>
             </div>
         </div>
         
         <header class="navbar">
             <div class="container">
-                <!-- Bouton burger pour le menu mobile -->
-                <button class="mobile-menu-toggle" aria-label="Menu mobile">
+                <img src="/public/images/logo.png" alt="D" width="150" height="170">
+                
+                <!-- Bouton Menu Mobile -->
+                <button class="mobile-menu-toggle">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
                 </button>
-                
-                <a href="/home">
-                    <img src="/public/images/logo.png" alt="D" width="150" height="170">
-                </a>
-                
                 <nav class="navbar-nav">
                     <a href="/home" class="nav-link">Accueil</a>
                     <a href="/offres" class="nav-link">Emplois</a>
-                    <a href="/gestion" class="nav-link active" id="page-gestion">Gestion</a>
+                    <a href="/dashboard" class="nav-link" id="page-dashboard" style="display:none;">Tableau de bord</a>
+                    <a href="/gestion" class="nav-link active">Gestion</a>
                 </nav>
+
                 <div id="user-status">
                     <a href="/login" id="login-Bouton" class="button button-outline button-glow" style="display:none;">Connexion</a>
                     <a href="/logout" id="logout-Bouton" class="button button-outline button-glow">Déconnexion</a>
                 </div>
             </div>
+            <span id="welcome-message" class="welcome-message"></span>
         </header>
         
         <main>
