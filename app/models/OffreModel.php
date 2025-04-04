@@ -213,11 +213,11 @@ class OffreModel {
                     entreprise_id, createur_id, titre, description, 
                     remuneration, date_debut, date_fin, date_publication, 
 
-                    statut, duree_stage, ville
+                    statut, duree_stage, lieu
                 ) VALUES (
                     :entreprise_id, :createur_id, :titre, :description, 
                     :remuneration, :date_debut, :date_fin, :date_publication, 
-                    :statut, :duree_stage, :ville
+                    :statut, :duree_stage, :lieu
 
                 )
             ");
@@ -233,7 +233,7 @@ class OffreModel {
                 ':date_publication' => $data['date_publication'],
                 ':statut' => $data['statut'],
                 ':duree_stage' => $data['duree_stage'],
-                ':ville' => isset($data['ville']) ? $data['ville'] : null
+                ':lieu' => isset($data['lieu']) ? $data['lieu'] : null
 
             ]);
             
