@@ -116,8 +116,8 @@
                             <tr>
                                 <td><?= htmlspecialchars($candidature['offre_titre']) ?></td>
                                 <td><?= htmlspecialchars($candidature['entreprise_nom']) ?></td>
-                                <td><?= htmlspecialchars($candidature['offre_type']) ?></td>
-                                <td><?= htmlspecialchars($candidature['offre_lieu']) ?></td>
+                                <td><?= htmlspecialchars($candidature['offre_type'] ?? 'Non spécifié') ?></td>
+                                <td><?= htmlspecialchars($candidature['offre_lieu'] ?? 'Non spécifié') ?></td>
                                 <td><?= date('d/m/Y', strtotime($candidature['date_candidature'])) ?></td>
                                 <td>
                                     <span class="candidature-status status-<?= strtolower($candidature['statut']) ?>">
@@ -168,8 +168,8 @@
                             <tr>
                                 <td><?= htmlspecialchars($item['offre_titre']) ?></td>
                                 <td><?= htmlspecialchars($item['entreprise_nom']) ?></td>
-                                <td><?= htmlspecialchars($item['offre_type']) ?></td>
-                                <td><?= htmlspecialchars($item['offre_lieu']) ?></td>
+                                <td><?= htmlspecialchars($item['offre_type'] ?? 'Non spécifié') ?></td>
+                                <td><?= htmlspecialchars($item['offre_lieu'] ?? 'Non spécifié') ?></td>
                                 <td><?= htmlspecialchars($item['offre_statut']) ?></td>
                                 <td class="dashboard-actions">
                                     <a href="offres/details/<?= $item['offre_id'] ?>" class="action-button" title="Voir les détails">
