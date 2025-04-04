@@ -215,17 +215,3 @@
     fill: rgba(255, 0, 0, 0.2);
     stroke: #ff0000;
 }
-
-/* Lien de navigation vers la wishlist */
-.wishlist-nav-link {
-    display: block;
-    padding: 0.5rem 0;
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.wishlist-nav-link:hover {
-    color: #0056b3;
-    text-decoration: underline;
-}

@@ -15,7 +15,6 @@
 </head>
 <body>
     <div id="app">
-        <!-- Menu Mobile Overlay -->
         <div class="mobile-menu-overlay"></div>
         
         <!-- Menu Mobile -->
