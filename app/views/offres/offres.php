@@ -182,6 +182,25 @@
         </footer>
     </div>
 
+    <!-- Composant Cookie Consent -->
+    <div class="cookie-consent" id="cookieConsent">
+            <div class="cookie-content">
+                <div class="cookie-text">
+                    <h3>🍪 Paramètres des cookies</h3>
+                    <p>Nous utilisons des cookies pour améliorer votre expérience sur notre site. Ces cookies sont essentiels pour le bon fonctionnement du site et la sécurité de vos données.</p>
+                </div>
+                <div class="cookie-actions">
+                    <button class="cookie-btn cookie-btn-accept" onclick="acceptCookies()">
+                        Accepter
+                    </button>
+                    <button class="cookie-btn cookie-btn-decline" onclick="declineCookies()">
+                        Refuser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
     <script src="public/js/mobile-menu.js"></script>
     <script src="public/js/offres.js"></script>
