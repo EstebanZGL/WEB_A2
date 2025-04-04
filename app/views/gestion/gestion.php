@@ -6,71 +6,9 @@
     <title>LeBonPlan | Gestion</title>
     <meta name="description" content="Interface de gestion des offres, entreprises et étudiants sur la plateforme LeBonPlan." />
     <link rel="stylesheet" href="public/css/style.css" />
-    <link rel="stylesheet" href="public/css/responsive-complete.css">
-    <link rel="stylesheet" href="public/css/gestion.css">
-    <!-- Styles correctifs pour éliminer la colonne vide uniquement dans le tableau des étudiants -->
-    <style>
-        /* Applique table-layout: fixed uniquement au tableau des étudiants */
-        .gestion-table-etudiants {
-            table-layout: fixed;
-            width: 100%;
-        }
-        
-        /* Règles spécifiques pour le tableau des étudiants */
-        .gestion-table-etudiants th:nth-child(1),
-        .gestion-table-etudiants td:nth-child(1) {
-            width: 16%;
-        }
-        
-        .gestion-table-etudiants th:nth-child(2),
-        .gestion-table-etudiants td:nth-child(2) {
-            width: 16%;
-        }
-        
-        .gestion-table-etudiants th:nth-child(3),
-        .gestion-table-etudiants td:nth-child(3) {
-            width: 22%;
-        }
-        
-        .gestion-table-etudiants th:nth-child(4),
-        .gestion-table-etudiants td:nth-child(4) {
-            width: 13%;
-        }
-        
-        .gestion-table-etudiants th:nth-child(5),
-        .gestion-table-etudiants td:nth-child(5) {
-            width: 18%;
-        }
-        
-        .gestion-table-etudiants th:nth-child(6),
-        .gestion-table-etudiants td:nth-child(6) {
-            width: 15%;
-            text-align: center;
-        }
-        
-        /* Suppression de toute colonne potentielle après la 6e colonne */
-        .gestion-table-etudiants th:nth-child(7),
-        .gestion-table-etudiants td:nth-child(7) {
-            display: none;
-        }
-        
-        /* Correction spécifique pour les boutons dans la table des étudiants */
-        .gestion-table-etudiants .actions {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* Style amélioré pour les boutons modifier et supprimer */
-        .gestion-table-etudiants .btn-modifier,
-        .gestion-table-etudiants .btn-supprimer {
-            display: inline-block;
-            text-align: center;
-            min-width: 70px;
-            padding: 5px 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="public/css/responsive-complete.css"/>
+    <link rel="stylesheet" href="public/css/gestion.css"/>
+    
 </head>
 <body>
     <div id="app">
@@ -441,38 +379,10 @@
         </footer>
     </div>
 
-    <script>
-        // Mettre à jour l'année actuelle dans le footer
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        
-        // Fonction pour confirmer la suppression
-        function confirmDelete(section, id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
-                window.location.href = 'gestion/' + section + '/delete?id=' + id;
-            }
-        }
-        
-        // Corriger la pagination active
-        document.addEventListener('DOMContentLoaded', function() {
-            // Récupérer le numéro de page actuel à partir de l'URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const currentPage = parseInt(urlParams.get('page')) || 1;
-            
-            // Supprimer la classe 'active' de tous les éléments de pagination
-            document.querySelectorAll('.pagination-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Ajouter la classe 'active' à l'élément correspondant à la page actuelle
-            const activePageItem = document.querySelector(`.pagination-item[href$="page=${currentPage}${urlParams.get('search') ? '&search=' + urlParams.get('search') : ''}"]:not([href*="page=${currentPage+1}"]):not([href*="page=${currentPage-1}"])`);
-            if (activePageItem) {
-                activePageItem.classList.add('active');
-            }
-        });
-    </script>
-    
+      
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
     <script src="public/js/mobile-menu.js"></script>
     <script src="public/js/app.js"></script>
+    <script src="public/js/gestion.js"></script>
 </body>
 </html>

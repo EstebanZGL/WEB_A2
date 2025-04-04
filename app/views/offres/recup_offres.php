@@ -38,12 +38,12 @@ if (!empty($location)) {
 // Ajout des filtres de salaire
 if (!empty($filters['salary'])) {
     foreach ($filters['salary'] as $range) {
-        if ($range === '0-50000') {
-            $query .= " AND o.remuneration BETWEEN 0 AND 50000";
-        } elseif ($range === '50000-100000') {
-            $query .= " AND o.remuneration BETWEEN 50000 AND 100000";
-        } elseif ($range === '100000+') {
-            $query .= " AND o.remuneration >= 100000";
+        if ($range === '0-500') {
+            $query .= " AND o.remuneration BETWEEN 0 AND 500";
+        } elseif ($range === '500-1000') {
+            $query .= " AND o.remuneration BETWEEN 500 AND 1000";
+        } elseif ($range === '1000+') {
+            $query .= " AND o.remuneration >= 1000";
         }
     }
 }

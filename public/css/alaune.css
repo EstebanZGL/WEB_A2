@@ -1,0 +1,86 @@
+/* Styles pour les cartes d'offres sur la page d'accueil */
+        .job-card {
+            cursor: pointer;
+            position: relative;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .job-card-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .job-card-image {
+            height: 120px;
+            overflow: hidden;
+        }
+        
+        .job-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .job-card-content {
+            padding: 15px;
+        }
+        
+        .job-title {
+            margin: 0 0 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .job-location, .job-company, .job-salary {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+        
+        .job-location .iconify, .job-company .iconify, .job-salary .iconify {
+            margin-right: 8px;
+            color: #007bff;
+        }
+        
+        .job-card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .job-date {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #b0b0b0;
+        }
+        
+        .job-date .iconify {
+            margin-right: 5px;
+            color: #007bff;
+        }
+        
+        .no-jobs {
+            text-align: center;
+            padding: 20px;
+            color: #b0b0b0;
+        }
+        

@@ -16,6 +16,8 @@
 </div>
 
 <script>
+// Il vérifie si l'utilisateur a déjà fait un choix concernant les cookies
+// Si non, il affiche la bannière de consentement après un délai de 1 seconde
 document.addEventListener('DOMContentLoaded', function() {
     if (!localStorage.getItem('cookieConsent')) {
         setTimeout(function() {
@@ -24,11 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Cette fonction est appelée lorsque l'utilisateur clique sur "Accepter"
 function acceptCookies() {
     localStorage.setItem('cookieConsent', 'accepted');
     document.getElementById('cookieConsent').classList.remove('show');
 }
 
+// Cette fonction est appelée lorsque l'utilisateur clique sur "Refuser"
 function declineCookies() {
     localStorage.setItem('cookieConsent', 'declined');
     document.getElementById('cookieConsent').classList.remove('show');

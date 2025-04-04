@@ -8,86 +8,8 @@
     <link rel="stylesheet" href="public/css/stats.css">
     <link rel="stylesheet" href="public/css/responsive-complete.css">
     <link rel="stylesheet" href="public/css/wishlist.css">
-    <style>
-        /* Styles spécifiques au dashboard étudiant */
-        .dashboard-container {
-            padding: 2rem 0;
-        }
-        
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-lg);
-        }
-        
-        .dashboard-header h1 {
-            margin-bottom: 0;
-        }
-        
-        .dashboard-section {
-            margin-bottom: 2rem;
-        }
-        
-        .candidature-status {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .status-en_attente {
-            background-color: rgba(234, 179, 8, 0.2);
-            color: #eab308;
-            border: 1px solid rgba(234, 179, 8, 0.3);
-        }
-        
-        .status-acceptee {
-            background-color: rgba(34, 197, 94, 0.2);
-            color: #22c55e;
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
-        
-        .status-refusee {
-            background-color: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-        
-        .dashboard-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .action-button {
-            background: none;
-            border: none;
-            color: var(--foreground-muted);
-            cursor: pointer;
-            padding: 0.25rem;
-            border-radius: 50%;
-            transition: var(--transition-fast);
-        }
-        
-        .action-button:hover {
-            color: var(--primary);
-            background-color: rgba(14, 165, 233, 0.1);
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--white-10);
-        }
-        
-        .empty-state p {
-            color: var(--foreground-muted);
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link rel="stylesheet" href="public/css/dashboard.css">
+    
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
 <body>
@@ -289,59 +211,7 @@
             </div>
         </footer>
     </div>
-
-    <script src="public/js/mobile-menu.js"></script>
-    <script>
-        // Script pour gérer la suppression des offres de la wishlist
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mettre à jour l'année dans le copyright
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            const removeButtons = document.querySelectorAll('.remove-wishlist');
-            
-            removeButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const offreId = this.getAttribute('data-id');
-                    
-                    fetch('wishlist/remove', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: `offre_id=${offreId}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Supprimer la ligne du tableau
-                            this.closest('tr').remove();
-                            
-                            // Vérifier si le tableau est vide
-                            const tbody = this.closest('tbody');
-                            if (tbody && tbody.children.length === 0) {
-                                const table = tbody.closest('table');
-                                const statsTable = table.closest('.stats-table');
-                                const emptyState = document.createElement('div');
-                                emptyState.className = 'empty-state';
-                                emptyState.innerHTML = `
-                                    <span class="iconify" data-icon="mdi:heart-outline" style="font-size: 48px; color: var(--accent); margin-bottom: 1rem;"></span>
-                                    <p>Vous n'avez pas encore ajouté d'offres à vos favoris.</p>
-                                    <a href="offres" class="button button-primary">Parcourir les offres</a>
-                                `;
-                                table.remove();
-                                statsTable.appendChild(emptyState);
-                            }
-                        } else {
-                            alert('Une erreur est survenue lors de la suppression de l\'offre de la wishlist.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur:', error);
-                        alert('Une erreur est survenue lors de la communication avec le serveur.');
-                    });
-                });
-            });
-        });
-    </script>
+    <script src="public/js/mobile-menu.js"></script>                           
+    <script src="public/js/dashboard.js"></script>
 </body>
 </html>

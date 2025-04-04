@@ -93,59 +93,81 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 300);
     }
     
-    fetch("app/views/login/session.php")
-        .then(response => response.json())
+    fetch("app/views/login/session.php", {
+        headers: {
+            'Accept': 'application/json; charset=utf-8',
+        }
+    })
+        .then(response => {
+            return response.json();
+        })
         .then(data => {
+            // Récupérer les éléments du DOM avec vérification de leur existence
             const loginBouton = document.getElementById("login-Bouton");
             const logoutBouton = document.getElementById("logout-Bouton");
             const welcomeMessage = document.getElementById("welcome-message");
             const pageGestion = document.getElementById("page-gestion");
-            const pageAdmin= document.getElementById("page-admin");
+            const pageDashboard = document.getElementById("page-dashboard");
+            const pageAdmin = document.getElementById("page-admin");
             const mobilePageGestion = document.getElementById("mobile-page-gestion");
+            const mobilePageDashboard = document.getElementById("mobile-page-dashboard");
             const mobilePageAdmin = document.getElementById("mobile-page-admin");
             const mobileLoginBouton = document.getElementById("mobile-login-Bouton");
             const mobileLogoutBouton = document.getElementById("mobile-logout-Bouton");
-            
+
+            // Vérifier que les éléments essentiels existent avant de les manipuler
+            if (!loginBouton || !logoutBouton || !welcomeMessage) {
+                console.error("Éléments essentiels de l'interface non trouvés dans le DOM");
+                return; // Sortir de la fonction si les éléments essentiels n'existent pas
+            }
+
             if (data.logged_in) {
                 loginBouton.style.display = "none";
                 logoutBouton.style.display = "inline-block";
                 if (mobileLoginBouton) mobileLoginBouton.style.display = "none";
                 if (mobileLogoutBouton) mobileLogoutBouton.style.display = "inline-block";
-                
-                // Afficher un message de bienvenue en fonction du type d'utilisateur
-                let utilisateurMessage;
+
+                // Afficher un message de bienvenue avec le prénom de l'utilisateur
+                let userTypeLabel;
                 const userType = parseInt(data.utilisateur);
                 
                 switch (userType) {
                     case 0: // Étudiant
-                        utilisateurMessage = "Étudiant";
+                        userTypeLabel = "Étudiant";
                         welcomeMessage.classList.add('etudiant');
-                        // Ajouter le lien vers la wishlist uniquement pour les étudiants
-                        // et seulement sur la page des offres
-                        if (window.location.pathname.includes('offres')) {
-                            addWishlistLinks();
-                        }
+                        
+                        // Afficher le lien vers le tableau de bord pour les étudiants
+                        if (pageDashboard) pageDashboard.style.display = "inline-block";
+                        if (mobilePageDashboard) mobilePageDashboard.style.display = "block";
+                        
                         break;
                     case 1:
-                        utilisateurMessage = "Pilote";
+                        userTypeLabel = "Pilote";
                         welcomeMessage.classList.add('pilote');
-                        pageGestion.style.display = "inline-block";
+                        if (pageGestion) pageGestion.style.display = "inline-block";
                         if (mobilePageGestion) mobilePageGestion.style.display = "inline-block";
                         break;
                     case 2:
-                        utilisateurMessage = "Admin";
+                        userTypeLabel = "Admin";
                         welcomeMessage.classList.add('admin');
-                        pageGestion.style.display = "inline-block";
-                        pageAdmin.style.display = "inline-block";
+                        if (pageGestion) pageGestion.style.display = "inline-block";
+                        if (pageAdmin) pageAdmin.style.display = "inline-block";
                         if (mobilePageGestion) mobilePageGestion.style.display = "inline-block";
                         if (mobilePageAdmin) mobilePageAdmin.style.display = "inline-block";
                         break;
                     default:
-                        utilisateurMessage = "Bienvenue !";
+                        userTypeLabel = "Bienvenue";
                 }
                 
-                welcomeMessage.textContent = utilisateurMessage; // Met à jour le message de bienvenue
-                welcomeMessage.style.display = "inline-block"; // Affiche le message
+                // Construire le message de bienvenue avec le prénom
+                console.log("Data received:", data); // Pour déboguer
+                const userFirstName = data.prenom ? data.prenom.trim() : "";
+                let welcomeText = userFirstName !== "" ? userFirstName : userTypeLabel;
+                console.log("welcomeText à afficher:", welcomeText); // Pour déboguer
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = welcomeText;
+                    welcomeMessage.style.display = "inline-block"; // Affiche le message
+                }
             } else {
                 loginBouton.style.display = "inline-block";
                 logoutBouton.style.display = "none";
@@ -154,51 +176,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 welcomeMessage.style.display = "none"; // Cache le message de bienvenue
                 if (pageGestion) pageGestion.style.display = "none";
                 if (pageAdmin) pageAdmin.style.display = "none"; // Cache la page administrateur
+                if (pageDashboard) pageDashboard.style.display = "none";
                 if (mobilePageGestion) mobilePageGestion.style.display = "none";
                 if (mobilePageAdmin) mobilePageAdmin.style.display = "none";
+                if (mobilePageDashboard) mobilePageDashboard.style.display = "none";
                 
-                // Supprimer le lien wishlist s'il existe
-                removeWishlistLinks();
+                // Masquer la section wishlist dans la barre latérale si on est sur la page des offres
+                if (window.location.pathname.includes('offres')) {
+                    const wishlistSection = document.getElementById('wishlist-section');
+                    if (wishlistSection) {
+                        wishlistSection.style.display = 'none';
+                    }
+                }
             }
         })
         .catch(error => console.error("Erreur lors de la récupération de la session :", error));
-    
-    // Fonction pour ajouter les liens vers la wishlist
-    function addWishlistLinks() {
-        const navLinks = document.querySelector('.navbar-nav');
-        const mobileNav = document.querySelector('.mobile-nav');
-        
-        // Vérifier si le lien wishlist existe déjà avant de l'ajouter dans la navigation principale
-        if (navLinks && !document.querySelector('.nav-link[href="wishlist"]')) {
-            const wishlistLink = document.createElement('a');
-            wishlistLink.href = "wishlist";
-            wishlistLink.className = "nav-link wishlist-nav-link";
-            
-            // Ajouter une icône de cœur avant le texte
-            wishlistLink.innerHTML = '<svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Ma Wishlist';
-            navLinks.appendChild(wishlistLink);
-        }
-        
-        // Ajouter également à la navigation mobile
-        if (mobileNav && !document.querySelector('.mobile-nav-link[href="wishlist"]')) {
-            const mobileWishlistLink = document.createElement('a');
-            mobileWishlistLink.href = "wishlist";
-            mobileWishlistLink.className = "mobile-nav-link";
-            
-            // Ajouter une icône de cœur avant le texte
-            mobileWishlistLink.innerHTML = '<svg class="wishlist-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Ma Wishlist';
-            mobileNav.appendChild(mobileWishlistLink);
-        }
-    }
-    
-    // Fonction pour supprimer les liens vers la wishlist
-    function removeWishlistLinks() {
-        const wishlistLink = document.querySelector('.nav-link[href="wishlist"]');
-        if (wishlistLink) wishlistLink.remove();
-        
-        const mobileWishlistLink = document.querySelector('.mobile-nav-link[href="wishlist"]');
-        if (mobileWishlistLink) mobileWishlistLink.remove();
-    }
     
     // Fonction pour charger les filtres de villes
     function loadCityFilters() {
