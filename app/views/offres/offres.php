@@ -185,6 +185,7 @@
     <!-- Important: Charger mobile-menu.js avant les autres scripts -->
     <script src="public/js/mobile-menu.js"></script>
     <script src="public/js/offres.js"></script>
+    <script src="public/js/cookies.js"></script>
     <script src="public/js/app.js"></script>
 </body>
 </html>
