@@ -23,9 +23,9 @@
             </div>
             <nav class="mobile-nav">
                 <a href="/home" class="mobile-nav-link">Accueil</a>
-                <a href="/offres" class="mobile-nav-link">Emplois</a>
+                <a href="/offres" class="mobile-nav-link active">Emplois</a>
                 <a href="/dashboard" class="mobile-nav-link" id="mobile-page-dashboard" style="display:none;">Tableau de bord</a>
-                <a href="/gestion" class="mobile-nav-link active">Gestion</a>
+                <a href="/gestion" class="mobile-nav-link">Gestion</a>
             </nav>
             <div class="mobile-menu-footer">
                 <div class="mobile-menu-buttons">
@@ -48,9 +48,9 @@
                 </button>
                 <nav class="navbar-nav">
                     <a href="/home" class="nav-link">Accueil</a>
-                    <a href="/offres" class="nav-link">Emplois</a>
+                    <a href="/offres" class="nav-link active">Emplois</a>
                     <a href="/dashboard" class="nav-link" id="page-dashboard" style="display:none;">Tableau de bord</a>
-                    <a href="/gestion" class="nav-link active">Gestion</a>
+                    <a href="/gestion" class="nav-link">Gestion</a>
                 </nav>
 
                 <div id="user-status">
