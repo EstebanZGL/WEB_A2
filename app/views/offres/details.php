@@ -117,7 +117,8 @@ function getValue($object, $key) {
                     <a href="<?php echo $basePath; ?>/offres" class="nav-link active">Emplois</a>
                     <a href="<?php echo $basePath; ?>/gestion" class="nav-link" id="page-gestion" style="display:none;">Gestion</a>
                     <a href="<?php echo $basePath; ?>/dashboard" class="nav-link" id="page-dashboard" style="display:none;">Tableau de bord</a>
-                    
+                </nav>
+
                 <div id="user-status">
                     <a href="<?php echo $basePath; ?>/login" id="login-Bouton" class="button button-outline button-glow">Connexion</a>
                     <a href="<?php echo $basePath; ?>/logout" id="logout-Bouton" class="button button-outline button-glow" style="display:none;">Déconnexion</a>
