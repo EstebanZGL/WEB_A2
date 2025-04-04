@@ -56,15 +56,10 @@
             .then(data => {
                 console.log("Session data:", data); // Débogage
                 if (data.logged_in && parseInt(data.utilisateur) === 0) {
-                    // L'utilisateur est un étudiant, afficher la section wishlist
-                    const wishlistSection = document.getElementById('wishlist-section');
                     const dashboardLink = document.getElementById('page-dashboard');
                     const mobileDashboardLink = document.getElementById('mobile-page-dashboard');
                     
-                    if (wishlistSection) {
-                        wishlistSection.style.display = 'block';
-                    }
-                    
+                   
                     if (dashboardLink) {
                         dashboardLink.style.display = 'inline-flex';
                     }
