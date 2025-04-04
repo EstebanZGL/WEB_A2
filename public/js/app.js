@@ -129,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Afficher un message de bienvenue avec le prénom de l'utilisateur
                 let userTypeLabel;
-                const userFirstName = data.prenom || "";
                 const userType = parseInt(data.utilisateur);
                 
                 switch (userType) {
@@ -141,13 +140,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (pageDashboard) pageDashboard.style.display = "inline-block";
                         if (mobilePageDashboard) mobilePageDashboard.style.display = "block";
                         
-                        // Afficher la section wishlist dans la barre latérale si on est sur la page des offres
-                        if (window.location.pathname.includes('offres')) {
-                            const wishlistSection = document.getElementById('wishlist-section');
-                            if (wishlistSection) {
-                                wishlistSection.style.display = 'block';
-                            }
-                        }
                         break;
                     case 1:
                         userTypeLabel = "Pilote";
@@ -168,11 +160,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 
                 // Construire le message de bienvenue avec le prénom
-                let welcomeText = userFirstName ? userFirstName : userTypeLabel;
-                
-                // Utiliser textContent pour afficher le texte (les caractères sont déjà correctement encodés)
-                welcomeMessage.textContent = welcomeText;
-                welcomeMessage.style.display = "inline-block"; // Affiche le message
+                console.log("Data received:", data); // Pour déboguer
+                const userFirstName = data.prenom ? data.prenom.trim() : "";
+                let welcomeText = userFirstName !== "" ? userFirstName : userTypeLabel;
+                console.log("welcomeText à afficher:", welcomeText); // Pour déboguer
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = welcomeText;
+                    welcomeMessage.style.display = "inline-block"; // Affiche le message
+                }
             } else {
                 loginBouton.style.display = "inline-block";
                 logoutBouton.style.display = "none";
@@ -196,8 +191,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
         .catch(error => console.error("Erreur lors de la récupération de la session :", error));
-});
-
     
     // Fonction pour charger les filtres de villes
     function loadCityFilters() {
