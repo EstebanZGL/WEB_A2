@@ -576,12 +576,12 @@
             if (filters.salary && filters.salary.length > 0) {
                 filters.salary.forEach(value => {
                     let label = '';
-                    if (value === '0-50000') {
-                        label = '0€ - 50 000€';
-                    } else if (value === '50000-100000') {
-                        label = '50 000€ - 100 000€';
-                    } else if (value === '100000+') {
-                        label = '100 000€ +';
+                    if (value === '0-500') {
+                        label = '0€ - 500€';
+                    } else if (value === '500-1000') {
+                        label = '500€ - 1000€';
+                    } else if (value === '1000+') {
+                        label = '1000€ +';
                     }
                     
                     const filterTag = document.createElement('span');
