@@ -120,11 +120,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     case 0: // Étudiant
                         utilisateurMessage = "Étudiant";
                         welcomeMessage.classList.add('etudiant');
-                        // Ajouter le lien vers la wishlist uniquement pour les étudiants
-                        // et seulement sur la page des offres
-                        if (window.location.pathname.includes('offres')) {
-                            addWishlistLinks();
-                        }
                         break;
                     case 1:
                         utilisateurMessage = "Pilote";

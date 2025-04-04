@@ -50,7 +50,7 @@
             }
         }
         
-        // Vérifier si l'utilisateur est un étudiant pour afficher la section wishlist
+        // Vérifier si l'utilisateur est un étudiant pour afficher la section dashboard
         fetch("app/views/login/session.php")
             .then(response => response.json())
             .then(data => {
