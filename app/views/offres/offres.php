@@ -125,9 +125,9 @@
                                 </svg>
                             </div>
                             <div class="filter-options" id="salary-filters">
-                                <label class="filter-option"><input type="checkbox" data-filter="salary" value="0-50000" class="filter-checkbox" /> 0€ - 50 000€</label>
-                                <label class="filter-option"><input type="checkbox" data-filter="salary" value="50000-100000" class="filter-checkbox" /> 50 000€ - 100 000€</label>
-                                <label class="filter-option"><input type="checkbox" data-filter="salary" value="100000+" class="filter-checkbox" /> 100 000€ +</label>
+                                <label class="filter-option"><input type="checkbox" data-filter="salary" value="0-500" class="filter-checkbox" /> 0€ - 500€</label>
+                                <label class="filter-option"><input type="checkbox" data-filter="salary" value="500-1000" class="filter-checkbox" /> 500€ - 1000€</label>
+                                <label class="filter-option"><input type="checkbox" data-filter="salary" value="1000+" class="filter-checkbox" /> 1000€ +</label>
                             </div>
                         </div>
                         
